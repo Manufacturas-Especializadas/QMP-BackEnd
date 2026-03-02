@@ -15,15 +15,25 @@ builder.Services.AddDbContext<ApplicationDbContext>(option =>
     option.UseSqlServer(connection);
 });
 
+var allowedConnection = builder.Configuration.GetValue<string>("OrigenesPermitidos")!.Split(',');
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigins", policy =>
+    {
+        policy.WithOrigins(allowedConnection)
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddScoped<IListRepository, ListRepository>();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
+
+app.UseCors("AllowSpecificOrigins");
 
 app.UseHttpsRedirection();
 

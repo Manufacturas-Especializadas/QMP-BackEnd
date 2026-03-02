@@ -27,5 +27,13 @@ namespace Infrastructure.Repositories
                     .Select(l => new LineLookupDto(l.Id, l.LineName))
                     .ToListAsync();
         }
+
+        public async Task<IEnumerable<ShiftLookupDto>> GetShifts()
+        {
+            return await _context.Shifts
+                        .AsNoTracking()
+                        .Select(s => new ShiftLookupDto(s.Id, s.ShiftName))
+                        .ToListAsync();
+        }
     }
 }

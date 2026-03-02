@@ -23,5 +23,14 @@ namespace API.Controllers
 
             return result.Any() ? Ok(result) : BadRequest("Sin datos");
         }
+
+        [HttpGet]
+        [Route("shifts")]
+        public async Task<IActionResult> GetShifts()
+        {
+            var result = await _listRepository.GetShifts();
+
+            return result.Any() ? Ok(result) : BadRequest("Sin datos");
+        }
     }
 }

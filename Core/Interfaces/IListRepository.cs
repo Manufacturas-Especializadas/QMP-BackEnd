@@ -11,5 +11,7 @@ namespace Core.Interfaces
     public interface IListRepository
     {
         Task<IEnumerable<LineLookupDto>> GetLines();
+
+        Task<IEnumerable<ShiftLookupDto>> GetShifts();
     }
 }

@@ -14,6 +14,8 @@ namespace Core.Interfaces
 
         Task<IEnumerable<ShiftLookupDto>> GetShifts();
 
+        Task<IEnumerable<MaterialLookupDto>> GetMaterial();
+
         Task<IEnumerable<ProcessLookupDto>> GetProcess(int lineId);
 
         Task<IEnumerable<MachineCodeLookupDto>> GetMachineCodes(int processId);

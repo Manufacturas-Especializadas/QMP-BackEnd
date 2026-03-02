@@ -34,6 +34,15 @@ namespace API.Controllers
         }
 
         [HttpGet]
+        [Route("material")]
+        public async Task<IActionResult> GetMaterial()
+        {
+            var result = await _listRepository.GetMaterial();
+
+            return result.Any() ? Ok(result) : BadRequest("Sin datos");
+        }
+
+        [HttpGet]
         [Route("process/{lineId}")]
         public async Task<IActionResult> GetProcessByLine(int lineId)
         {

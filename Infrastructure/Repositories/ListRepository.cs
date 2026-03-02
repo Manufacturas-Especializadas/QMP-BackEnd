@@ -36,6 +36,14 @@ namespace Infrastructure.Repositories
                         .ToListAsync();
         }
 
+        public async Task<IEnumerable<MaterialLookupDto>> GetMaterial()
+        {
+            return await _context.Materials
+                        .AsNoTracking()
+                        .Select(m => new MaterialLookupDto(m.Id, m.MaterialName))
+                        .ToListAsync();
+        }
+
         public async Task<IEnumerable<ProcessLookupDto>> GetProcess(int lineId)
         {
             return await _context.Processes

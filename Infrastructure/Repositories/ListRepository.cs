@@ -45,5 +45,14 @@ namespace Infrastructure.Repositories
                         .ToListAsync();
 
         }
+
+        public async Task<IEnumerable<MachineCodeLookupDto>> GetMachineCodes(int processId)
+        {
+            return await _context.MachineCodes
+                        .AsNoTracking()
+                        .Where(m => m.ProcessId == processId)
+                        .Select(m => new MachineCodeLookupDto(m.Id, m.MachineCodeName, m.ProcessId))
+                        .ToListAsync();
+        }
     }
 }

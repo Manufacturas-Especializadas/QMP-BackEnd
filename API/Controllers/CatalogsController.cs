@@ -40,6 +40,15 @@ namespace API.Controllers
             var result = await _listRepository.GetProcess(lineId);
 
             return result.Any() ? Ok(result) : NotFound("Sin procesos para esta linea");
-        } 
+        }
+
+        [HttpGet]
+        [Route("machineCodes/{processId}")]
+        public async Task<IActionResult> getMachineCodes(int processId)
+        {
+            var result = await _listRepository.GetMachineCodes(processId);
+
+            return result.Any() ? Ok(result) : NotFound("No hay codigos de maquinas para este proceso");
+        }
     }
 }

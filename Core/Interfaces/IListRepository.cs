@@ -16,6 +16,8 @@ namespace Core.Interfaces
 
         Task<IEnumerable<MaterialLookupDto>> GetMaterial();
 
+        Task<IEnumerable<TypeScrapLookupDto>> GetTypeScrap();
+
         Task<IEnumerable<ProcessLookupDto>> GetProcess(int lineId);
 
         Task<IEnumerable<MachineCodeLookupDto>> GetMachineCodes(int processId);

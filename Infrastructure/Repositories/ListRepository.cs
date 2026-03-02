@@ -44,6 +44,14 @@ namespace Infrastructure.Repositories
                         .ToListAsync();
         }
 
+        public async Task<IEnumerable<TypeScrapLookupDto>> GetTypeScrap()
+        {
+            return await _context.TypeScraps
+                        .AsNoTracking()
+                        .Select(t => new TypeScrapLookupDto(t.Id, t.TypeScrapName))
+                        .ToListAsync();
+        }
+
         public async Task<IEnumerable<ProcessLookupDto>> GetProcess(int lineId)
         {
             return await _context.Processes

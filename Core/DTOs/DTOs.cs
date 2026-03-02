@@ -9,4 +9,6 @@ namespace Core.DTOs
     public record LineLookupDto(int id, string Name);
 
     public record ShiftLookupDto(int id, string Name);
+
+    public record ProcessLookupDto(int id, string Name, int lineId);
 }

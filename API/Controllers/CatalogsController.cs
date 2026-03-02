@@ -32,5 +32,14 @@ namespace API.Controllers
 
             return result.Any() ? Ok(result) : BadRequest("Sin datos");
         }
+
+        [HttpGet]
+        [Route("process/{lineId}")]
+        public async Task<IActionResult> GetProcessByLine(int lineId)
+        {
+            var result = await _listRepository.GetProcess(lineId);
+
+            return result.Any() ? Ok(result) : NotFound("Sin procesos para esta linea");
+        } 
     }
 }

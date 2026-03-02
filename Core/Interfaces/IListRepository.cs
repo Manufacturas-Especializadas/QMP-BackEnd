@@ -13,5 +13,7 @@ namespace Core.Interfaces
         Task<IEnumerable<LineLookupDto>> GetLines();
 
         Task<IEnumerable<ShiftLookupDto>> GetShifts();
+
+        Task<IEnumerable<ProcessLookupDto>> GetProcess(int lineId);
     }
 }

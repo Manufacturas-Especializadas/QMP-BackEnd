@@ -35,5 +35,15 @@ namespace Infrastructure.Repositories
                         .Select(s => new ShiftLookupDto(s.Id, s.ShiftName))
                         .ToListAsync();
         }
+
+        public async Task<IEnumerable<ProcessLookupDto>> GetProcess(int lineId)
+        {
+            return await _context.Processes
+                        .AsNoTracking()
+                        .Where(p => p.LineId == lineId)
+                        .Select(p => new ProcessLookupDto(p.Id, p.ProcessName, p.LineId))
+                        .ToListAsync();
+
+        }
     }
 }

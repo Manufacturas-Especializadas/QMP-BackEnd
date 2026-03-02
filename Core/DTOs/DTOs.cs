@@ -17,4 +17,6 @@ namespace Core.DTOs
     public record MachineCodeLookupDto(int id, string Name, int processId);
 
     public record TypeScrapLookupDto(int id, string Name);
+
+    public record DefectsLookupDto(int id, string Name, int typeScrapId);
 }

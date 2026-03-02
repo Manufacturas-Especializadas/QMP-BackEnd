@@ -21,5 +21,7 @@ namespace Core.Interfaces
         Task<IEnumerable<ProcessLookupDto>> GetProcess(int lineId);
 
         Task<IEnumerable<MachineCodeLookupDto>> GetMachineCodes(int processId);
+
+        Task<IEnumerable<DefectsLookupDto>> GetDefects(int typeScrapId);
     }
 }

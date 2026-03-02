@@ -70,5 +70,15 @@ namespace Infrastructure.Repositories
                         .Select(m => new MachineCodeLookupDto(m.Id, m.MachineCodeName, m.ProcessId))
                         .ToListAsync();
         }
+
+        public async Task<IEnumerable<DefectsLookupDto>> GetDefects(int typeScrapId)
+        {
+            return await _context.Defects
+                        .AsNoTracking()
+                        .Where(d => d.TypeScrapId == typeScrapId)
+                        .Select(d => new DefectsLookupDto(d.Id, d.DefectName, d.TypeScrapId))
+                        .ToListAsync();
+                        
+        }
     }
 }

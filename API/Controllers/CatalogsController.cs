@@ -68,5 +68,14 @@ namespace API.Controllers
 
             return result.Any() ? Ok(result) : NotFound("No hay codigos de maquinas para este proceso");
         }
+
+        [HttpGet]
+        [Route("defects/{typeScrapId}")]
+        public async Task<IActionResult> GetDefectsByTypeScrap(int typeScrapId)
+        {
+            var result = await _listRepository.GetDefects(typeScrapId);
+
+            return result.Any() ? Ok(result) : NotFound("No hay defectos para este tipo de scrap");
+        }
     }
 }

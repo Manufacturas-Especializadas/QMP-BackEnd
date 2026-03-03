@@ -21,6 +21,7 @@ namespace Core.DTOs
     public record DefectsLookupDto(int id, string Name, int typeScrapId);
 
     public record ScrapLookupDto(
+        int id,
         int PayRollNumber,
         string? Alloy,
         string? Diameter,
@@ -34,6 +35,8 @@ namespace Core.DTOs
         string? MachineCodeName,
         string DefectName,
         decimal? Weight,
+        bool IsVerified,
+        decimal? VerifiedWeight,
         DateTime createdAt);
 
     public record CreateScrapDto(

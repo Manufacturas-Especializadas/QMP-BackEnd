@@ -1,6 +1,7 @@
 ﻿using Core.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace API.Controllers
 {
@@ -66,7 +67,7 @@ namespace API.Controllers
         {
             var result = await _listRepository.GetMachineCodes(processId);
 
-            return result.Any() ? Ok(result) : NotFound("No hay codigos de maquinas para este proceso");
+            return Ok(result);
         }
 
         [HttpGet]

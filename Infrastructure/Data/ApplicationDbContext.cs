@@ -36,8 +36,10 @@ namespace Infrastructure.Data
 
             modelBuilder.Entity<Scrap>(entity =>
             {
+                entity.ToTable("Scrap");
+
                 entity.Property(e => e.CreatedAt).HasDefaultValueSql("GETDATE()");
-            
+
                 entity.HasOne(d => d.Line)
                     .WithMany(p => p.Scraps)
                     .HasForeignKey(d => d.LineId)

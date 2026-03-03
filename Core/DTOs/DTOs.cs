@@ -51,4 +51,6 @@ namespace Core.DTOs
         int DefectId,
         decimal Weight
     );
+
+    public record VerifyScrapDto(int Id, bool IsVerified, decimal? VerifiedWeight);
 }

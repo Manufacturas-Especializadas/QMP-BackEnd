@@ -57,11 +57,9 @@ namespace Infrastructure.Repositories
             return await _context.Scraps
                         .AsNoTracking()
                         .Select(s => new ScrapLookupDto(
-                            s.Id, s.Alloy, s.Diameter, s.Wall, s.RDM,
-                            s.Shift.ShiftName, s.Process!.ProcessName,
-                            s.Line.LineName, s.Material.MaterialName,
-                            s.TypeScrap.TypeScrapName, s.MachineCode.MachineCodeName,
-                            s.Defect.DefectName, s.Weight, s.CreatedAt))
+                            s.Id, s.PayRollNumber, s.Alloy, s.Diameter, s.Wall, s.RDM,
+                            s.Shift.ShiftName, s.Process!.ProcessName, s.Line.LineName, s.Material.MaterialName, s.TypeScrap.TypeScrapName,
+                            s.MachineCode.MachineCodeName, s.Defect.DefectName, s.Weight, s.IsVerified, s.VerifiedWeight, s.CreatedAt))
                         .ToListAsync();
         }
 

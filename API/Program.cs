@@ -27,6 +27,7 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddScoped<IListRepository, ListRepository>();
+builder.Services.AddScoped<IScrapRepository, ScrapRepository>();
 
 var app = builder.Build();
 

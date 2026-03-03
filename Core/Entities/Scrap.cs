@@ -18,7 +18,13 @@ namespace Core.Entities
 
         public string? Wall { get; set; }
 
+        public decimal? Weight { get; set; }
+
         public string RDM { get; set; } = string.Empty;
+
+        public bool IsVerified { get; set; } = false;
+
+        public decimal? VerifiedWeight { get; set; } 
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         
@@ -30,15 +36,19 @@ namespace Core.Entities
 
         public int MaterialId { get; set; }
 
+        public int? MachineCodeId {  get; set; }
+
         public int TypeScrapId { get; set; }
 
-        public int DefectId { get; set; }
+        public int? DefectId { get; set; }
 
         public Shift Shift { get; set; } = null!;
 
         public Process? Process { get; set; }
 
         public Line Line { get; set; } = null!;
+
+        public MachineCode MachineCode { get; set; } = null!;
 
         public Material Material { get; set; } = null!;
 

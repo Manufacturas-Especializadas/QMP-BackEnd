@@ -1,4 +1,5 @@
-﻿using Core.Entities;
+﻿using Core.DTOs;
+using Core.Entities;
 using Core.Interfaces;
 using Infrastructure.Data;
 using System;
@@ -23,6 +24,18 @@ namespace Infrastructure.Repositories
             await _context.Scraps.AddAsync(scrap);
 
             return scrap;
+        }
+
+        public async Task<bool> UpdateVerificationAsync(int id, bool isVerified, decimal? verifiedWeight)
+        {
+            var scrap = await _context.Scraps.FindAsync(id);
+
+            if (scrap == null) return false;
+
+            scrap.IsVerified = isVerified;
+            scrap.VerifiedWeight = isVerified ? scrap.Weight : verifiedWeight;
+
+            return await _context.SaveChangesAsync() > 0;
         }
 
         public async Task<bool> SaveChangesAsync()

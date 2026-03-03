@@ -53,6 +53,15 @@ namespace API.Controllers
         }
 
         [HttpGet]
+        [Route("Scrap")]
+        public async Task<IActionResult> GetScrap()
+        {
+            var result = await _listRepository.GetScrap();
+
+            return Ok(result);
+        }
+
+        [HttpGet]
         [Route("process/{lineId}")]
         public async Task<IActionResult> GetProcessByLine(int lineId)
         {

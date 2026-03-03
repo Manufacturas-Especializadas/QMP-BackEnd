@@ -53,5 +53,29 @@ namespace API.Controllers
                 return StatusCode(500, $"Error interno: {ex.Message} - {ex.InnerException?.Message}");
             }
         }
+
+        [HttpPatch]
+        [Route("Verify")]
+        public async Task<IActionResult> VerifyScrap([FromBody] VerifyScrapDto dto)
+        {
+            if (dto == null) return BadRequest("Datos invalidos");
+
+            try
+            {
+                var result = await _scrapRepository.UpdateVerificationAsync(
+                        dto.Id,
+                        dto.IsVerified,
+                        dto.VerifiedWeight
+                    );
+
+                if (!result) return NotFound("No se encontró el registro de scrap");
+
+                return Ok(new { message = "Verificación actualizada correctamente" });
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, $"Error interno: {ex.Message}");
+            }
+        }
     }
 }

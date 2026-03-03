@@ -2,6 +2,7 @@
 using Core.Entities;
 using Core.Interfaces;
 using Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,16 @@ namespace Infrastructure.Repositories
         public ScrapRepository(ApplicationDbContext context)
         {
             _context = context;
+        }
+
+        public async Task<Scrap?> GetByIdAsync(int id)
+        {
+            return await _context.Scraps
+                .Include(s => s.Line)
+                .Include(s => s.Process)
+                .Include(s => s.TypeScrap)
+                .Include(s => s.Defect)
+                .FirstOrDefaultAsync(s => s.Id == id);
         }
 
         public async Task<Scrap> CreateAsync(Scrap scrap)

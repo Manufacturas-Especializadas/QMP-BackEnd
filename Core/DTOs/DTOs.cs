@@ -53,4 +53,23 @@ namespace Core.DTOs
     );
 
     public record VerifyScrapDto(int Id, bool IsVerified, decimal? VerifiedWeight);
+
+    public record ScrapReadDto(
+        int Id,
+        int PayRollNumber,
+        string? Alloy,
+        string? Diameter,
+        string? Wall,
+        string RDM,
+        decimal? Weight,
+        DateTime CreatedAt,
+        string ShiftName,
+        string LineName,
+        string ProcessName,
+        string? MachineCodeName,
+        string TypeScrapName,
+        string DefectName,
+        bool IsVerified,
+        decimal? VerifiedWeight
+    );
 }

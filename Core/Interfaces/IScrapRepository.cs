@@ -10,6 +10,8 @@ namespace Core.Interfaces
 {
     public interface IScrapRepository
     {
+        Task<Scrap?> GetByIdAsync(int id);
+
         Task<Scrap> CreateAsync(Scrap scrap);
 
         Task<bool> UpdateVerificationAsync(int id, bool isVerified, decimal? verifiedWeight);

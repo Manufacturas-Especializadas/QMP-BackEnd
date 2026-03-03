@@ -17,6 +17,43 @@ namespace API.Controllers
             _scrapRepository = scrapRepository;
         }
 
+        [HttpGet]
+        [Route("ById/{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            try
+            {
+                var scrap = await _scrapRepository.GetByIdAsync(id);
+
+                if (scrap == null) return NotFound();
+
+                var dto = new ScrapReadDto(
+                    scrap.Id,
+                    scrap.PayRollNumber,
+                    scrap.Alloy,
+                    scrap.Diameter,
+                    scrap.Wall,
+                    scrap.RDM,
+                    scrap.Weight,
+                    scrap.CreatedAt,
+                    scrap.Shift?.ShiftName ?? "N/A",
+                    scrap.Line?.LineName ?? "N/A",
+                    scrap.Process?.ProcessName ?? "N/A",
+                    scrap.MachineCode?.MachineCodeName,
+                    scrap.TypeScrap?.TypeScrapName ?? "N/A",
+                    scrap.Defect?.DefectName ?? "N/A",
+                    scrap.IsVerified,
+                    scrap.VerifiedWeight
+                );
+
+                return Ok(dto);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error: {ex.Message}");
+            }
+        }
+
         [HttpPost]
         [Route("CreateScrap")]
         public async Task<IActionResult> Create([FromBody] CreateScrapDto dto)

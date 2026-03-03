@@ -22,6 +22,10 @@ namespace Core.Entities
 
         public string RDM { get; set; } = string.Empty;
 
+        public bool IsVerified { get; set; } = false;
+
+        public decimal? VerifiedWeight { get; set; } 
+
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         
         public int ShiftId { get; set; }

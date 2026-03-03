@@ -51,7 +51,7 @@ namespace Core.DTOs
         int MaterialId,
         int TypeScrapId,
         int? MachineCodeId,
-        int DefectId,
+        int? DefectId,
         decimal Weight
     );
 

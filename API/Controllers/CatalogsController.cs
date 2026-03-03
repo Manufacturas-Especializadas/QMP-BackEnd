@@ -85,7 +85,7 @@ namespace API.Controllers
         {
             var result = await _listRepository.GetDefects(typeScrapId);
 
-            return result.Any() ? Ok(result) : NotFound("No hay defectos para este tipo de scrap");
+            return Ok(result);
         }
     }
 }

@@ -40,7 +40,7 @@ namespace Core.Entities
 
         public int TypeScrapId { get; set; }
 
-        public int DefectId { get; set; }
+        public int? DefectId { get; set; }
 
         public Shift Shift { get; set; } = null!;
 

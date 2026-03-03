@@ -40,11 +40,12 @@ namespace Infrastructure.Repositories
         public async Task<bool> UpdateVerificationAsync(int id, bool isVerified, decimal? verifiedWeight)
         {
             var scrap = await _context.Scraps.FindAsync(id);
-
             if (scrap == null) return false;
 
             scrap.IsVerified = isVerified;
             scrap.VerifiedWeight = isVerified ? scrap.Weight : verifiedWeight;
+
+            _context.Entry(scrap).State = EntityState.Modified;
 
             return await _context.SaveChangesAsync() > 0;
         }

@@ -52,6 +52,19 @@ namespace Infrastructure.Repositories
                         .ToListAsync();
         }
 
+        public async Task<IEnumerable<ScrapLookupDto>> GetScrap()
+        {
+            return await _context.Scraps
+                        .AsNoTracking()
+                        .Select(s => new ScrapLookupDto(
+                            s.Id, s.Alloy, s.Diameter, s.Wall, s.RDM,
+                            s.Shift.ShiftName, s.Process!.ProcessName,
+                            s.Line.LineName, s.Material.MaterialName,
+                            s.TypeScrap.TypeScrapName, s.MachineCode.MachineCodeName,
+                            s.Defect.DefectName, s.Weight, s.CreatedAt))
+                        .ToListAsync();
+        }
+
         public async Task<IEnumerable<ProcessLookupDto>> GetProcess(int lineId)
         {
             return await _context.Processes

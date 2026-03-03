@@ -20,6 +20,22 @@ namespace Core.DTOs
 
     public record DefectsLookupDto(int id, string Name, int typeScrapId);
 
+    public record ScrapLookupDto(
+        int PayRollNumber,
+        string? Alloy,
+        string? Diameter,
+        string? Wall,
+        string RDM,
+        string ShiftName,
+        string ProcessName,
+        string LineName,
+        string MaterialName,
+        string TypeScrapName,
+        string? MachineCodeName,
+        string DefectName,
+        decimal? Weight,
+        DateTime createdAt);
+
     public record CreateScrapDto(
         int PayRollNumber,
         string? Alloy,

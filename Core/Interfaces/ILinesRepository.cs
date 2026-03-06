@@ -11,6 +11,8 @@ namespace Core.Interfaces
     {
         Task<Line> CreateAsync(Line line);
 
+        Task<Line> UpdateAsync(int id, Line line);
+
         Task<bool> SaveChangesAsync();
     }
 }

@@ -25,6 +25,17 @@ namespace Infrastructure.Repositories
             return line;
         }
 
+        public async Task<Line> UpdateAsync(int id, Line line)
+        {
+            var existingLine = await _context.Lines.FindAsync(id);
+
+            if (existingLine == null) return null;
+
+            existingLine.LineName = line.LineName;
+
+            return existingLine;
+        }
+
         public async Task<bool> SaveChangesAsync()
         {
             return await _context.SaveChangesAsync() > 0;

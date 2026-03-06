@@ -34,5 +34,20 @@ namespace API.Controllers
 
             return Ok(result);
         }
+
+        [HttpPut]
+        [Route("UpdateLine/{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] LineCreateDto dto)
+        {
+            var lineEntity = new Line { LineName = dto.LineName };
+
+            var updateLine = await _linesRepository.UpdateAsync(id, lineEntity);
+
+            if (updateLine == null) return NotFound("La línea no existe");
+
+            var result = await _linesRepository.SaveChangesAsync();
+
+            return Ok(result);
+        }
     }
 }

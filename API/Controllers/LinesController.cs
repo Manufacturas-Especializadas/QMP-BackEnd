@@ -49,5 +49,18 @@ namespace API.Controllers
 
             return Ok(result);
         }
+
+        [HttpDelete]
+        [Route("DeleteLine/{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var success = await _linesRepository.DeleteAsync(id);
+
+            if (!success) return NotFound("La línea que intentas eliminar no exista");
+
+            await _linesRepository.SaveChangesAsync();
+
+            return Ok(true);
+        }
     }
 }

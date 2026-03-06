@@ -36,6 +36,17 @@ namespace Infrastructure.Repositories
             return existingLine;
         }
 
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var line = await _context.Lines.FindAsync(id);
+
+            if(line == null) return false;
+
+            _context.Lines.Remove(line);
+
+            return true;
+        } 
+
         public async Task<bool> SaveChangesAsync()
         {
             return await _context.SaveChangesAsync() > 0;

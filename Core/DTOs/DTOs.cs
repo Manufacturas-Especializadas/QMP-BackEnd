@@ -24,6 +24,10 @@ namespace Core.DTOs
 
     public record LineReadDto(int Id, string LineName);
 
+    public record ClientCreateDto(string ClientName);
+
+    public record ClineReadDto(int Id, string ClientName);
+
     public record ScrapLookupDto(
         int id,
         int PayRollNumber,

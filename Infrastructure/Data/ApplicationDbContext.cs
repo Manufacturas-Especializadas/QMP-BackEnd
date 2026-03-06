@@ -16,6 +16,8 @@ namespace Infrastructure.Data
 
         public DbSet<Line> Lines => Set<Line>();
 
+        public DbSet<Client> Clients => Set<Client>();
+
         public DbSet<Material> Materials => Set<Material>();
 
         public DbSet<TypeScrap> TypeScraps => Set<TypeScrap>();
@@ -52,6 +54,7 @@ namespace Infrastructure.Data
             });
 
             modelBuilder.Entity<Line>().ToTable("Lines");
+            modelBuilder.Entity<Client>().ToTable("Clients");
             modelBuilder.Entity<TypeScrap>().ToTable("TypeScrap");
             modelBuilder.Entity<MachineCode>().ToTable("MachineCodes");
             modelBuilder.Entity<Material>().ToTable("Material");

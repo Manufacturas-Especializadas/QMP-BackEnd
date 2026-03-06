@@ -12,6 +12,8 @@ namespace Core.Interfaces
     {
         Task<IEnumerable<LineLookupDto>> GetLines();
 
+        Task<IEnumerable<ClientLookupDto>> GetClients();
+
         Task<IEnumerable<ShiftLookupDto>> GetShifts();
 
         Task<IEnumerable<MaterialLookupDto>> GetMaterial();

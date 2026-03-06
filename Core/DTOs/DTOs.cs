@@ -8,6 +8,8 @@ namespace Core.DTOs
 {
     public record LineLookupDto(int id, string Name);
 
+    public record ClientLookupDto(int id, string Name);
+
     public record ShiftLookupDto(int id, string Name);
 
     public record MaterialLookupDto(int id, string Name);

@@ -28,6 +28,14 @@ namespace Infrastructure.Repositories
                     .ToListAsync();
         }
 
+        public async Task<IEnumerable<ClientLookupDto>> GetClients()
+        {
+            return await _context.Clients
+                    .AsNoTracking()
+                    .Select(l => new ClientLookupDto(l.Id, l.ClientName))
+                    .ToListAsync();
+        }
+
         public async Task<IEnumerable<ShiftLookupDto>> GetShifts()
         {
             return await _context.Shifts

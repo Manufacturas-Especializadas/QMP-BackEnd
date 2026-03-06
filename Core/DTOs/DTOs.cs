@@ -22,6 +22,8 @@ namespace Core.DTOs
 
     public record LineCreateDto(string LineName);
 
+    public record LineReadDto(int Id, string LineName);
+
     public record ScrapLookupDto(
         int id,
         int PayRollNumber,

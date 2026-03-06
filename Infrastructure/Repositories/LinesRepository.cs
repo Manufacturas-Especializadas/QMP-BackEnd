@@ -1,6 +1,7 @@
 ﻿using Core.Entities;
 using Core.Interfaces;
 using Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,11 @@ namespace Infrastructure.Repositories
         public LinesRepository(ApplicationDbContext context)
         {
             _context = context;
+        }
+
+        public async Task<Line> GetByIdAsync(int id)
+        {
+            return await _context.Lines.FindAsync(id);
         }
 
         public async Task<Line> CreateAsync(Line line)

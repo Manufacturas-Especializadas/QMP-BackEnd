@@ -9,6 +9,8 @@ namespace Core.Interfaces
 {
     public interface ILinesRepository
     {
+        Task<Line> GetByIdAsync(int id);
+
         Task<Line> CreateAsync(Line line);
 
         Task<Line> UpdateAsync(int id, Line line);

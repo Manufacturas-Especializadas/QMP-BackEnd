@@ -17,6 +17,22 @@ namespace API.Controllers
             _linesRepository = linesRepository;
         }
 
+        [HttpGet]
+        [Route("LineById/{id}")]
+        public async Task<IActionResult> GetLineById(int id)
+        {
+            var result = await _linesRepository.GetByIdAsync(id);
+
+            if (result == null)
+            {
+                return NotFound("Línea no encontrada");
+            }
+
+            var dto = new LineReadDto(result.Id, result.LineName);
+
+            return Ok(dto);
+        }
+
         [HttpPost]
         [Route("CreateLine")]
         public async Task<IActionResult> Create([FromBody] LineCreateDto dto)

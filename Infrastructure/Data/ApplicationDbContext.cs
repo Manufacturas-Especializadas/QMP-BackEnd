@@ -32,9 +32,13 @@ namespace Infrastructure.Data
 
         public DbSet<Scrap> Scraps => Set<Scrap>();
 
+        public DbSet<User> Users => Set<User>();
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<UserRole>().ToTable("UserRoles");
 
             modelBuilder.Entity<UserRole>()
                 .HasKey(ur => new { ur.UserId, ur.RoleId });
@@ -66,6 +70,7 @@ namespace Infrastructure.Data
                     .OnDelete(DeleteBehavior.NoAction);
             });
 
+            modelBuilder.Entity<Role>().ToTable("Roles");
             modelBuilder.Entity<Line>().ToTable("Lines");
             modelBuilder.Entity<Client>().ToTable("Clients");
             modelBuilder.Entity<TypeScrap>().ToTable("TypeScrap");

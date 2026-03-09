@@ -30,6 +30,10 @@ namespace Core.DTOs
 
     public record ClineReadDto(int Id, string ClientName);
 
+    public record UserRegisterDto(string EmployeeNumber, int RoleId);
+
+    public record UserLoginDto(string EmployeeNumber, string Password);
+
     public record ScrapLookupDto(
         int id,
         int PayRollNumber,

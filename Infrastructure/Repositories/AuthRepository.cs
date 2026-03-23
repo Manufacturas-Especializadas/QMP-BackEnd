@@ -1,4 +1,5 @@
-﻿using Core.Entities;
+﻿using Core.DTOs;
+using Core.Entities;
 using Core.Interfaces;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,20 @@ namespace Infrastructure.Repositories
         public AuthRepository(ApplicationDbContext context)
         {
             _context = context;            
+        }
+
+        public async Task<IEnumerable<UsersList>> GetListUsers()
+        {
+            return await _context.Users
+                .AsNoTracking()
+                .Select(u => new UsersList(
+                    u.Username,
+                    u.CreatedAt,
+                    u.IsActive,
+                    u.UserRoles.Select(ur => ur.Role.RoleName).FirstOrDefault() ?? "Sin Rol"
+                ))
+                .ToListAsync();
+
         }
 
         public async Task<User> Register(User user, string password)

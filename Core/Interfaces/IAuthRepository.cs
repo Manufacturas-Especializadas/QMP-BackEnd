@@ -1,4 +1,5 @@
-﻿using Core.Entities;
+﻿using Core.DTOs;
+using Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,7 @@ namespace Core.Interfaces
         Task<User> Login(string employeeNumber, string password);
 
         Task<bool> UserExists(string employeeNumber);
+
+        Task<IEnumerable<UsersList>> GetListUsers();
     }
 }

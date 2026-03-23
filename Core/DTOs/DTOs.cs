@@ -89,4 +89,6 @@ namespace Core.DTOs
         bool IsVerified,
         decimal? VerifiedWeight
     );
+
+    public record UsersList(string payRollNumber, DateTime createdAt, bool isActive, string roleName);
 }

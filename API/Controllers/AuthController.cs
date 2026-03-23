@@ -19,6 +19,15 @@ namespace API.Controllers
             _tokenService = tokenService;
         }
 
+        [HttpGet]
+        [Route("Users")]
+        public async Task<IActionResult> GetUsersList()
+        {
+            var result = await _authRepository.GetListUsers();
+
+            return result.Any() ? Ok(result) : BadRequest("Sin datos");
+        }
+
         [HttpPost]
         [Route("Register")]
         public async Task<IActionResult> Register([FromBody] UserRegisterDto dto)

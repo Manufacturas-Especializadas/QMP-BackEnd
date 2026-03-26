@@ -36,6 +36,7 @@ builder.Services.AddScoped<ILinesRepository, LinesRepository>();
 builder.Services.AddScoped<IClientsRepository, ClientRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+builder.Services.AddScoped<IExcelService, ExcelService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(options => {

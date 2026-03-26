@@ -26,6 +26,15 @@ namespace API.Controllers
         }
 
         [HttpGet]
+        [Route("clients")]
+        public async Task<IActionResult> GetClients()
+        {
+            var result = await _listRepository.GetClients();
+
+            return result.Any() ? Ok(result) : BadRequest("Sin datos");
+        }
+
+        [HttpGet]
         [Route("shifts")]
         public async Task<IActionResult> GetShifts()
         {

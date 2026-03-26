@@ -8,6 +8,8 @@ namespace Core.DTOs
 {
     public record LineLookupDto(int id, string Name);
 
+    public record ClientLookupDto(int id, string Name);
+
     public record ShiftLookupDto(int id, string Name);
 
     public record MaterialLookupDto(int id, string Name);
@@ -19,6 +21,18 @@ namespace Core.DTOs
     public record TypeScrapLookupDto(int id, string Name);
 
     public record DefectsLookupDto(int id, string Name, int typeScrapId);
+
+    public record LineCreateDto(string LineName);
+
+    public record LineReadDto(int Id, string LineName);
+
+    public record ClientCreateDto(string ClientName);
+
+    public record ClineReadDto(int Id, string ClientName);
+
+    public record UserRegisterDto(string EmployeeNumber, int RoleId);
+
+    public record UserLoginDto(string EmployeeNumber, string Password);
 
     public record ScrapLookupDto(
         int id,
@@ -75,4 +89,6 @@ namespace Core.DTOs
         bool IsVerified,
         decimal? VerifiedWeight
     );
+
+    public record UsersList(string payRollNumber, DateTime createdAt, bool isActive, string roleName);
 }

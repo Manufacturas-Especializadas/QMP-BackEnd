@@ -16,6 +16,8 @@ namespace Infrastructure.Data
 
         public DbSet<Line> Lines => Set<Line>();
 
+        public DbSet<Client> Clients => Set<Client>();
+
         public DbSet<Material> Materials => Set<Material>();
 
         public DbSet<TypeScrap> TypeScraps => Set<TypeScrap>();
@@ -30,9 +32,26 @@ namespace Infrastructure.Data
 
         public DbSet<Scrap> Scraps => Set<Scrap>();
 
+        public DbSet<User> Users => Set<User>();
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<UserRole>().ToTable("UserRoles");
+
+            modelBuilder.Entity<UserRole>()
+                .HasKey(ur => new { ur.UserId, ur.RoleId });
+
+            modelBuilder.Entity<UserRole>()
+                .HasOne(ur => ur.User)
+                .WithMany(u => u.UserRoles)
+                .HasForeignKey(ur => ur.UserId);
+
+            modelBuilder.Entity<UserRole>()
+                .HasOne(ur => ur.Role)
+                .WithMany(r => r.UserRoles)
+                .HasForeignKey(ur => ur.RoleId);
 
             modelBuilder.Entity<Scrap>(entity =>
             {
@@ -51,7 +70,9 @@ namespace Infrastructure.Data
                     .OnDelete(DeleteBehavior.NoAction);
             });
 
+            modelBuilder.Entity<Role>().ToTable("Roles");
             modelBuilder.Entity<Line>().ToTable("Lines");
+            modelBuilder.Entity<Client>().ToTable("Clients");
             modelBuilder.Entity<TypeScrap>().ToTable("TypeScrap");
             modelBuilder.Entity<MachineCode>().ToTable("MachineCodes");
             modelBuilder.Entity<Material>().ToTable("Material");

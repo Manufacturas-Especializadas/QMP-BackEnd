@@ -12,6 +12,8 @@ namespace Core.Interfaces
     {
         Task<Scrap?> GetByIdAsync(int id);
 
+        Task<IEnumerable<Scrap>> GetAllTodayAsync();
+
         Task<Scrap> CreateAsync(Scrap scrap);
 
         Task<bool> UpdateVerificationAsync(int id, bool isVerified, decimal? verifiedWeight);

@@ -72,5 +72,19 @@ namespace API.Controllers
                 username = userFromRepo.Username,
             });
         }
+
+        [HttpPatch]
+        [Route("ToggleStatus/{username}")]
+        public async Task<IActionResult> ToogleUserStatus(string username)
+        {
+            var result = await _authRepository.ToogleUserStatus(username);
+
+            if (!result) return BadRequest("No se pudo actualizar el estado del usuario o el usuario no existe");
+
+            return Ok(new
+            {
+                message = "Estado de usuario actualizado correctamente"
+            });
+        }
     }
 }

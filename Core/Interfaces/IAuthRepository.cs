@@ -16,6 +16,8 @@ namespace Core.Interfaces
 
         Task<bool> UserExists(string employeeNumber);
 
+        Task<bool> ToogleUserStatus(string username);
+
         Task<IEnumerable<UsersList>> GetListUsers();
     }
 }

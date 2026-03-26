@@ -67,7 +67,18 @@ namespace Infrastructure.Repositories
         public async Task<bool> UserExists(string employeeNumber)
         {
             return await _context.Users.AnyAsync(x => x.Username == employeeNumber);
-        }        
+        }
+        
+        public async Task<bool> ToogleUserStatus(string username)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Username == username);
+
+            if (user == null) return false;
+
+            user.IsActive = !user.IsActive;
+
+            return await _context.SaveChangesAsync() > 0;
+        }
 
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {

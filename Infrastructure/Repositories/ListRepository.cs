@@ -64,6 +64,7 @@ namespace Infrastructure.Repositories
         {
             return await _context.Scraps
                         .AsNoTracking()
+                        .OrderByDescending(s => s.Id)
                         .Select(s => new ScrapLookupDto(
                             s.Id, s.PayRollNumber, s.Alloy, s.Diameter, s.Wall, s.RDM,
                             s.Shift.ShiftName, s.Process!.ProcessName, s.Line.LineName, s.Material.MaterialName, s.TypeScrap.TypeScrapName,

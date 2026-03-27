@@ -59,12 +59,14 @@ namespace API.Controllers
 
         [HttpGet]
         [Route("ExportExcel")]
-        public async Task<IActionResult> ExportExcel()
+        public async Task<IActionResult> ExportExcel([FromQuery] int? month, [FromQuery] int? year)
         {
             try
             {
                 var now = DateTime.Now;
                 var scrapRecords = await _scrapRepository.GetByMonthAsync(now.Month, now.Year);
+                int filterMonth = month ?? DateTime.Now.Month;
+                int filterYear = year ?? DateTime.Now.Year;
 
                 var dtos = scrapRecords.Select(s => new ScrapReadDto(
                     s.Id,
@@ -87,13 +89,8 @@ namespace API.Controllers
 
                 var fileContents = _excelService.GenerateScrapReport(dtos);
 
-                string fileName = $"Reporte_Scrap_{now:MMMM}_{now.Year}.xlsx";
-
-                return File(
-                    fileContents,
-                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                    fileName
-                );
+                string monthName = new DateTime(filterYear, filterMonth, 1).ToString("MMMM", new System.Globalization.CultureInfo("es-ES"));
+                return File(fileContents, "application/vnd...", $"Reporte_Scrap_{monthName}_{filterYear}.xlsx");
             }
             catch(Exception ex)
             {

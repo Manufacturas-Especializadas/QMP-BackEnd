@@ -11,10 +11,13 @@ namespace API.Controllers
     public class ScrapController : ControllerBase
     {
         private readonly IScrapRepository _scrapRepository;
+        private readonly IExcelService _excelService;
 
-        public ScrapController(IScrapRepository scrapRepository)
+
+        public ScrapController(IScrapRepository scrapRepository, IExcelService excelService)
         {
             _scrapRepository = scrapRepository;
+            _excelService = excelService;
         }
 
         [HttpGet]
@@ -51,6 +54,50 @@ namespace API.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, $"Error: {ex.Message}");
+            }
+        }
+
+        [HttpGet]
+        [Route("ExportExcel")]
+        public async Task<IActionResult> ExportExcel()
+        {
+            try
+            {
+                var now = DateTime.Now;
+                var scrapRecords = await _scrapRepository.GetByMonthAsync(now.Month, now.Year);
+
+                var dtos = scrapRecords.Select(s => new ScrapReadDto(
+                    s.Id,
+                    s.PayRollNumber,
+                    s.Alloy,
+                    s.Diameter,
+                    s.Wall,
+                    s.RDM,
+                    s.Weight,
+                    s.CreatedAt,
+                    s.Shift?.ShiftName ?? "N/A",
+                    s.Line?.LineName ?? "N/A",
+                    s.Process?.ProcessName ?? "N/A",
+                    s.MachineCode?.MachineCodeName ?? "N/A",
+                    s.TypeScrap?.TypeScrapName ?? "N/A",
+                    s.Defect?.DefectName ?? "N/A",
+                    s.IsVerified,
+                    s.VerifiedWeight
+                )).ToList();
+
+                var fileContents = _excelService.GenerateScrapReport(dtos);
+
+                string fileName = $"Reporte_Scrap_{now:MMMM}_{now.Year}.xlsx";
+
+                return File(
+                    fileContents,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    fileName
+                );
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, $"Error al generar Excel: {ex.Message}");
             }
         }
 

@@ -30,6 +30,20 @@ namespace Infrastructure.Repositories
                 .FirstOrDefaultAsync(s => s.Id == id);
         }
 
+        public async Task<IEnumerable<Scrap>> GetByMonthAsync(int month, int year)
+        {
+            return await _context.Scraps
+                .Include(s => s.Line)
+                .Include(s => s.Shift)
+                .Include(s => s.Process)
+                .Include(s => s.MachineCode)
+                .Include(s => s.TypeScrap)
+                .Include(s => s.Defect)
+                .Where(s => s.CreatedAt.Month == month && s.CreatedAt.Year == year)
+                .OrderByDescending(s => s.CreatedAt)
+                .ToListAsync();
+        }
+
         public async Task<IEnumerable<Scrap>> GetAllTodayAsync()
         {
             var today = DateTime.Today;

@@ -14,6 +14,8 @@ namespace Core.Interfaces
 
         Task<IEnumerable<Scrap>> GetAllTodayAsync();
 
+        Task<IEnumerable<Scrap>> GetByMonthAsync(int month, int year);
+
         Task<Scrap> CreateAsync(Scrap scrap);
 
         Task<bool> UpdateVerificationAsync(int id, bool isVerified, decimal? verifiedWeight);

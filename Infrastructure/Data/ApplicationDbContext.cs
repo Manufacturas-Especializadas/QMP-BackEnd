@@ -34,6 +34,12 @@ namespace Infrastructure.Data
 
         public DbSet<User> Users => Set<User>();
 
+        public DbSet<DefectRejection> DefectsRejections => Set<DefectRejection>();
+
+        public DbSet<ContainmentAction> ContainmentActions => Set<ContainmentAction>();
+
+        public DbSet<Condition> Conditions => Set<Condition>();
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -79,6 +85,29 @@ namespace Infrastructure.Data
             modelBuilder.Entity<Shift>().ToTable("Shifts");
             modelBuilder.Entity<Process>().ToTable("Process");
             modelBuilder.Entity<Defect>().ToTable("Defects");
+
+            modelBuilder.Entity<DefectRejection>(entity =>
+            {
+                entity.ToTable("DefectsRejections");
+                entity.Property(e => e.DefectName).HasMaxLength(70);
+            });
+
+            modelBuilder.Entity<Condition>(entity =>
+            {
+                entity.ToTable("Conditions");
+                entity.Property(e => e.ConditionName).HasMaxLength(70);
+
+                entity.HasOne(c => c.DefectRejection)
+                    .WithMany(d => d.Conditions)
+                    .HasForeignKey(c => c.DefectId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<ContainmentAction>(entity =>
+            {
+                entity.ToTable("ContainmentAction");
+                entity.Property(e => e.ContainmentActionName).HasMaxLength(30);
+            });
         }
     }
 }

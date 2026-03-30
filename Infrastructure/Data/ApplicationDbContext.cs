@@ -34,6 +34,8 @@ namespace Infrastructure.Data
 
         public DbSet<User> Users => Set<User>();
 
+        public DbSet<Rejection> Rejections => Set<Rejection>();
+
         public DbSet<DefectRejection> DefectsRejections => Set<DefectRejection>();
 
         public DbSet<ContainmentAction> ContainmentActions => Set<ContainmentAction>();

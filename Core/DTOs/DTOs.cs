@@ -21,6 +21,8 @@ namespace Core.DTOs
 
     public record TypeScrapLookupDto(int id, string Name);
 
+    public record ContainmentActionLookupDto(int id, string Name);
+
     public record DefectsLookupDto(int id, string Name, int typeScrapId);
 
     public record LineCreateDto(string LineName);

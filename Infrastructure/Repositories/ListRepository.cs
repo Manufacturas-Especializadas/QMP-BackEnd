@@ -52,6 +52,14 @@ namespace Infrastructure.Repositories
                         .ToListAsync();
         }
 
+        public async Task<IEnumerable<ContainmentActionLookupDto>> GetContainmentActions()
+        {
+            return await _context.ContainmentActions
+                            .AsNoTracking()
+                            .Select(c => new ContainmentActionLookupDto(c.Id, c.ContainmentActionName))
+                            .ToListAsync();
+        }
+
         public async Task<IEnumerable<TypeScrapLookupDto>> GetTypeScrap()
         {
             return await _context.TypeScraps

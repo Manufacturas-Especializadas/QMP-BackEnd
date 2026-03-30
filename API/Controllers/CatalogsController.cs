@@ -53,6 +53,15 @@ namespace API.Controllers
         }
 
         [HttpGet]
+        [Route("containmentActions")]
+        public async Task<IActionResult> GetContainmentAction()
+        {
+            var result = await _listRepository.GetContainmentActions();
+
+            return result.Any() ? Ok(result) : BadRequest("Sin datos");            
+        }
+
+        [HttpGet]
         [Route("typeScrap")]
         public async Task<IActionResult> GetTypeScrap()
         {

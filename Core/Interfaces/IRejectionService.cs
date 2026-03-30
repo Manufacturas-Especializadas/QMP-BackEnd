@@ -12,5 +12,7 @@ namespace Core.Interfaces
         Task<int> CreateRejectionAsync(CreateRejectionDto dto, int userId);
 
         Task UpdateRejectionAsync(EditRejectionDto dto);
+
+        Task<int> GetNextFolioAsync();
     }
 }

@@ -16,5 +16,7 @@ namespace Core.Interfaces
         Task UpdateAsync(Rejection rejection);
 
         Task<bool> UserExistsAsync(int userId);
+
+        Task<int> GetMaxFolioAsync();
     }
 }

@@ -41,5 +41,13 @@ namespace Infrastructure.Repositories
         {
             return await _context.Users.AnyAsync(u => u.Id == userId);
         }
+
+        public async Task<int> GetMaxFolioAsync()
+        {
+            var maxFolio = await _context.Set<Rejection>()
+                    .MaxAsync(r => (int?)r.Folio) ?? 0;
+
+            return maxFolio;
+        }
     }
 }

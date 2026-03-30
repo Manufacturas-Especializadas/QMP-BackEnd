@@ -17,6 +17,26 @@ namespace API.Controllers
             _service = service;
         }
 
+        [HttpGet]
+        [Route("GeNextFolio")]
+        public async Task<IActionResult> GetNextFolio()
+        {
+            try
+            {
+                var nextFolio = await _service.GetNextFolioAsync();
+
+                return Ok(nextFolio);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(new
+                {
+                    message = "Error al calcular el siguiente folio",
+                    error = ex.Message
+                });
+            }
+        }
+
         [HttpPost]
         [Route("Create")]
         public async Task<IActionResult> Create([FromForm] CreateRejectionDto dto)

@@ -97,6 +97,13 @@ namespace Infrastructure.Services
             await _repo.UpdateAsync(existing);
         }
 
+        public async Task<int> GetNextFolioAsync()
+        {
+            var maxFolio = await _repo.GetMaxFolioAsync();
+
+            return maxFolio + 1;
+        }
+
         private async Task<(string? photos, string? signature)> ProcessPhotos(List<IFormFile>? photos)
         {
             if (photos == null || !photos.Any()) return (null, null);

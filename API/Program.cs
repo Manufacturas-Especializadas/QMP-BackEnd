@@ -38,6 +38,8 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IExcelService, ExcelService>();
 builder.Services.AddScoped<IAzureStorageService, AzureStorageService>();
+builder.Services.AddScoped<IRejectionRepository, RejectionRepository>();
+builder.Services.AddScoped<IRejectionService, RejectionService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(options => {

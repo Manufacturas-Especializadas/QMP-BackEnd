@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -91,4 +92,46 @@ namespace Core.DTOs
     );
 
     public record UsersList(string payRollNumber, DateTime createdAt, bool isActive, string roleName);
+
+    public record CreateRejectionDto(
+        string Inspector,
+        string PartNumber,
+        int NumberOfPieces,
+        int IdDefect,
+        int IdCondition,
+        string Description,
+        int IdLine,
+        int IdClient,
+        int OperatorPayroll,
+        int IdContainmentAction,
+        int Folio,
+        List<IFormFile>? Photos
+    );
+
+    public record EditRejectionDto(
+        int Id,
+        string Inspector,
+        string PartNumber,
+        int NumberOfPieces,
+        int IdDefect,
+        int IdCondition,
+        string Description,
+        int IdLine,
+        int IdClient,
+        int OperatorPayroll,
+        int IdContainmentAction,
+        int Folio,
+        string? ExistingImageUrls, 
+        List<IFormFile>? NewPhotos 
+    );
+
+    public record RejectionReadDto(
+        int Id,
+        string Folio,
+        string PartNumber,
+        DateTime RegistrationDate,
+        string DefectName,
+        string LineName,
+        string ImageUrls
+    );
 }

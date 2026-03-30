@@ -17,6 +17,8 @@ namespace Core.DTOs
 
     public record DefectLookupDto(int id, string Name);
 
+    public record ConditionLookupDto(int id, string Name, int defectId);
+
     public record ProcessLookupDto(int id, string Name, int lineId);
 
     public record MachineCodeLookupDto(int id, string Name, int processId);

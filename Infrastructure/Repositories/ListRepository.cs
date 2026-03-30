@@ -88,6 +88,15 @@ namespace Infrastructure.Repositories
                         .ToListAsync();
         }
 
+        public async Task<IEnumerable<ConditionLookupDto>> GetCondition(int defectId)
+        {
+            return await _context.Conditions
+                        .AsNoTracking()
+                        .Where(c => c.DefectId == defectId)
+                        .Select(c => new ConditionLookupDto(c.Id, c.ConditionName, c.DefectId))
+                        .ToListAsync();
+        }
+
         public async Task<IEnumerable<ProcessLookupDto>> GetProcess(int lineId)
         {
             return await _context.Processes

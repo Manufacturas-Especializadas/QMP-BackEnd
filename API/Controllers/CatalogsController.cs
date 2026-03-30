@@ -89,6 +89,15 @@ namespace API.Controllers
         }
 
         [HttpGet]
+        [Route("conditions/{defectId}")]
+        public async Task<IActionResult> GetConditionByDefect(int defectId)
+        {
+            var result = await _listRepository.GetCondition(defectId);
+
+            return result.Any() ? Ok(result) : NotFound("Sin procesos para esta linea");
+        }
+
+        [HttpGet]
         [Route("process/{lineId}")]
         public async Task<IActionResult> GetProcessByLine(int lineId)
         {

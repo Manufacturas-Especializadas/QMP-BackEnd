@@ -18,6 +18,8 @@ namespace Core.Interfaces
 
         Task<IEnumerable<MaterialLookupDto>> GetMaterial();
 
+        Task<IEnumerable<DefectLookupDto>> GetDefects();
+
         Task<IEnumerable<ContainmentActionLookupDto>> GetContainmentActions();
 
         Task<IEnumerable<TypeScrapLookupDto>> GetTypeScrap();

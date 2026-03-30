@@ -52,6 +52,14 @@ namespace Infrastructure.Repositories
                         .ToListAsync();
         }
 
+        public async Task<IEnumerable<DefectLookupDto>> GetDefects()
+        {
+            return await _context.DefectsRejections
+                        .AsNoTracking()
+                        .Select(d => new DefectLookupDto(d.Id, d.DefectName))
+                        .ToListAsync();
+        }
+
         public async Task<IEnumerable<ContainmentActionLookupDto>> GetContainmentActions()
         {
             return await _context.ContainmentActions

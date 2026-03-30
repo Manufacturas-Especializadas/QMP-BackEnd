@@ -53,6 +53,15 @@ namespace API.Controllers
         }
 
         [HttpGet]
+        [Route("defects")]
+        public async Task<IActionResult> GetDefects()
+        {
+            var result = await _listRepository.GetDefects();
+
+            return result.Any() ? Ok(result) : BadRequest("Sin datos");
+        }
+
+        [HttpGet]
         [Route("containmentActions")]
         public async Task<IActionResult> GetContainmentAction()
         {

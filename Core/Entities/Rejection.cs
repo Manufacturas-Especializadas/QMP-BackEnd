@@ -23,8 +23,6 @@ namespace Core.Entities
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
-        public bool IsActive { get; set; } = true;
-
         public int? DefectId { get; set; }
 
         public int? ConditionId { get; set; }

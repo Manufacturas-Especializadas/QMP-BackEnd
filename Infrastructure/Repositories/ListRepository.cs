@@ -85,7 +85,8 @@ namespace Infrastructure.Repositories
                             r.Id, r.Folio, r.Inspector, r.PartNumber, r.NumberOfPieces,
                             r.OperatorPayroll, r.Description, r.Image, r.InformedSignature,
                             r.CreatedAt, r.Defect!.DefectName, r.Condition!.ConditionName, r.Line!.LineName,
-                            r.Client!.ClientName, r.User.Username, r.ContainmentAction!.ContainmentActionName
+                            r.Client!.ClientName, r.User.Username, r.ContainmentAction!.ContainmentActionName,
+                            r.DefectId, r.ConditionId, r.LineId, r.ClientId, r.ContainmentActionId
                         ))
                         .ToListAsync();
         }

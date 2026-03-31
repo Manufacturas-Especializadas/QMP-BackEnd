@@ -89,12 +89,12 @@ namespace Core.DTOs
         string? Image,
         string? InformedSignature,
         DateTime CreatedAt,
-        int? DefectId,
-        int? ConditionId,
-        int? LineId,
-        int? ClientId,
-        int? UserId,
-        int? ContainmentActionId
+        string DefectName,
+        string ConditionName,
+        string LineName,
+        string ClientName,
+        string UserName,
+        string ContainmentActionName
     );
 
     public record ScrapReadDto(

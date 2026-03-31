@@ -68,6 +68,8 @@ namespace API.Controllers
 
         [HttpPut]
         [Route("Edit/{id}")]
+        [DisableRequestSizeLimit]
+        [RequestFormLimits(MultipartBodyLengthLimit = int.MaxValue, ValueLengthLimit = int.MaxValue)]
         public async Task<IActionResult> Edit(int id, [FromForm] EditRejectionDto dto)
         {
             if (id != dto.Id) return BadRequest("El ID no coincide");

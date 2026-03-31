@@ -1,7 +1,9 @@
 ﻿using Core.DTOs;
 using Core.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace API.Controllers
@@ -11,10 +13,12 @@ namespace API.Controllers
     public class RejectionsController : ControllerBase
     {
         private readonly IRejectionService _service;
+        private readonly IAuthRepository _authRepository;
 
-        public RejectionsController(IRejectionService service)
+        public RejectionsController(IRejectionService service, IAuthRepository authRepository)
         {
             _service = service;
+            _authRepository = authRepository;
         }
 
         [HttpGet]
@@ -37,6 +41,7 @@ namespace API.Controllers
             }
         }
 
+        [Authorize]
         [HttpPost]
         [Route("Create")]
         public async Task<IActionResult> Create([FromForm] CreateRejectionDto dto)
@@ -54,12 +59,10 @@ namespace API.Controllers
                     rejectionId = id
                 });
             }
-            catch(Exception ex)
+            catch (DbUpdateException ex)
             {
-                return BadRequest(new
-                {
-                    message = ex.Message
-                });
+                var message = ex.InnerException?.Message ?? ex.Message;
+                throw new Exception($"Error de Base de Datos: {message}");
             }
         }
 

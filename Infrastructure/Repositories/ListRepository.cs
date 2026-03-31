@@ -76,6 +76,20 @@ namespace Infrastructure.Repositories
                         .ToListAsync();
         }
 
+        public async Task<IEnumerable<RejectionLookupDto>> GetRejections()
+        {
+            return await _context.Rejections
+                        .AsNoTracking()
+                        .OrderByDescending(r => r.Id)
+                        .Select(r => new RejectionLookupDto(
+                            r.Id, r.Folio, r.Inspector, r.PartNumber, r.NumberOfPieces,
+                            r.OperatorPayroll, r.Description, r.Image, r.InformedSignature,
+                            r.CreatedAt, r.DefectId, r.ConditionId, r.LineId,
+                            r.ClientId, r.UserId, r.ContainmentActionId
+                        ))
+                        .ToListAsync();
+        }
+
         public async Task<IEnumerable<ScrapLookupDto>> GetScrap()
         {
             return await _context.Scraps

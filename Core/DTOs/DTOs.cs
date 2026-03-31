@@ -94,7 +94,12 @@ namespace Core.DTOs
         string LineName,
         string ClientName,
         string UserName,
-        string ContainmentActionName
+        string ContainmentActionName,
+        int? IdDefect,
+        int? IdCondition,
+        int? IdLine,
+        int? IdClient,
+        int? IdContainmentAction
     );
 
     public record ScrapReadDto(

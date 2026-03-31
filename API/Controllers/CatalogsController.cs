@@ -89,6 +89,16 @@ namespace API.Controllers
         }
 
         [HttpGet]
+        [Route("Rejections")]
+        public async Task<IActionResult> GetRejections()
+        {
+            var result = await _listRepository.GetRejections();
+
+
+            return Ok(result);
+        }
+
+        [HttpGet]
         [Route("conditions/{defectId}")]
         public async Task<IActionResult> GetConditionByDefect(int defectId)
         {

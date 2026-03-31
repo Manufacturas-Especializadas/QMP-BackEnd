@@ -78,6 +78,25 @@ namespace Core.DTOs
 
     public record VerifyScrapDto(int Id, bool IsVerified, decimal? VerifiedWeight);
 
+    public record RejectionLookupDto(
+        int Id,
+        int? Folio,
+        string Inspector,
+        string? PartNumber,
+        int NumberOfPieces,
+        int? OperatorPayroll,
+        string? Description,
+        string? Image,
+        string? InformedSignature,
+        DateTime CreatedAt,
+        int? DefectId,
+        int? ConditionId,
+        int? LineId,
+        int? ClientId,
+        int? UserId,
+        int? ContainmentActionId
+    );
+
     public record ScrapReadDto(
         int Id,
         int PayRollNumber,

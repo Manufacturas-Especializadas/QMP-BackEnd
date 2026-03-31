@@ -26,6 +26,8 @@ namespace Core.Interfaces
 
         Task<IEnumerable<ScrapLookupDto>> GetScrap();
 
+        Task<IEnumerable<RejectionLookupDto>> GetRejections();
+
         Task<IEnumerable<ConditionLookupDto>> GetCondition(int defectId);
 
         Task<IEnumerable<ProcessLookupDto>> GetProcess(int lineId);

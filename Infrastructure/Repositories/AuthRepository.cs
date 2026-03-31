@@ -80,6 +80,13 @@ namespace Infrastructure.Repositories
             return await _context.SaveChangesAsync() > 0;
         }
 
+        public async Task<int?> GetInternalUserIdByPayrollAsync(string payroll)
+        {
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Username == payroll);
+            return user?.Id;
+        }
+
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             using (var hmac = new HMACSHA512())

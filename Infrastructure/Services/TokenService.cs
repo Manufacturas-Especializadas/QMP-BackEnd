@@ -21,12 +21,12 @@ namespace Infrastructure.Services
         {
             var claims = new List<Claim>
             {
-                new Claim(System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.NameId, 
-                            user.Username),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+
                 new Claim(ClaimTypes.Name, user.Username)
             };
 
-            foreach(var userRole in user.UserRoles)
+            foreach (var userRole in user.UserRoles)
             {
                 claims.Add(new Claim(ClaimTypes.Role, userRole.Role.RoleName));
             }

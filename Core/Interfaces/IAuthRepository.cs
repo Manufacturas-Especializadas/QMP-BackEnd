@@ -19,5 +19,7 @@ namespace Core.Interfaces
         Task<bool> ToogleUserStatus(string username);
 
         Task<IEnumerable<UsersList>> GetListUsers();
+
+        Task<int?> GetInternalUserIdByPayrollAsync(string payroll);
     }
 }

@@ -155,6 +155,30 @@ namespace Core.DTOs
         List<IFormFile>? NewPhotos 
     );
 
+    public record RejectionResponse(
+        int Id,
+        int? Folio,
+        string Inspector,
+        string PartNumber,
+        int NumberOfPieces,
+        int? OperatorPayroll,
+        string Description,
+        string? Image,
+        string? InformedSignature,
+        DateTime CreatedAt,
+        string DefectName,
+        string ConditionName,
+        string LineName,
+        string ClientName,
+        string UserName,
+        string ContainmentActionName,
+        int? IdDefect,
+        int? IdCondition,
+        int? IdLine,
+        int? IdClient,
+        int? IdContainmentAction
+    );
+
     public record RejectionReadDto(
         int Id,
         string Folio,

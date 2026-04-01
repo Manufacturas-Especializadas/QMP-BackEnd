@@ -1,4 +1,5 @@
-﻿using Core.Entities;
+﻿using Core.DTOs;
+using Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,5 +19,9 @@ namespace Core.Interfaces
         Task<bool> UserExistsAsync(int userId);
 
         Task<int> GetMaxFolioAsync();
+
+        Task<IEnumerable<RejectionResponse>> GetAllAsync(string? searchTerm);
+
+        Task<IEnumerable<string>> GetAvailableMonthsAsync();
     }
 }

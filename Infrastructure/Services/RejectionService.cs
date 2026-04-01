@@ -23,6 +23,27 @@ namespace Infrastructure.Services
             _storage = storage;
         }
 
+        public async Task<IEnumerable<RejectionResponse>> GetAllAsync(string? searchTerm)
+        {
+            return await _repo.GetAllAsync(searchTerm);
+        }
+       
+        public async Task<IEnumerable<string>> GetAvailableMonthsAsync()
+        {
+            var rejections = await _repo.GetAllAsync(null);
+            return rejections
+                .Select(r => r.CreatedAt.ToString("MMMM yyyy", new System.Globalization.CultureInfo("en-US")))
+                .Distinct()
+                .ToList();
+        }
+
+        public async Task<IEnumerable<RejectionResponse>> GetByMonthAsync(string monthYear)
+        {
+            var all = await _repo.GetAllAsync(null);
+            return all.Where(r =>
+                r.CreatedAt.ToString("MMMM yyyy", new System.Globalization.CultureInfo("en-US")) == monthYear);
+        }        
+
         public async Task<int> CreateRejectionAsync(CreateRejectionDto dto, int userId)
         {
             if(!await _repo.UserExistsAsync(userId))

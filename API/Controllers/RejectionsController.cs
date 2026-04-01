@@ -14,12 +14,14 @@ namespace API.Controllers
     {
         private readonly IRejectionService _service;
         private readonly IAuthRepository _authRepository;
+        private readonly IExcelService _excelService;
 
-        public RejectionsController(IRejectionService service, IAuthRepository authRepository)
+        public RejectionsController(IRejectionService service, IAuthRepository authRepository, IExcelService excelService)
         {
             _service = service;
             _authRepository = authRepository;
-        }
+            _excelService = excelService;
+        }       
 
         [HttpGet]
         [Route("GeNextFolio")]
@@ -39,6 +41,27 @@ namespace API.Controllers
                     error = ex.Message
                 });
             }
+        }
+
+        [HttpGet]
+        [Route("AvailableMonths")]
+        public async Task<IActionResult> GetMonths()
+        {
+            return Ok(await _service.GetAvailableMonthsAsync());
+        }
+
+        [HttpGet]
+        [Route("ExportByMonth")]
+        public async Task<IActionResult> ExportByMonth([FromQuery] string monthYear)
+        {
+            var data = await _service.GetByMonthAsync(monthYear);
+            var fileBytes = _excelService.GenerateRejectionReport(data);
+
+            return File(
+                fileBytes,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                $"Reporte_Rechazos_{monthYear.Replace(" ", "_")}.xlsx"
+            );
         }
 
         [Authorize]

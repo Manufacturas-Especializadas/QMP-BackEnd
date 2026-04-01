@@ -14,5 +14,11 @@ namespace Core.Interfaces
         Task UpdateRejectionAsync(EditRejectionDto dto);
 
         Task<int> GetNextFolioAsync();
+
+        Task<IEnumerable<RejectionResponse>> GetAllAsync(string? searchTerm);
+
+        Task<IEnumerable<string>> GetAvailableMonthsAsync();
+
+        Task<IEnumerable<RejectionResponse>> GetByMonthAsync(string monthYear);
     }
 }

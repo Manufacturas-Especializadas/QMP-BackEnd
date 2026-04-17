@@ -58,6 +58,17 @@ namespace API.Controllers
         }
 
         [HttpGet]
+        [Route("GetAllScrap")]
+        public async Task<IActionResult> GetAll()
+        {
+            var scrap = await _scrapRepository.GetAllAsync();
+
+            if(scrap == null) return NotFound();
+
+            return Ok(scrap);
+        }
+
+        [HttpGet]
         [Route("ExportExcel")]
         public async Task<IActionResult> ExportExcel([FromQuery] int? month, [FromQuery] int? year)
         {

@@ -18,6 +18,8 @@ namespace Core.Interfaces
 
         Task<Scrap> CreateAsync(Scrap scrap);
 
+        Task<bool> DeleteAsync(int id);
+
         Task<bool> UpdateVerificationAsync(int id, bool isVerified, decimal? verifiedWeight);
 
         Task<bool> SaveChangesAsync();

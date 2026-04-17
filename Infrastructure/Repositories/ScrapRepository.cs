@@ -77,6 +77,17 @@ namespace Infrastructure.Repositories
             return scrap;
         }
 
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var scrap = await _context.Scraps.FindAsync(id);
+
+            if (scrap == null) return false;
+
+            _context.Scraps.Remove(scrap);
+
+            return await _context.SaveChangesAsync() > 0;
+        }
+
         public async Task<bool> UpdateVerificationAsync(int id, bool isVerified, decimal? verifiedWeight)
         {
             var scrap = await _context.Scraps.FindAsync(id);

@@ -146,6 +146,26 @@ namespace API.Controllers
             }
         }
 
+        [HttpDelete]
+        [Route("DeleteScrap/{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var deleted = await _scrapRepository.DeleteAsync(id);
+
+            if (!deleted)
+            {
+                return NotFound(new
+                {
+                    message = $"No se encontró el registro de scrap"
+                });
+            }
+
+            return Ok(new
+            {
+                message = "Registro eliminado correctamente"
+            });
+        }
+
         [HttpPatch]
         [Route("Verify")]
         public async Task<IActionResult> VerifyScrap([FromBody] VerifyScrapDto dto)

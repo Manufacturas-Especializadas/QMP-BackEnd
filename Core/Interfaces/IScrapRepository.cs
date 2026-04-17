@@ -12,7 +12,7 @@ namespace Core.Interfaces
     {
         Task<Scrap?> GetByIdAsync(int id);
 
-        Task<IEnumerable<Scrap>> GetAllTodayAsync();
+        Task<IEnumerable<ScrapReadDto>> GetAllAsync();
 
         Task<IEnumerable<Scrap>> GetByMonthAsync(int month, int year);
 

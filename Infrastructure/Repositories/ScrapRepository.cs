@@ -44,20 +44,30 @@ namespace Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Scrap>> GetAllTodayAsync()
+        public async Task<IEnumerable<ScrapReadDto>> GetAllAsync()
         {
-            var today = DateTime.Today;
-
             return await _context.Scraps
-                .Include(s => s.Line)
-                .Include(s => s.Shift)
-                .Include(s => s.Process)
-                .Include(s => s.MachineCode)
-                .Include(s => s.TypeScrap)
-                .Include(s => s.Defect)
-                //.Where(s => s.CreatedAt >= today) 
-                .OrderByDescending(s => s.CreatedAt)
-                .ToListAsync();
+                    .OrderByDescending(s => s.Id)
+                    .Select(s => new ScrapReadDto(
+                        s.Id,
+                        s.PayRollNumber,
+                        s.Alloy,
+                        s.Diameter,
+                        s.Wall,
+                        s.RDM,
+                        s.Weight,
+                        s.CreatedAt,
+                        s.Shift.ShiftName,
+                        s.Line.LineName,
+                        s.Process!.ProcessName,
+                        s.MachineCode != null ? s.MachineCode.MachineCodeName : "N/A",
+                        s.TypeScrap.TypeScrapName,
+                        s.Defect.DefectName,
+                        s.IsVerified,
+                        s.VerifiedWeight
+                    ))
+                    .AsNoTracking()
+                    .ToListAsync();
         }
 
         public async Task<Scrap> CreateAsync(Scrap scrap)

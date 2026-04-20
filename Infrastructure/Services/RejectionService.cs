@@ -118,6 +118,27 @@ namespace Infrastructure.Services
             await _repo.UpdateAsync(existing);
         }
 
+        public async Task<bool> DeleteRejectionAsync(int id)
+        {
+            var existing = await _repo.GetByIdAsync(id);
+            if (existing == null) return false;
+
+            var photoUrls = existing.Image?.Split(";", StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>();
+            foreach (var url in photoUrls)
+            {
+                await _storage.DeleteFileAsync(Container, url);
+            }
+
+            if (!string.IsNullOrEmpty(existing.InformedSignature))
+            {
+                await _storage.DeleteFileAsync(Container, existing.InformedSignature);
+            }
+
+            await _repo.DeleteAsync(existing);
+
+            return true;
+        }
+
         public async Task<int> GetNextFolioAsync()
         {
             var maxFolio = await _repo.GetMaxFolioAsync();

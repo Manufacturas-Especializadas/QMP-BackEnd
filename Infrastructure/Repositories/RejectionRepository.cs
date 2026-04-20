@@ -38,6 +38,12 @@ namespace Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task DeleteAsync(Rejection rejection)
+        {
+            _context.Set<Rejection>().Remove(rejection);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<bool> UserExistsAsync(int userId)
         {
             return await _context.Users.AnyAsync(u => u.Id == userId);

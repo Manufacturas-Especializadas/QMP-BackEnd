@@ -119,5 +119,35 @@ namespace API.Controllers
                 });
             }
         }
+
+        [Authorize]
+        [HttpDelete]
+        [Route("Delete/{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                var deleted = await _service.DeleteRejectionAsync(id);
+
+                if (!deleted)
+                {
+                    return NotFound(new { message = "No se encontró el registro de rechazo." });
+                }
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Registro y evidencias visuales eliminados correctamente."
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    message = "Error al intentar eliminar el rechazo",
+                    error = ex.Message
+                });
+            }
+        }
     }
 }

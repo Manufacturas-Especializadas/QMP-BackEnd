@@ -117,6 +117,10 @@ namespace API.Controllers
             {
                 if (dto == null) return BadRequest("Datos de scrap inválidos");
 
+                TimeZoneInfo mexicoTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Central Standard Time (Mexico)");
+
+                DateTime nowInMexico = TimeZoneInfo.ConvertTime(DateTime.UtcNow, mexicoTimeZone);
+
                 var scrap = new Scrap
                 {
                     PayRollNumber = dto.PayRollNumber,
@@ -132,6 +136,7 @@ namespace API.Controllers
                     MaterialId = dto.MaterialId,
                     TypeScrapId = dto.TypeScrapId,
                     DefectId = dto.DefectId,
+                    CreatedAt = nowInMexico,
                 };
 
                 await _scrapRepository.CreateAsync(scrap);

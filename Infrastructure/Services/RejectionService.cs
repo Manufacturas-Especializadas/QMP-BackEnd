@@ -53,6 +53,10 @@ namespace Infrastructure.Services
 
             var (photoUrls, signatureUrl) = await ProcessPhotos(dto.Photos);
 
+            TimeZoneInfo mexicoTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Central Standard Time (Mexico)");
+
+            DateTime nowInMexico = TimeZoneInfo.ConvertTime(DateTime.UtcNow, mexicoTimeZone);
+
             var entity = new Rejection
             {
                 Inspector = dto.Inspector,
@@ -69,7 +73,7 @@ namespace Infrastructure.Services
                 Image = photoUrls,
                 InformedSignature = signatureUrl,
                 UserId = userId,
-                CreatedAt = DateTime.Now
+                CreatedAt = nowInMexico
             };
 
             return await _repo.CreateAsync(entity);

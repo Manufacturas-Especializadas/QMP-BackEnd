@@ -13,6 +13,8 @@ namespace Core.Interfaces
 
         Task UpdateRejectionAsync(EditRejectionDto dto);
 
+        Task<bool> DeleteRejectionAsync(int id);
+
         Task<int> GetNextFolioAsync();
 
         Task<IEnumerable<RejectionResponse>> GetAllAsync(string? searchTerm);

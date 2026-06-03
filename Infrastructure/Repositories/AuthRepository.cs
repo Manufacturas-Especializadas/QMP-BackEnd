@@ -26,6 +26,7 @@ namespace Infrastructure.Repositories
             return await _context.Users
                 .AsNoTracking()
                 .Select(u => new UsersList(
+                    u.Id,
                     u.Username,
                     u.CreatedAt,
                     u.IsActive,
@@ -47,6 +48,49 @@ namespace Infrastructure.Repositories
             await _context.SaveChangesAsync();
 
             return user;
+        }
+
+        public async Task<bool> UpdateUserAsync(int userId, string newEmployeeNumber, int newRoleId)
+        {
+            var user = await _context.Users
+                .Include(u => u.UserRoles)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (user == null) return false;
+
+            bool hasChanges = false;
+
+            if (user.Username != newEmployeeNumber)
+            {
+                var isTaken = await _context.Users.AnyAsync(u => u.Username == newEmployeeNumber);
+
+                if (isTaken)
+                {
+                    throw new Exception($"La nómina {newEmployeeNumber} ya está registrada a otro usuario.");
+                }
+
+                user.Username = newEmployeeNumber;
+                hasChanges = true;
+            }
+
+            var currentRoleId = user.UserRoles.FirstOrDefault()?.RoleId;
+            if (currentRoleId != newRoleId)
+            {
+                _context.UserRoles.RemoveRange(user.UserRoles);
+                user.UserRoles.Add(new UserRole
+                {
+                    UserId = user.Id,
+                    RoleId = newRoleId
+                });
+                hasChanges = true;
+            }
+
+            if (hasChanges)
+            {
+                await _context.SaveChangesAsync();
+            }
+
+            return true;
         }
 
         public async Task<User> Login(string employeeNumber, string password)

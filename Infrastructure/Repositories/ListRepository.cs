@@ -20,6 +20,14 @@ namespace Infrastructure.Repositories
             _context = context;            
         }
 
+        public async Task<IEnumerable<RoleReadDto>> GetRoles()
+        {
+            return await _context.Roles
+                    .AsNoTracking()
+                    .Select(r => new RoleReadDto(r.Id, r.RoleName))
+                    .ToListAsync();
+        }
+
         public async Task<IEnumerable<LineLookupDto>> GetLines()
         {
             return await _context.Lines

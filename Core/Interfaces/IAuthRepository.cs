@@ -12,6 +12,8 @@ namespace Core.Interfaces
     {
         Task<User> Register(User user, string password);
 
+        Task<bool> UpdateUserAsync(int userId, string newEmployeeNumber, int newRoleId);
+
         Task<User> Login(string employeeNumber, string password);
 
         Task<bool> UserExists(string employeeNumber);

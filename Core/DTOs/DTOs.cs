@@ -39,6 +39,12 @@ namespace Core.DTOs
 
     public record ClineReadDto(int Id, string ClientName);
 
+    public record UserEditDto(
+        int Id,
+        string NewEmployeeNumber,
+        int NewRoleId
+    );
+
     public record UserRegisterDto(string EmployeeNumber, int RoleId);
 
     public record UserLoginDto(string EmployeeNumber, string Password);
@@ -123,7 +129,7 @@ namespace Core.DTOs
         decimal? VerifiedWeight
     );
 
-    public record UsersList(string payRollNumber, DateTime createdAt, bool isActive, string roleName);
+    public record UsersList(int id,string payRollNumber, DateTime createdAt, bool isActive, string roleName);
 
     public record CreateRejectionDto(
         string Inspector,

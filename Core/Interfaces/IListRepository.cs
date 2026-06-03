@@ -10,6 +10,8 @@ namespace Core.Interfaces
 {
     public interface IListRepository
     {
+        Task<IEnumerable<RoleReadDto>> GetRoles();
+
         Task<IEnumerable<LineLookupDto>> GetLines();
 
         Task<IEnumerable<ClientLookupDto>> GetClients();

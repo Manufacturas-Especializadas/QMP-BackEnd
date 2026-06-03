@@ -1,8 +1,10 @@
 ﻿using Core.DTOs;
 using Core.Entities;
 using Core.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
@@ -50,6 +52,47 @@ namespace API.Controllers
             var createdUser = await _authRepository.Register(userToCreate, dto.EmployeeNumber);
 
             return Ok(new { message = "Usuario dado de alta" });
+        }
+
+        [Authorize]
+        [HttpPut]
+        [Route("EditUser")]
+        public async Task<IActionResult> EditUser([FromBody] UserEditDto dto)
+        {
+            try
+            {
+                var success = await _authRepository.UpdateUserAsync(dto.Id, dto.NewEmployeeNumber, dto.NewRoleId);
+
+                if (!success)
+                {
+                    return NotFound(new
+                    {
+                        message = "No se encontró el usuario o no se realizaron cambios"
+                    });
+                }
+
+                return Ok(new
+                {
+                    message = "Usuario actualizado correctamente"
+                });
+            }
+            catch (DbUpdateException ex)
+            {
+                var realError = ex.InnerException?.Message ?? ex.Message;
+
+                return BadRequest(new
+                {
+                    message = "Falló al guardar en la base de datos",
+                    sqlError = realError
+                });
+            }
+            catch (Exception ex)
+            {               
+                return BadRequest(new
+                {
+                    message = ex.Message
+                });
+            }
         }
 
         [HttpPost]

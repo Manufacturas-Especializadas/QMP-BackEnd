@@ -17,6 +17,15 @@ namespace API.Controllers
         }
 
         [HttpGet]
+        [Route("roles")]
+        public async Task<IActionResult> GetRoles()
+        {
+            var result = await _listRepository.GetRoles();
+
+            return result.Any() ? Ok(result) : BadRequest("Sin datos");
+        }
+
+        [HttpGet]
         [Route("lines")]
         public async Task<IActionResult> GetLines()
         {

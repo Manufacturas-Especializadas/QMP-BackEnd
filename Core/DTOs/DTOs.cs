@@ -29,6 +29,8 @@ namespace Core.DTOs
 
     public record DefectsLookupDto(int id, string Name, int typeScrapId);
 
+    public record RoleReadDto(int id, string roleName);
+
     public record LineCreateDto(string LineName);
 
     public record LineReadDto(int Id, string LineName);

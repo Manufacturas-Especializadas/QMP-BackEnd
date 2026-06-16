@@ -1,0 +1,60 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Core.Interfaces;
+using Core.DTOs;
+using System.Security.Claims;
+
+namespace API.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class AuditsFcdsController : ControllerBase
+    {
+        private readonly IAuditFcdsRepository _auditFcdsRepository;
+
+        public AuditsFcdsController(IAuditFcdsRepository auditFcdsRepository)
+        {
+            _auditFcdsRepository = auditFcdsRepository;
+        }
+
+        [HttpPost]
+        [Route("Create")]
+        public async Task<IActionResult> CreateAudit([FromBody] CreateAuditFcdsDto dto)
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                                  ?? User.FindFirst("id")?.Value;
+
+                if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
+                {
+                    return Unauthorized(new
+                    {
+                        message = "No se pudo determinar la identidad del inspector"
+                    });
+                }
+
+                var success = await _auditFcdsRepository.CreateAuditAsync(dto, userId);
+
+                if (!success)
+                {
+                    return BadRequest(new
+                    {
+                        message = "No se pudo registrar la auditoría FCD"
+                    });
+                }
+
+                return Ok(new
+                {
+                    message = "¡Auditoía FCD registrada correctamente!"
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+    }
+}

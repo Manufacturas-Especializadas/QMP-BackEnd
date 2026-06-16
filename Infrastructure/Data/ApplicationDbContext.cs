@@ -30,6 +30,16 @@ namespace Infrastructure.Data
         public DbSet<Scrap> Scraps => Set<Scrap>();
         public DbSet<Defect> Defects => Set<Defect>();
 
+        public DbSet<FcdsProcess> FcdsProcesses => Set<FcdsProcess>();
+        public DbSet<AuditDataFcds> AuditDataFcds => Set<AuditDataFcds>();
+        public DbSet<TraceabilityElementFcds> TraceabilityElementsFcds => Set<TraceabilityElementFcds>();
+        public DbSet<AuditEquipmentSerialFcds> AuditEquipmentSerialsFcds => Set<AuditEquipmentSerialFcds>();
+        public DbSet<ProcessControlFcds> ProcessControlsFcds => Set<ProcessControlFcds>();
+        public DbSet<ProductReleasePhysicalCondition> ProductReleasePhysicalConditions => Set<ProductReleasePhysicalCondition>();
+        public DbSet<AuditDimensionalSpecFcds> AuditDimensionalSpecsFcds => Set<AuditDimensionalSpecFcds>();
+        public DbSet<AuditVisualChecklistFcds> AuditVisualChecklistsFcds => Set<AuditVisualChecklistFcds>();
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -145,6 +155,111 @@ namespace Infrastructure.Data
                     .WithMany()
                     .HasForeignKey(d => d.DefectId)
                     .OnDelete(DeleteBehavior.NoAction);
+            });
+
+            modelBuilder.Entity<FcdsProcess>().ToTable("FCDSProcesses");
+
+            modelBuilder.Entity<AuditDataFcds>(entity =>
+            {
+                entity.ToTable("AuditDataFCDS");
+
+                entity.Property(e => e.AuditDate).HasDefaultValueSql("GETDATE()");
+                entity.Property(e => e.IsProductConforming).HasDefaultValue(true);
+
+                entity.HasOne(e => e.User)
+                    .WithMany()
+                    .HasForeignKey(e => e.UserId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.Shift)
+                    .WithMany()
+                    .HasForeignKey(e => e.ShiftId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.FcdsProcess)
+                    .WithMany(p => p.Audits)
+                    .HasForeignKey(e => e.FcdsProcessId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.Rejection)
+                    .WithMany()
+                    .HasForeignKey(e => e.RejectionId)
+                    .OnDelete(DeleteBehavior.SetNull);
+
+                entity.HasMany(a => a.Lines)
+                    .WithMany()
+                    .UsingEntity<Dictionary<string, object>>(
+                        "AuditLinesFCDS",
+                        l => l.HasOne<Line>().WithMany().HasForeignKey("LineId").OnDelete(DeleteBehavior.Cascade),
+                        a => a.HasOne<AuditDataFcds>().WithMany().HasForeignKey("AuditId").OnDelete(DeleteBehavior.Cascade)
+                    );
+            });
+
+            modelBuilder.Entity<TraceabilityElementFcds>(entity =>
+            {
+                entity.ToTable("TraceabilityElementsFCDS");
+
+                entity.HasOne(e => e.Audit)
+                    .WithMany(a => a.TraceabilityElements)
+                    .HasForeignKey(e => e.AuditId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(e => e.MachineCode)
+                    .WithMany()
+                    .HasForeignKey(e => e.MachineCodeId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<AuditEquipmentSerialFcds>(entity =>
+            {
+                entity.ToTable("AuditEquipmentSerialsFCDS");
+
+                entity.HasOne(e => e.Traceability)
+                    .WithMany(t => t.EquipmentSerials)
+                    .HasForeignKey(e => e.TraceabilityId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<ProcessControlFcds>(entity =>
+            {
+                entity.ToTable("ProcessControlsFCDS");
+
+                entity.HasOne(e => e.Audit)
+                    .WithMany(a => a.ProcessControls)
+                    .HasForeignKey(e => e.AuditId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.Property(e => e.LastHourOfRelease).HasColumnType("time");
+            });
+
+            modelBuilder.Entity<ProductReleasePhysicalCondition>(entity =>
+            {
+                entity.ToTable("ProductReleasePhysicalCondition");
+
+                entity.HasOne(e => e.Audit)
+                    .WithMany(a => a.PhysicalConditions)
+                    .HasForeignKey(e => e.AuditId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<AuditDimensionalSpecFcds>(entity =>
+            {
+                entity.ToTable("AuditDimensionalSpecsFCDS");
+
+                entity.HasOne(e => e.Audit)
+                    .WithMany(a => a.DimensionalSpecs)
+                    .HasForeignKey(e => e.AuditId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<AuditVisualChecklistFcds>(entity =>
+            {
+                entity.ToTable("AuditVisualChecklistsFCDS");
+
+                entity.HasOne(e => e.Audit)
+                    .WithMany(a => a.VisualChecklists)
+                    .HasForeignKey(e => e.AuditId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
         }
     }

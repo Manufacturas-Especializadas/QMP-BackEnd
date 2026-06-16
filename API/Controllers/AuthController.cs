@@ -99,21 +99,27 @@ namespace API.Controllers
         [Route("Login")]
         public async Task<IActionResult> Login([FromBody] UserLoginDto dto)
         {
-            var userFromRepo = await _authRepository.Login(dto.EmployeeNumber, dto.Password);
-
-            if(userFromRepo == null)
+            try
             {
-                return Unauthorized("Número de nómina o contraseña incorrectos");
+                var userFromRepo = await _authRepository.Login(dto.EmployeeNumber, dto.Password);
+
+                if (userFromRepo == null)
+                {
+                    return Unauthorized(new { message = "Número de nómina o contraseña incorrectos" });
+                }
+
+                var token = _tokenService.Create(userFromRepo);
+
+                return Ok(new
+                {
+                    token = token,
+                    username = userFromRepo.Username,
+                });
             }
-
-            var token = _tokenService.Create(userFromRepo);
-
-            return Ok(new
+            catch (Exception ex)
             {
-                
-                token = token,
-                username = userFromRepo.Username,
-            });
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpPatch]

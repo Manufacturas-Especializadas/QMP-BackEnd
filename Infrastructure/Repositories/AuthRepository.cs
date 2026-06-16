@@ -102,6 +102,11 @@ namespace Infrastructure.Repositories
 
             if (user == null) return null;
 
+            if (!user.IsActive)
+            {
+                throw new Exception("Esta cuenta ha sido desactivada. Por favor, contacte al Administrador.");
+            }
+
             if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
                 return null;
 

@@ -257,7 +257,7 @@ namespace Core.DTOs
 
     public record AuditFcdsListDto(
         int Id,
-        DateTime AuditDate,
+        DateTime? AuditDate,
         string InspectorName,
         string ProcessName,
         string PartNumber,

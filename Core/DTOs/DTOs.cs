@@ -196,4 +196,73 @@ namespace Core.DTOs
         string LineName,
         string ImageUrls
     );
+
+    public record CreateAuditFcdsDto(
+        int ShiftId,
+        int FcdsProcessId,
+        string PartNumber,
+        List<int> LineIds,
+        bool IsProductConforming,
+        TraceabilityFcdsDto Traceability,
+        ProcessControlFcdsDto Controls,
+        PhysicalConditionFcdsDto Physicals,
+        List<DimensionalSpecDto>? DimensionalSpecs,
+        List<VisualChecklistDto>? VisualChecklists
+    );
+
+    public record TraceabilityFcdsDto(
+        int MachineCodeId,
+        string OperatorsPayroll,
+        int CategoryId,
+        int? TypeMeasuringEquipmentId,
+        string? ShopOrder,
+        string? BatchPipe,
+        int? PipeDiameterId,
+        int? PipeWallId,
+        List<string> EquipmentSerials 
+    );
+
+    public record ProcessControlFcdsDto(
+        byte MttoValidation,
+        byte Realese1stPiece,
+        byte Spc,
+        byte MaterialCorrectlyIdentified,
+        byte IdentifiedMeasuringEquipment,
+        byte CalibratedMeasuringEquipment,
+        byte ItProcess,
+        string TypeOil,
+        string LastHourOfRelease
+    );
+
+    public record PhysicalConditionFcdsDto(
+        byte Brands,
+        byte Blows,
+        byte Pollution,
+        byte Ovality,
+        byte Burr,
+        byte Warped,
+        byte ExcessOil
+    );
+
+    public record DimensionalSpecDto(
+        string SpecName,                  
+        string ExpectedValue,             
+        string RealValue                  
+    );
+
+    public record VisualChecklistDto(
+        string CheckpointName,
+        byte ResultValue                  
+    );
+
+    public record AuditFcdsListDto(
+        int Id,
+        DateTime AuditDate,
+        string InspectorName,
+        string ProcessName,
+        string PartNumber,
+        string LinesSummary,
+        bool IsProductConforming,
+        int? FolioRDM
+    );
 }

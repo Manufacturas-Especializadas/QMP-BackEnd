@@ -63,6 +63,7 @@ namespace Infrastructure.Services
                 {
                     "ID", "Folio", "Fecha", "Inspector", "Nro Parte",
                     "Piezas", "Línea", "Cliente", "Defecto", "Condición", "Acción",
+                    "Nómina del operador", "Descripción detallada del rechazo",
                     "Evidencia", "Firma"
                 };
 
@@ -92,7 +93,8 @@ namespace Infrastructure.Services
                     worksheet.Cell(row, 9).Value = item.DefectName;
                     worksheet.Cell(row, 10).Value = item.ConditionName;
                     worksheet.Cell(row, 11).Value = item.ContainmentActionName;
-
+                    worksheet.Cell(row, 12).Value = item.OperatorPayroll;
+                    worksheet.Cell(row, 13).Value = item.Description;
                     worksheet.Row(row).Height = 70;
 
                     if (!string.IsNullOrEmpty(item.Image))
@@ -108,7 +110,7 @@ namespace Infrastructure.Services
                                 using var ms = new MemoryStream(imgBytes);
 
                                 var pic = worksheet.AddPicture(ms)
-                                    .MoveTo(worksheet.Cell(row, 12))
+                                    .MoveTo(worksheet.Cell(row, 14))
                                     .WithSize(80, 80);
 
                                 pic.Left = 5 + (columnOffset * 85);
@@ -127,7 +129,7 @@ namespace Infrastructure.Services
                             byte[] sigBytes = httpClient.GetByteArrayAsync(item.InformedSignature).Result;
                             using var msSig = new MemoryStream(sigBytes);
                             var sig = worksheet.AddPicture(msSig)
-                                .MoveTo(worksheet.Cell(row, 13))
+                                .MoveTo(worksheet.Cell(row, 15))
                                 .WithSize(90, 45);
                         }
                         catch { }

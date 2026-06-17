@@ -36,6 +36,8 @@ namespace Core.Interfaces
 
         Task<IEnumerable<CategoryOperatorLookupDto>> GetCategoryOperators();
 
+        Task<IEnumerable<TypeMeasuringEquipmentLookupDto>> GetTypeMeasuringEquipment();
+
         Task<IEnumerable<MachineCodeLookupDto>> GetMachineCodes(int processId);
 
         Task<IEnumerable<MachineByLinesLookupDto>> GetMachinesByLines(List<int> lineIds);

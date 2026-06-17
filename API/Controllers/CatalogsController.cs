@@ -117,6 +117,15 @@ namespace API.Controllers
         }
 
         [HttpGet]
+        [Route("equipments")]
+        public async Task<IActionResult> GetTypeMeasuringEquipment()
+        {
+            var result = await _listRepository.GetTypeMeasuringEquipment();
+
+            return Ok(result);
+        }
+
+        [HttpGet]
         [Route("conditions/{defectId}")]
         public async Task<IActionResult> GetConditionByDefect(int defectId)
         {

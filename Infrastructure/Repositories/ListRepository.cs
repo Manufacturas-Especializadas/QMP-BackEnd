@@ -92,6 +92,14 @@ namespace Infrastructure.Repositories
                                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<TypeMeasuringEquipmentLookupDto>> GetTypeMeasuringEquipment()
+        {
+            return await _context.TypeMeasuringEquipment
+                        .AsNoTracking()
+                        .Select(t => new TypeMeasuringEquipmentLookupDto(t.Id, t.EquipmentName))
+                        .ToListAsync();
+        }
+
         public async Task<IEnumerable<RejectionLookupDto>> GetRejections()
         {
             return await _context.Rejections

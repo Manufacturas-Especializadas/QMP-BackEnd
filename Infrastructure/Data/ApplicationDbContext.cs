@@ -30,6 +30,8 @@ namespace Infrastructure.Data
         public DbSet<Scrap> Scraps => Set<Scrap>();
         public DbSet<Defect> Defects => Set<Defect>();
 
+        public DbSet<CategoryOperator> CategoryOperator => Set<CategoryOperator>();
+
         public DbSet<FcdsProcess> FcdsProcesses => Set<FcdsProcess>();
         public DbSet<AuditDataFcds> AuditDataFcds => Set<AuditDataFcds>();
         public DbSet<TraceabilityElementFcds> TraceabilityElementsFcds => Set<TraceabilityElementFcds>();
@@ -70,6 +72,8 @@ namespace Infrastructure.Data
             modelBuilder.Entity<Process>().ToTable("Process");
             modelBuilder.Entity<MachineCode>().ToTable("MachineCodes");
             modelBuilder.Entity<Defect>().ToTable("Defects");
+
+            modelBuilder.Entity<CategoryOperator>().ToTable("CategoryOperator");
 
             modelBuilder.Entity<DefectRejection>(entity =>
             {

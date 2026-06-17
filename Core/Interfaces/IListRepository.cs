@@ -40,6 +40,8 @@ namespace Core.Interfaces
 
         Task<IEnumerable<PipeDiametersLookupDto>> GetPipeDiameters();
 
+        Task<IEnumerable<WallsOfDiametersLookupDto>> GetWallsOfDiameters();
+
         Task<IEnumerable<MachineCodeLookupDto>> GetMachineCodes(int processId);
 
         Task<IEnumerable<MachineByLinesLookupDto>> GetMachinesByLines(List<int> lineIds);

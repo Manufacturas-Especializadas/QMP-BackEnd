@@ -33,6 +33,7 @@ namespace Infrastructure.Data
         public DbSet<CategoryOperator> CategoryOperator => Set<CategoryOperator>();
         public DbSet<TypeMeasuringEquipment> TypeMeasuringEquipment => Set<TypeMeasuringEquipment>();
         public DbSet<PipeDiameters> PipeDiameters => Set<PipeDiameters>();
+        public DbSet<WallsOfDiameters> WallsOfDiameters => Set<WallsOfDiameters>();
 
         public DbSet<FcdsProcess> FcdsProcesses => Set<FcdsProcess>();
         public DbSet<AuditDataFcds> AuditDataFcds => Set<AuditDataFcds>();

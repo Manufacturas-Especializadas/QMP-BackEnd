@@ -135,6 +135,15 @@ namespace API.Controllers
         }
 
         [HttpGet]
+        [Route("wallsOfDiameters")]
+        public async Task<IActionResult> GetWallsOfDiameters()
+        {
+            var result = await _listRepository.GetWallsOfDiameters();
+
+            return Ok(result);
+        }
+
+        [HttpGet]
         [Route("conditions/{defectId}")]
         public async Task<IActionResult> GetConditionByDefect(int defectId)
         {

@@ -108,6 +108,14 @@ namespace Infrastructure.Repositories
                         .ToListAsync();                        
         }
 
+        public async Task<IEnumerable<WallsOfDiametersLookupDto>> GetWallsOfDiameters()
+        {
+            return await _context.WallsOfDiameters
+                            .AsNoTracking()
+                            .Select(w => new WallsOfDiametersLookupDto(w.Id, w.WallName))
+                            .ToListAsync();
+        }
+
         public async Task<IEnumerable<RejectionLookupDto>> GetRejections()
         {
             return await _context.Rejections

@@ -69,10 +69,9 @@ namespace API.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new
-                {
-                    message = ex.Message
-                });
+                var realMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+
+                return BadRequest(new { message = realMessage });
             }
         }
     }

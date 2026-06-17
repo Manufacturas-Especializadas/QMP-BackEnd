@@ -32,6 +32,7 @@ namespace Infrastructure.Data
 
         public DbSet<CategoryOperator> CategoryOperator => Set<CategoryOperator>();
         public DbSet<TypeMeasuringEquipment> TypeMeasuringEquipment => Set<TypeMeasuringEquipment>();
+        public DbSet<PipeDiameters> PipeDiameters => Set<PipeDiameters>();
 
         public DbSet<FcdsProcess> FcdsProcesses => Set<FcdsProcess>();
         public DbSet<AuditDataFcds> AuditDataFcds => Set<AuditDataFcds>();
@@ -76,6 +77,7 @@ namespace Infrastructure.Data
 
             modelBuilder.Entity<CategoryOperator>().ToTable("CategoryOperator");
             modelBuilder.Entity<TypeMeasuringEquipment>().ToTable("TypeMeasuringEquipment");
+            modelBuilder.Entity<PipeDiameters>().ToTable("PipeDiameters");
 
             modelBuilder.Entity<DefectRejection>(entity =>
             {

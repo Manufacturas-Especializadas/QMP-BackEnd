@@ -100,6 +100,14 @@ namespace Infrastructure.Repositories
                         .ToListAsync();
         }
 
+        public async Task<IEnumerable<PipeDiametersLookupDto>> GetPipeDiameters()
+        {
+            return await _context.PipeDiameters
+                        .AsNoTracking()
+                        .Select(p => new PipeDiametersLookupDto(p.Id, p.PipeName))
+                        .ToListAsync();                        
+        }
+
         public async Task<IEnumerable<RejectionLookupDto>> GetRejections()
         {
             return await _context.Rejections

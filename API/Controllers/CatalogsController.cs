@@ -126,6 +126,15 @@ namespace API.Controllers
         }
 
         [HttpGet]
+        [Route("pipeDiameters")]
+        public async Task<IActionResult> GetPipeDiameters()
+        {
+            var result = await _listRepository.GetPipeDiameters();
+
+            return Ok(result);
+        }
+
+        [HttpGet]
         [Route("conditions/{defectId}")]
         public async Task<IActionResult> GetConditionByDefect(int defectId)
         {

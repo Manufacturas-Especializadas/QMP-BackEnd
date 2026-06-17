@@ -21,6 +21,8 @@ namespace Core.DTOs
 
     public record TypeMeasuringEquipmentLookupDto(int id, string Name);
 
+    public record PipeDiametersLookupDto(int id, string Name);
+
     public record ConditionLookupDto(int id, string Name, int defectId);
 
     public record ProcessLookupDto(int id, string Name, int lineId);

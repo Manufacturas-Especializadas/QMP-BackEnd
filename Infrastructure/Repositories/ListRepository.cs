@@ -84,6 +84,14 @@ namespace Infrastructure.Repositories
                         .ToListAsync();
         }
 
+        public async Task<IEnumerable<CategoryOperatorLookupDto>> GetCategoryOperators()
+        {
+            return await _context.CategoryOperator
+                                .AsNoTracking()
+                                .Select(c => new CategoryOperatorLookupDto(c.Id, c.CategoryName))
+                                .ToListAsync();
+        }
+
         public async Task<IEnumerable<RejectionLookupDto>> GetRejections()
         {
             return await _context.Rejections

@@ -55,7 +55,6 @@ namespace Infrastructure.Repositories
                         LineId = dto.LineIds.FirstOrDefault(),
                         NumberOfPieces = 1,
                         Description = $"Generado automáticamente desde Auditoría FCD de {dto.PartNumber}.",
-
                         DefectId = await _context.DefectsRejections.Select(d => d.Id).FirstOrDefaultAsync(),
                         ClientId = await _context.Clients.Select(c => c.Id).FirstOrDefaultAsync(),
                         ContainmentActionId = await _context.ContainmentActions.Select(c => c.Id).FirstOrDefaultAsync()
@@ -73,7 +72,6 @@ namespace Infrastructure.Repositories
                 var traceabillity = new TraceabilityElementFcds
                 {
                     AuditId = auditData.Id,
-                    MachineCodeId = dto.Traceability.MachineCodeId,
                     OperatorsPayroll = dto.Traceability.OperatorsPayroll,
                     CategoryId = dto.Traceability.CategoryId,
                     TypeMeasuringEquipmentId = dto.Traceability.TypeMeasuringEquipmentId,
@@ -82,6 +80,15 @@ namespace Infrastructure.Repositories
                     PipeDiameterId = dto.Traceability.PipeDiameterId,
                     PipeWallId = dto.Traceability.PipeWallId
                 };
+
+                var selectedMachines = await _context.MachineCodes
+                    .Where(m => dto.Traceability.MachineCodeIds.Contains(m.Id))
+                    .ToListAsync();
+
+                foreach (var machine in selectedMachines)
+                {
+                    traceabillity.MachineCodes.Add(machine);
+                }
 
                 await _context.TraceabilityElementsFcds.AddAsync(traceabillity);
                 await _context.SaveChangesAsync();
@@ -106,6 +113,7 @@ namespace Infrastructure.Repositories
                     Spc = dto.Controls.Spc,
                     MaterialCorrectlyIdentified = dto.Controls.MaterialCorrectlyIdentified,
                     IdentifiedMeasuringEquipment = dto.Controls.IdentifiedMeasuringEquipment,
+                    CalibratedMeasuringEquipment = dto.Controls.CalibratedMeasuringEquipment,
                     ItProcess = dto.Controls.ItProcess,
                     TypeOil = dto.Controls.TypeOil,
                     LastHourOfRelease = TimeSpan.Parse(dto.Controls.LastHourOfRelease)

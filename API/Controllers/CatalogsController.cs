@@ -108,6 +108,15 @@ namespace API.Controllers
         }
 
         [HttpGet]
+        [Route("categorys")]
+        public async Task<IActionResult> GetCategoryOpertars()
+        {
+            var result = await _listRepository.GetCategoryOperators();
+
+            return Ok(result);
+        }
+
+        [HttpGet]
         [Route("conditions/{defectId}")]
         public async Task<IActionResult> GetConditionByDefect(int defectId)
         {

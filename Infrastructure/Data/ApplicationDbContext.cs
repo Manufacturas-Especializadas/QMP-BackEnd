@@ -213,10 +213,13 @@ namespace Infrastructure.Data
                     .HasForeignKey(e => e.AuditId)
                     .OnDelete(DeleteBehavior.Cascade);
 
-                entity.HasOne(e => e.MachineCode)
+                entity.HasMany(t => t.MachineCodes)
                     .WithMany()
-                    .HasForeignKey(e => e.MachineCodeId)
-                    .OnDelete(DeleteBehavior.Restrict);
+                    .UsingEntity<Dictionary<string, object>>(
+                        "AuditMachinesFCDS",
+                        m => m.HasOne<MachineCode>().WithMany().HasForeignKey("MachineCodeId").OnDelete(DeleteBehavior.Cascade),
+                        t => t.HasOne<TraceabilityElementFcds>().WithMany().HasForeignKey("TraceabilityId").OnDelete(DeleteBehavior.Cascade)
+                    );
             });
 
             modelBuilder.Entity<AuditEquipmentSerialFcds>(entity =>

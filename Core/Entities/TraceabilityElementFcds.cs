@@ -6,8 +6,6 @@
 
         public int AuditId { get; set; }
 
-        public int MachineCodeId { get; set; }
-
         public string OperatorsPayroll { get; set; } = string.Empty;
 
         public int CategoryId { get; set; }
@@ -24,7 +22,7 @@
 
         public virtual AuditDataFcds Audit { get; set; } = null!;
 
-        public virtual MachineCode MachineCode { get; set; } = null!;
+        public virtual ICollection<MachineCode> MachineCodes { get; set; } = new List<MachineCode>();
 
         public virtual ICollection<AuditEquipmentSerialFcds> EquipmentSerials { get; set; } = new List<AuditEquipmentSerialFcds>();
     }

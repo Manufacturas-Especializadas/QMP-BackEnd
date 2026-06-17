@@ -16,6 +16,25 @@ namespace API.Controllers
             _auditFcdsRepository = auditFcdsRepository;
         }
 
+        [HttpGet]
+        [Route("List")]
+        public async Task<IActionResult> GetListAudits()
+        {
+            try
+            {
+                var audits = await _auditFcdsRepository.GetListAuditsAsync();
+
+                return Ok(audits);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(new
+                {
+                    message = "Error al obtener el listado de auditorías FCD"
+                });
+            }
+        }
+
         [HttpPost]
         [Route("Create")]
         public async Task<IActionResult> CreateAudit([FromBody] CreateAuditFcdsDto dto)

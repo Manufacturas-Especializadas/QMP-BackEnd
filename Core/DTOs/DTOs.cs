@@ -221,7 +221,7 @@ namespace Core.DTOs
     );
 
     public record TraceabilityFcdsDto(
-        int MachineCodeId,
+        List<int> MachineCodeIds,
         string OperatorsPayroll,
         int CategoryId,
         int? TypeMeasuringEquipmentId,
@@ -232,17 +232,18 @@ namespace Core.DTOs
         List<string> EquipmentSerials 
     );
 
-    public record ProcessControlFcdsDto(
-        byte MttoValidation,
-        byte Realese1stPiece,
-        byte Spc,
-        byte MaterialCorrectlyIdentified,
-        byte IdentifiedMeasuringEquipment,
-        byte CalibratedMeasuringEquipment,
-        byte ItProcess,
-        string TypeOil,
-        string LastHourOfRelease
-    );
+    public record ProcessControlFcdsDto
+    {
+        public byte MttoValidation { get; init; }
+        public byte Realese1stPiece { get; init; }
+        public byte Spc { get; init; }
+        public byte MaterialCorrectlyIdentified { get; init; }
+        public byte IdentifiedMeasuringEquipment { get; init; }
+        public byte CalibratedMeasuringEquipment { get; init; }
+        public byte ItProcess { get; init; }
+        public string TypeOil { get; init; } = string.Empty;
+        public string LastHourOfRelease { get; init; } = string.Empty;
+    }
 
     public record PhysicalConditionFcdsDto(
         byte Brands,

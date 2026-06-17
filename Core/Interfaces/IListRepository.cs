@@ -36,6 +36,8 @@ namespace Core.Interfaces
 
         Task<IEnumerable<MachineCodeLookupDto>> GetMachineCodes(int processId);
 
+        Task<IEnumerable<MachineByLinesLookupDto>> GetMachinesByLines(List<int> lineIds);
+
         Task<IEnumerable<DefectsLookupDto>> GetDefects(int typeScrapId);
     }
 }

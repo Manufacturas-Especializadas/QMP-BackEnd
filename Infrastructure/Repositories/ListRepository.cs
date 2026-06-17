@@ -139,6 +139,19 @@ namespace Infrastructure.Repositories
                         .ToListAsync();
         }
 
+        public async Task<IEnumerable<MachineByLinesLookupDto>> GetMachinesByLines(List<int> lineIds)
+        {
+            return await _context.MachineCodes
+                .AsNoTracking()
+                .Where(m => lineIds.Contains(m.Process.LineId))
+                .Select(m => new MachineByLinesLookupDto(
+                    m.Id,
+                    m.MachineCodeName,
+                    m.Process.LineId
+                ))
+                .ToListAsync();
+        }
+
         public async Task<IEnumerable<DefectsLookupDto>> GetDefects(int typeScrapId)
         {
             return await _context.Defects

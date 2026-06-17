@@ -23,6 +23,8 @@ namespace Core.DTOs
 
     public record MachineCodeLookupDto(int id, string Name, int processId);
 
+    public record MachineByLinesLookupDto(int id, string Name, int lineId);
+
     public record TypeScrapLookupDto(int id, string Name);
 
     public record ContainmentActionLookupDto(int id, string Name);

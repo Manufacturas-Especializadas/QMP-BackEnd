@@ -135,6 +135,20 @@ namespace API.Controllers
         }
 
         [HttpGet]
+        [Route("machinesByLines")]
+        public async Task<IActionResult> GetMachinesByLines([FromQuery] List<int> lineIds)
+        {
+            if (lineIds == null || !lineIds.Any())
+            {
+                return BadRequest(new { message = "Debe seleccionar al menos una línea." });
+            }
+
+            var result = await _listRepository.GetMachinesByLines(lineIds);
+
+            return Ok(result);
+        }
+
+        [HttpGet]
         [Route("defects/{typeScrapId}")]
         public async Task<IActionResult> GetDefectsByTypeScrap(int typeScrapId)
         {

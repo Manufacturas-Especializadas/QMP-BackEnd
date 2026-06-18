@@ -212,6 +212,7 @@ namespace Core.DTOs
         int FcdsProcessId,
         string PartNumber,
         List<int> LineIds,
+        int RejectionId,
         bool IsProductConforming,
         TraceabilityFcdsDto Traceability,
         ProcessControlFcdsDto Controls,

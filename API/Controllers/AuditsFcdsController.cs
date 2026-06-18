@@ -88,5 +88,22 @@ namespace API.Controllers
                 return BadRequest(new { message = realMessage });
             }
         }
+
+        [HttpDelete]
+        [Route("Delte/{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var deleted = await _auditFcdsRepository.DeleteAuditAsync(id);
+
+            if (!deleted) return BadRequest(new
+            {
+                message = "No se pudo eliminar el registro"
+            });
+
+            return Ok(new
+            {
+                message = "Registro eliminado correctament"
+            });
+        }
     }
 }

@@ -35,6 +35,20 @@ namespace API.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("GetById/{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var audit = await _auditFcdsRepository.GetDetailedAuditByIdAsync(id);
+
+            if (audit == null) return NotFound(new
+            {
+                message = "La auditoria no existe"
+            });
+
+            return Ok(audit);
+        }
+
         [HttpPost]
         [Route("Create")]
         public async Task<IActionResult> CreateAudit([FromBody] CreateAuditFcdsDto dto)

@@ -276,4 +276,19 @@ namespace Core.DTOs
         bool IsProductConforming,
         int? FolioRDM
     );
+
+    public record DetailedAuditFcdsDto(
+        int Id,
+        int ShiftId,
+        int FcdsProcessId,
+        string PartNumber,
+        List<int> LineIds,
+        bool IsProductConforming,
+        int? RejectionId,
+        TraceabilityFcdsDto Traceability,
+        ProcessControlFcdsDto Controls,
+        PhysicalConditionFcdsDto Physicals,
+        List<DimensionalSpecDto> DimensionalSpecs,
+        List<VisualChecklistDto> VisualChecklists
+    );
 }

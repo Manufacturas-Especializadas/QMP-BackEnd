@@ -153,7 +153,7 @@ namespace Infrastructure.Repositories
                 {
                     foreach ( var check in dto.VisualChecklists)
                     {
-                        await _context.AuditVisualChecklistsFcds.AddAsync(new AuditVisualChecklistFcds
+                        await _context.AuditVisualChecklistFCDS.AddAsync(new AuditVisualChecklistFcds
                         {
                             AuditId = auditData.Id,
                             CheckpointName = check.CheckpointName,

@@ -42,7 +42,7 @@ namespace Infrastructure.Data
         public DbSet<ProcessControlFcds> ProcessControlsFcds => Set<ProcessControlFcds>();
         public DbSet<ProductReleasePhysicalCondition> ProductReleasePhysicalConditions => Set<ProductReleasePhysicalCondition>();
         public DbSet<AuditDimensionalSpecFcds> AuditDimensionalSpecsFcds => Set<AuditDimensionalSpecFcds>();
-        public DbSet<AuditVisualChecklistFcds> AuditVisualChecklistsFcds => Set<AuditVisualChecklistFcds>();
+        public DbSet<AuditVisualChecklistFcds> AuditVisualChecklistFCDS => Set<AuditVisualChecklistFcds>();
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -266,7 +266,7 @@ namespace Infrastructure.Data
 
             modelBuilder.Entity<AuditVisualChecklistFcds>(entity =>
             {
-                entity.ToTable("AuditVisualChecklistsFCDS");
+                entity.ToTable("AuditVisualChecklistFCDS");
 
                 entity.HasOne(e => e.Audit)
                     .WithMany(a => a.VisualChecklists)

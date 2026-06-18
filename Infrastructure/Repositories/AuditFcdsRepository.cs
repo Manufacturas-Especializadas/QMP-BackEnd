@@ -176,24 +176,32 @@ namespace Infrastructure.Repositories
 
         public async Task<IEnumerable<AuditFcdsListDto>> GetListAuditsAsync()
         {
-            return await _context.AuditDataFcds
-                    .AsNoTracking()
-                    .Include(a => a.User)
-                    .Include(a => a.FcdsProcess)
-                    .Include(a => a.Lines)
-                    .Include(a => a.Rejection)
-                    .Select(a => new AuditFcdsListDto(
-                        a.Id,
-                        a.AuditDate,
-                        a.User.Username,
-                        a.FcdsProcess.ProcessName,
-                        a.PartNumber,
-                        string.Join(", ", a.Lines.Select(l => l.LineName)),
-                        a.IsProductConforming,
-                        a.Rejection != null ? a.Rejection.Folio : null
-                    ))
-                    .OrderByDescending(a => a.AuditDate)
-                    .ToListAsync();
+            var rawAudits = await _context.AuditDataFcds
+                .AsNoTracking()
+                .OrderByDescending(a => a.AuditDate)
+                .Select(a => new
+                {
+                    a.Id,
+                    a.AuditDate,
+                    InspectorName = a.User.Username,
+                    ProcessName = a.FcdsProcess.ProcessName,
+                    a.PartNumber,
+                    LineNames = a.Lines.Select(l => l.LineName).ToList(),
+                    a.IsProductConforming,
+                    FolioRDM = a.Rejection != null ? (int?)a.Rejection.Folio : null
+                })
+                .ToListAsync();
+
+            return rawAudits.Select(a => new AuditFcdsListDto(
+                a.Id,
+                a.AuditDate,
+                a.InspectorName,
+                a.ProcessName,
+                a.PartNumber,
+                string.Join(", ", a.LineNames),
+                a.IsProductConforming,
+                a.FolioRDM
+            ));
         }
     }
 }

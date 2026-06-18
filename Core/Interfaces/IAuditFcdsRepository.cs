@@ -6,6 +6,8 @@ namespace Core.Interfaces
     {
         Task<bool> CreateAuditAsync(CreateAuditFcdsDto dto, int userId);
 
+        Task<bool> DeleteAuditAsync(int id);
+
         Task<IEnumerable<AuditFcdsListDto>> GetListAuditsAsync();
 
         Task<DetailedAuditFcdsDto?> GetDetailedAuditByIdAsync(int id);

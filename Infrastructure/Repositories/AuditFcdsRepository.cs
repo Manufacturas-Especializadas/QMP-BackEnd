@@ -174,6 +174,17 @@ namespace Infrastructure.Repositories
             }
         }
 
+        public async Task<bool> DeleteAuditAsync(int id)
+        {
+            var audit = await _context.AuditDataFcds.FindAsync(id);
+
+            if (audit == null) return false;
+
+            _context.AuditDataFcds.Remove(audit);
+
+            return await _context.SaveChangesAsync() > 0;
+        }
+
         public async Task<IEnumerable<AuditFcdsListDto>> GetListAuditsAsync()
         {
             var rawAudits = await _context.AuditDataFcds

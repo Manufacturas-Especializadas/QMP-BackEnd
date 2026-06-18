@@ -7,5 +7,7 @@ namespace Core.Interfaces
         Task<bool> CreateAuditAsync(CreateAuditFcdsDto dto, int userId);
 
         Task<IEnumerable<AuditFcdsListDto>> GetListAuditsAsync();
+
+        Task<DetailedAuditFcdsDto?> GetDetailedAuditByIdAsync(int id);
     }
 }

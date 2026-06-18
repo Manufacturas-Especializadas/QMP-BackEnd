@@ -203,5 +203,65 @@ namespace Infrastructure.Repositories
                 a.FolioRDM
             ));
         }
+
+        public async Task<DetailedAuditFcdsDto?> GetDetailedAuditByIdAsync(int id)
+        {
+            var audit = await _context.AuditDataFcds
+                        .AsNoTracking()
+                        .Include(a => a.Lines)
+                        .Include(a => a.TraceabilityElements).ThenInclude(t => t.MachineCodes)
+                        .Include(a => a.TraceabilityElements).ThenInclude(t => t.EquipmentSerials)
+                        .Include(a => a.ProcessControls)
+                        .Include(a => a.PhysicalConditions)
+                        .Include(a => a.DimensionalSpecs)
+                        .Include(a => a.VisualChecklists)
+                        .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (audit == null) return null;
+
+            var tracebility = audit.TraceabilityElements.FirstOrDefault();
+            var controls = audit.ProcessControls.FirstOrDefault();
+            var physicals = audit.PhysicalConditions.FirstOrDefault();
+
+            return new DetailedAuditFcdsDto(
+                audit.Id,
+                audit.ShiftId,
+                audit.FcdsProcessId,
+                audit.PartNumber,
+                audit.Lines.Select(l => l.Id).ToList(),
+                audit.IsProductConforming,
+                audit.RejectionId,
+                new TraceabilityFcdsDto(
+                    tracebility?.MachineCodes.Select(m => m.Id).ToList() ?? new(),
+                    tracebility?.OperatorsPayroll ?? "",
+                    tracebility?.CategoryId ?? 0,
+                    tracebility?.TypeMeasuringEquipmentId,
+                    tracebility?.ShopOrder,
+                    tracebility?.BatchPipe,
+                    tracebility?.PipeDiameterId,
+                    tracebility?.PipeWallId,
+                    tracebility?.EquipmentSerials.Select(s => s.EquipmentSerial).ToList() ?? new()
+                ),
+                new ProcessControlFcdsDto
+                {
+                    MttoValidation = controls?.MttoValidation ?? 0,
+                    Realese1stPiece = controls?.Realese1stPiece ?? 0,
+                    Spc = controls?.Spc ?? 0,
+                    MaterialCorrectlyIdentified = controls?.MaterialCorrectlyIdentified ?? 0,
+                    IdentifiedMeasuringEquipment = controls?.IdentifiedMeasuringEquipment ?? 0,
+                    CalibratedMeasuringEquipment = controls?.CalibratedMeasuringEquipment ?? 0,
+                    ItProcess = controls?.ItProcess ?? 0,
+                    TypeOil = controls?.TypeOil ?? "",
+                    LastHourOfRelease = controls?.LastHourOfRelease.ToString(@"hh\:mm") ?? ""
+                },
+                new PhysicalConditionFcdsDto(
+                    physicals?.Brands ?? 0, physicals?.Blows ?? 0, physicals?.Pollution ?? 0,
+                    physicals?.Ovality ?? 0, physicals?.Burr ?? 0, physicals?.Warped ?? 0, physicals?.ExcessOil ?? 0
+                ),
+                
+                audit.DimensionalSpecs.Select(s => new DimensionalSpecDto(s.SpecName, s.ExpectedValue, s.RealValue)).ToList(),
+                audit.VisualChecklists.Select(v => new VisualChecklistDto(v.CheckpointName, v.ResultValue)).ToList()
+            );
+        }
     }
 }

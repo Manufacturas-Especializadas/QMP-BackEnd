@@ -89,6 +89,23 @@ namespace API.Controllers
             }
         }
 
+        [HttpPut("Update/{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] CreateAuditFcdsDto dto)
+        {
+            try
+            {
+                var updated = await _auditFcdsRepository.UpdateAuditAsync(id, dto);
+                if (!updated) return NotFound(new { message = "No se encontró la auditoría a editar." });
+
+                return Ok(new { message = "Auditoría actualizada con éxito." });
+            }
+            catch (Exception ex)
+            {
+                var realMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return BadRequest(new { message = "Error al actualizar la auditoría", details = realMessage });
+            }
+        }
+
         [HttpDelete]
         [Route("Delte/{id}")]
         public async Task<IActionResult> Delete(int id)

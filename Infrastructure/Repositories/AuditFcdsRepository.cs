@@ -174,6 +174,67 @@ namespace Infrastructure.Repositories
             }
         }
 
+        public async Task<bool> UpdateAuditAsync(int id, CreateAuditFcdsDto dto)
+        {
+            var audit = await _context.AuditDataFcds
+                .Include(a => a.Lines)
+                .Include(a => a.TraceabilityElements)
+                .Include(a => a.ProcessControls)
+                .Include(a => a.PhysicalConditions)
+                .Include(a => a.DimensionalSpecs)
+                .Include(a => a.VisualChecklists)
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (audit == null) return false;
+
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                audit.ShiftId = dto.ShiftId;
+                audit.FcdsProcessId = dto.FcdsProcessId;
+                audit.PartNumber = dto.PartNumber;
+                audit.IsProductConforming = dto.IsProductConforming;
+                audit.RejectionId = dto.RejectionId;
+
+                audit.Lines.Clear();
+                var newLines = await _context.Lines.Where(l => dto.LineIds.Contains(l.Id))
+                        .ToListAsync();
+                foreach (var line in newLines) audit.Lines.Add(line);
+
+                _context.TraceabilityElementsFcds.RemoveRange(audit.TraceabilityElements);
+                _context.ProcessControlsFcds.RemoveRange(audit.ProcessControls);
+                _context.ProductReleasePhysicalConditions.RemoveRange(audit.PhysicalConditions);
+                _context.AuditDimensionalSpecsFcds.RemoveRange(audit.DimensionalSpecs);
+                _context.AuditVisualChecklistFCDS.RemoveRange(audit.VisualChecklists);
+
+                await _context.SaveChangesAsync();
+
+                var processControls = new ProcessControlFcds
+                {
+                    AuditId = audit.Id,
+                    MttoValidation = dto.Controls.MttoValidation,
+                    Realese1stPiece = dto.Controls.Realese1stPiece,
+                    Spc = dto.Controls.Spc,
+                    MaterialCorrectlyIdentified = dto.Controls.MaterialCorrectlyIdentified,
+                    IdentifiedMeasuringEquipment = dto.Controls.IdentifiedMeasuringEquipment,
+                    CalibratedMeasuringEquipment = dto.Controls.CalibratedMeasuringEquipment,
+                    ItProcess = dto.Controls.ItProcess,
+                    TypeOil = dto.Controls.TypeOil,
+                    LastHourOfRelease = TimeSpan.Parse(dto.Controls.LastHourOfRelease)
+                };
+                await _context.ProcessControlsFcds.AddAsync(processControls);
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+                return true;
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
+
         public async Task<bool> DeleteAuditAsync(int id)
         {
             var audit = await _context.AuditDataFcds.FindAsync(id);

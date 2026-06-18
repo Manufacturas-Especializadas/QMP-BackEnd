@@ -216,22 +216,23 @@ namespace Core.DTOs
         bool IsProductConforming,
         TraceabilityFcdsDto Traceability,
         ProcessControlFcdsDto Controls,
-        PhysicalConditionFcdsDto Physicals,
+        PhysicalConditionsDto Physicals,
         List<DimensionalSpecDto>? DimensionalSpecs,
         List<VisualChecklistDto>? VisualChecklists
     );
 
-    public record TraceabilityFcdsDto(
-        List<int> MachineCodeIds,
-        string OperatorsPayroll,
-        int CategoryId,
-        int? TypeMeasuringEquipmentId,
-        string? ShopOrder,
-        string? BatchPipe,
-        int? PipeDiameterId,
-        int? PipeWallId,
-        List<string> EquipmentSerials 
-    );
+    public record TraceabilityFcdsDto
+    {
+        public List<int> MachineCodeIds { get; init; } = new();
+        public string OperatorsPayroll { get; init; } = string.Empty;
+        public int CategoryId { get; init; }
+        public int? TypeMeasuringEquipmentId { get; init; }
+        public string? ShopOrder { get; init; }
+        public string? BatchPipe { get; init; }
+        public int? PipeDiameterId { get; init; }
+        public int? PipeWallId { get; init; }
+        public List<string> EquipmentSerials { get; init; } = new();
+    }
 
     public record ProcessControlFcdsDto
     {
@@ -246,15 +247,16 @@ namespace Core.DTOs
         public string LastHourOfRelease { get; init; } = string.Empty;
     }
 
-    public record PhysicalConditionFcdsDto(
-        byte Brands,
-        byte Blows,
-        byte Pollution,
-        byte Ovality,
-        byte Burr,
-        byte Warped,
-        byte ExcessOil
-    );
+    public record PhysicalConditionsDto
+    {
+        public byte Brands { get; init; }
+        public byte Blows { get; init; }
+        public byte Pollution { get; init; }
+        public byte Ovality { get; init; }
+        public byte Burr { get; init; }
+        public byte Warped { get; init; }
+        public byte ExcessOil { get; init; }
+    }
 
     public record DimensionalSpecDto(
         string SpecName,                  
@@ -278,18 +280,20 @@ namespace Core.DTOs
         int? FolioRDM
     );
 
-    public record DetailedAuditFcdsDto(
-        int Id,
-        int ShiftId,
-        int FcdsProcessId,
-        string PartNumber,
-        List<int> LineIds,
-        bool IsProductConforming,
-        int? RejectionId,
-        TraceabilityFcdsDto Traceability,
-        ProcessControlFcdsDto Controls,
-        PhysicalConditionFcdsDto Physicals,
-        List<DimensionalSpecDto> DimensionalSpecs,
-        List<VisualChecklistDto> VisualChecklists
-    );
+    public record DetailedAuditFcdsDto
+    {
+        public int Id { get; init; }
+        public int ShiftId { get; init; }
+        public int FcdsProcessId { get; init; }
+        public string PartNumber { get; init; } = string.Empty;
+        public List<int> LineIds { get; init; } = new();
+        public bool IsProductConforming { get; init; }
+        public int? RejectionId { get; init; }
+
+        public TraceabilityFcdsDto Traceability { get; init; } = null!;
+        public ProcessControlFcdsDto Controls { get; init; } = null!;
+        public PhysicalConditionsDto Physicals { get; init; } = null!;
+        public List<DimensionalSpecDto> DimensionalSpecs { get; init; } = new();
+        public List<VisualChecklistDto> VisualChecklists { get; init; } = new();
+    }
 }

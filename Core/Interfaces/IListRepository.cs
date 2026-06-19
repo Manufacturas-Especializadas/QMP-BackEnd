@@ -34,7 +34,17 @@ namespace Core.Interfaces
 
         Task<IEnumerable<ProcessLookupDto>> GetProcess(int lineId);
 
+        Task<IEnumerable<CategoryOperatorLookupDto>> GetCategoryOperators();
+
+        Task<IEnumerable<TypeMeasuringEquipmentLookupDto>> GetTypeMeasuringEquipment();
+
+        Task<IEnumerable<PipeDiametersLookupDto>> GetPipeDiameters();
+
+        Task<IEnumerable<WallsOfDiametersLookupDto>> GetWallsOfDiameters();
+
         Task<IEnumerable<MachineCodeLookupDto>> GetMachineCodes(int processId);
+
+        Task<IEnumerable<MachineByLinesLookupDto>> GetMachinesByLines(List<int> lineIds);
 
         Task<IEnumerable<DefectsLookupDto>> GetDefects(int typeScrapId);
     }

@@ -108,6 +108,42 @@ namespace API.Controllers
         }
 
         [HttpGet]
+        [Route("categorys")]
+        public async Task<IActionResult> GetCategoryOpertars()
+        {
+            var result = await _listRepository.GetCategoryOperators();
+
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("equipments")]
+        public async Task<IActionResult> GetTypeMeasuringEquipment()
+        {
+            var result = await _listRepository.GetTypeMeasuringEquipment();
+
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("pipeDiameters")]
+        public async Task<IActionResult> GetPipeDiameters()
+        {
+            var result = await _listRepository.GetPipeDiameters();
+
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("wallsOfDiameters")]
+        public async Task<IActionResult> GetWallsOfDiameters()
+        {
+            var result = await _listRepository.GetWallsOfDiameters();
+
+            return Ok(result);
+        }
+
+        [HttpGet]
         [Route("conditions/{defectId}")]
         public async Task<IActionResult> GetConditionByDefect(int defectId)
         {
@@ -130,6 +166,20 @@ namespace API.Controllers
         public async Task<IActionResult> getMachineCodes(int processId)
         {
             var result = await _listRepository.GetMachineCodes(processId);
+
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("machinesByLines")]
+        public async Task<IActionResult> GetMachinesByLines([FromQuery] List<int> lineIds)
+        {
+            if (lineIds == null || !lineIds.Any())
+            {
+                return BadRequest(new { message = "Debe seleccionar al menos una línea." });
+            }
+
+            var result = await _listRepository.GetMachinesByLines(lineIds);
 
             return Ok(result);
         }

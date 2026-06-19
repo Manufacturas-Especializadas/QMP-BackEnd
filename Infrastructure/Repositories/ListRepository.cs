@@ -84,6 +84,38 @@ namespace Infrastructure.Repositories
                         .ToListAsync();
         }
 
+        public async Task<IEnumerable<CategoryOperatorLookupDto>> GetCategoryOperators()
+        {
+            return await _context.CategoryOperator
+                                .AsNoTracking()
+                                .Select(c => new CategoryOperatorLookupDto(c.Id, c.CategoryName))
+                                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<TypeMeasuringEquipmentLookupDto>> GetTypeMeasuringEquipment()
+        {
+            return await _context.TypeMeasuringEquipment
+                        .AsNoTracking()
+                        .Select(t => new TypeMeasuringEquipmentLookupDto(t.Id, t.EquipmentName))
+                        .ToListAsync();
+        }
+
+        public async Task<IEnumerable<PipeDiametersLookupDto>> GetPipeDiameters()
+        {
+            return await _context.PipeDiameters
+                        .AsNoTracking()
+                        .Select(p => new PipeDiametersLookupDto(p.Id, p.PipeName))
+                        .ToListAsync();                        
+        }
+
+        public async Task<IEnumerable<WallsOfDiametersLookupDto>> GetWallsOfDiameters()
+        {
+            return await _context.WallsOfDiameters
+                            .AsNoTracking()
+                            .Select(w => new WallsOfDiametersLookupDto(w.Id, w.WallName))
+                            .ToListAsync();
+        }
+
         public async Task<IEnumerable<RejectionLookupDto>> GetRejections()
         {
             return await _context.Rejections
@@ -137,6 +169,19 @@ namespace Infrastructure.Repositories
                         .Where(m => m.ProcessId == processId)
                         .Select(m => new MachineCodeLookupDto(m.Id, m.MachineCodeName, m.ProcessId))
                         .ToListAsync();
+        }
+
+        public async Task<IEnumerable<MachineByLinesLookupDto>> GetMachinesByLines(List<int> lineIds)
+        {
+            return await _context.MachineCodes
+                .AsNoTracking()
+                .Where(m => lineIds.Contains(m.Process.LineId))
+                .Select(m => new MachineByLinesLookupDto(
+                    m.Id,
+                    m.MachineCodeName,
+                    m.Process.LineId
+                ))
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<DefectsLookupDto>> GetDefects(int typeScrapId)

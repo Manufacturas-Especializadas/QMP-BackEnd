@@ -431,5 +431,73 @@ namespace Infrastructure.Repositories
                 VisualChecklists = audit.VisualChecklists.Select(v => new VisualChecklistDto(v.CheckpointName, v.ResultValue)).ToList()
             };
         }
+
+        public async Task<IEnumerable<DetailedAuditFcdsDto>> GetAuditsByMonthAsync(int year, int month)
+        {
+            var audits = await _context.AuditDataFcds
+                .Where(a => a.AuditDate!.Value.Year == year && a.AuditDate.Value.Month == month)
+                .Include(a => a.Lines)
+                .Include(a => a.TraceabilityElements).ThenInclude(t => t.MachineCodes)
+                .Include(a => a.TraceabilityElements).ThenInclude(t => t.EquipmentSerials)
+                .Include(a => a.ProcessControls)
+                .Include(a => a.PhysicalConditions)
+                .Include(a => a.DimensionalSpecs)
+                .Include(a => a.VisualChecklists)
+                .OrderByDescending(a => a.AuditDate)
+                .ToListAsync();
+
+            return audits.Select(audit => {
+                var traceability = audit.TraceabilityElements.FirstOrDefault();
+                var controls = audit.ProcessControls.FirstOrDefault();
+                var physicals = audit.PhysicalConditions.FirstOrDefault();
+
+                return new DetailedAuditFcdsDto
+                {
+                    Id = audit.Id,
+                    ShiftId = audit.ShiftId,
+                    FcdsProcessId = audit.FcdsProcessId,
+                    PartNumber = audit.PartNumber,
+                    LineIds = audit.Lines.Select(l => l.Id).ToList(),
+                    IsProductConforming = audit.IsProductConforming,
+                    RejectionId = audit.RejectionId,
+                    Traceability = new TraceabilityFcdsDto
+                    {
+                        MachineCodes = traceability?.MachineCodes.Select(m => m.MachineCodeName).ToList() ?? new List<string>(),
+                        OperatorsPayroll = traceability?.OperatorsPayroll ?? "",
+                        CategoryId = traceability?.CategoryId ?? 0,
+                        TypeMeasuringEquipmentId = traceability?.TypeMeasuringEquipmentId,
+                        ShopOrder = traceability?.ShopOrder,
+                        BatchPipe = traceability?.BatchPipe,
+                        PipeDiameterId = traceability?.PipeDiameterId,
+                        PipeWallId = traceability?.PipeWallId,
+                        EquipmentSerials = traceability?.EquipmentSerials.Select(s => s.EquipmentSerial).ToList() ?? new List<string>()
+                    },
+                    Controls = new ProcessControlFcdsDto
+                    {
+                        MttoValidation = controls?.MttoValidation ?? 0,
+                        Realese1stPiece = controls?.Realese1stPiece ?? 0,
+                        Spc = controls?.Spc ?? 0,
+                        MaterialCorrectlyIdentified = controls?.MaterialCorrectlyIdentified ?? 0,
+                        IdentifiedMeasuringEquipment = controls?.IdentifiedMeasuringEquipment ?? 0,
+                        CalibratedMeasuringEquipment = controls?.CalibratedMeasuringEquipment ?? 0,
+                        ItProcess = controls?.ItProcess ?? 0,
+                        TypeOil = controls?.TypeOil ?? "",
+                        LastHourOfRelease = controls?.LastHourOfRelease.ToString(@"hh\:mm") ?? ""
+                    },
+                    Physicals = new PhysicalConditionsDto
+                    {
+                        Brands = physicals?.Brands ?? 0,
+                        Blows = physicals?.Blows ?? 0,
+                        Pollution = physicals?.Pollution ?? 0,
+                        Ovality = physicals?.Ovality ?? 0,
+                        Burr = physicals?.Burr ?? 0,
+                        Warped = physicals?.Warped ?? 0,
+                        ExcessOil = physicals?.ExcessOil ?? 0
+                    },
+                    DimensionalSpecs = audit.DimensionalSpecs.Select(s => new DimensionalSpecDto(s.SpecName, s.ExpectedValue, s.RealValue)).ToList(),
+                    VisualChecklists = audit.VisualChecklists.Select(v => new VisualChecklistDto(v.CheckpointName, v.ResultValue)).ToList()
+                };
+            }).ToList();
+        }
     }
 }

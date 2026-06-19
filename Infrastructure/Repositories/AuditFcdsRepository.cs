@@ -480,10 +480,11 @@ namespace Infrastructure.Repositories
                 return new DetailedAuditFcdsDto
                 {
                     Id = audit.Id,
+                    AuditDate = audit.AuditDate,
                     ShiftId = audit.ShiftId,
                     FcdsProcessId = audit.FcdsProcessId,
                     PartNumber = audit.PartNumber,
-                    LineIds = audit.Lines.Select(l => l.Id).ToList(),
+                    LineNames = audit.Lines.Select(l => l.LineName).ToList(),
                     IsProductConforming = audit.IsProductConforming,
                     RejectionId = audit.RejectionId,
                     Traceability = new TraceabilityFcdsDto

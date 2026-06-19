@@ -186,7 +186,7 @@ namespace Infrastructure.Services
                     worksheet.Cell(row, 3).Value = item.ShiftId == 1 ? "Día" : item.ShiftId == 2 ? "Tarde" : "Noche";
                     worksheet.Cell(row, 4).Value = item.FcdsProcessId.ToString();
                     worksheet.Cell(row, 5).Value = item.PartNumber;
-                    worksheet.Cell(row, 6).Value = string.Join(", ", item.LineIds);
+                    worksheet.Cell(row, 6).Value = string.Join(", ", item.LineNames ?? new List<string>());
                     worksheet.Cell(row, 7).Value = item.IsProductConforming ? "CONFORME" : "NO CONFORME";
                     worksheet.Cell(row, 8).Value = item.RejectionId.HasValue ? item.RejectionId.Value.ToString() : "—";
 

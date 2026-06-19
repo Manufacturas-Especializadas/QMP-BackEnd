@@ -51,25 +51,32 @@ namespace Infrastructure.Repositories
 
                 if (!dto.IsProductConforming)
                 {
-                    var newRejection = new Rejection
+                    if (dto.RejectionId.HasValue && dto.RejectionId.Value > 0)
                     {
-                        UserId = userId,
-                        CreatedAt = nowInMexico,
-                        Inspector = inspectorUser.Username,
-                        PartNumber = dto.PartNumber,
-                        OperatorPayroll = (int?)Convert.ToUInt32(dto.Traceability.OperatorsPayroll),
-                        LineId = dto.LineIds.FirstOrDefault(),
-                        NumberOfPieces = 1,
-                        Description = $"Generado automáticamente desde Auditoría FCD de {dto.PartNumber}.",
-                        DefectId = await _context.DefectsRejections.Select(d => d.Id).FirstOrDefaultAsync(),
-                        ClientId = await _context.Clients.Select(c => c.Id).FirstOrDefaultAsync(),
-                        ContainmentActionId = await _context.ContainmentActions.Select(c => c.Id).FirstOrDefaultAsync()
-                    };
+                        auditData.RejectionId = dto.RejectionId.Value;
+                    }
+                    else
+                    {
+                        var newRejection = new Rejection
+                        {
+                            UserId = userId,
+                            CreatedAt = nowInMexico,
+                            Inspector = inspectorUser.Username,
+                            PartNumber = dto.PartNumber,
+                            OperatorPayroll = (int?)Convert.ToUInt32(dto.Traceability.OperatorsPayroll),
+                            LineId = dto.LineIds.FirstOrDefault(),
+                            NumberOfPieces = 1,
+                            Description = $"Generado automáticamente desde Auditoría FCD de {dto.PartNumber}.",
+                            DefectId = await _context.DefectsRejections.Select(d => d.Id).FirstOrDefaultAsync(),
+                            ClientId = await _context.Clients.Select(c => c.Id).FirstOrDefaultAsync(),
+                            ContainmentActionId = await _context.ContainmentActions.Select(c => c.Id).FirstOrDefaultAsync()
+                        };
 
-                    await _context.Rejections.AddAsync(newRejection);
-                    await _context.SaveChangesAsync();
+                        await _context.Rejections.AddAsync(newRejection);
+                        await _context.SaveChangesAsync();
 
-                    auditData.RejectionId = newRejection.Id;
+                        auditData.RejectionId = newRejection.Id;
+                    }
                 }
 
                 await _context.AuditDataFcds.AddAsync(auditData);

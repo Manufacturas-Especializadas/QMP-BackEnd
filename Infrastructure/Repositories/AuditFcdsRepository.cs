@@ -178,7 +178,8 @@ namespace Infrastructure.Repositories
         {
             var audit = await _context.AuditDataFcds
                 .Include(a => a.Lines)
-                .Include(a => a.TraceabilityElements)
+                .Include(a => a.TraceabilityElements).ThenInclude(t => t.MachineCodes)
+                .Include(a => a.TraceabilityElements).ThenInclude(t => t.EquipmentSerials)
                 .Include(a => a.ProcessControls)
                 .Include(a => a.PhysicalConditions)
                 .Include(a => a.DimensionalSpecs)
@@ -197,8 +198,7 @@ namespace Infrastructure.Repositories
                 audit.RejectionId = dto.RejectionId;
 
                 audit.Lines.Clear();
-                var newLines = await _context.Lines.Where(l => dto.LineIds.Contains(l.Id))
-                        .ToListAsync();
+                var newLines = await _context.Lines.Where(l => dto.LineIds.Contains(l.Id)).ToListAsync();
                 foreach (var line in newLines) audit.Lines.Add(line);
 
                 _context.TraceabilityElementsFcds.RemoveRange(audit.TraceabilityElements);
@@ -208,6 +208,41 @@ namespace Infrastructure.Repositories
                 _context.AuditVisualChecklistFCDS.RemoveRange(audit.VisualChecklists);
 
                 await _context.SaveChangesAsync();
+
+                var traceability = new TraceabilityElementFcds
+                {
+                    AuditId = audit.Id,
+                    OperatorsPayroll = dto.Traceability.OperatorsPayroll ?? "",
+                    CategoryId = dto.Traceability.CategoryId,
+                    TypeMeasuringEquipmentId = dto.Traceability.TypeMeasuringEquipmentId,
+                    ShopOrder = dto.Traceability.ShopOrder,
+                    BatchPipe = dto.Traceability.BatchPipe,
+                    PipeDiameterId = dto.Traceability.PipeDiameterId,
+                    PipeWallId = dto.Traceability.PipeWallId
+                };
+
+                if (dto.Traceability.MachineCodeIds != null && dto.Traceability.MachineCodeIds.Any())
+                {
+                    var machines = await _context.MachineCodes
+                        .Where(m => dto.Traceability.MachineCodeIds.Contains(m.Id))
+                        .ToListAsync();
+
+                    foreach (var machine in machines)
+                    {
+                        traceability.MachineCodes.Add(machine);
+                    }
+                }
+
+                if (dto.Traceability.EquipmentSerials != null)
+                {
+                    foreach (var serial in dto.Traceability.EquipmentSerials)
+                    {
+                        traceability.EquipmentSerials.Add(new() { EquipmentSerial = serial });
+                    }
+                }
+
+                await _context.TraceabilityElementsFcds.AddAsync(traceability);
+
 
                 var processControls = new ProcessControlFcds
                 {
@@ -219,16 +254,59 @@ namespace Infrastructure.Repositories
                     IdentifiedMeasuringEquipment = dto.Controls.IdentifiedMeasuringEquipment,
                     CalibratedMeasuringEquipment = dto.Controls.CalibratedMeasuringEquipment,
                     ItProcess = dto.Controls.ItProcess,
-                    TypeOil = dto.Controls.TypeOil,
-                    LastHourOfRelease = TimeSpan.Parse(dto.Controls.LastHourOfRelease)
+                    TypeOil = dto.Controls.TypeOil ?? "",
+                    LastHourOfRelease = TimeSpan.Parse(dto.Controls.LastHourOfRelease ?? "00:00")
                 };
                 await _context.ProcessControlsFcds.AddAsync(processControls);
+
+
+                var physicalConditions = new ProductReleasePhysicalCondition
+                {
+                    AuditId = audit.Id,
+                    Brands = dto.Physicals.Brands,
+                    Blows = dto.Physicals.Blows,
+                    Pollution = dto.Physicals.Pollution,
+                    Ovality = dto.Physicals.Ovality,
+                    Burr = dto.Physicals.Burr,
+                    Warped = dto.Physicals.Warped,
+                    ExcessOil = dto.Physicals.ExcessOil
+                };
+                await _context.ProductReleasePhysicalConditions.AddAsync(physicalConditions);
+
+
+                if (dto.DimensionalSpecs != null)
+                {
+                    foreach (var spec in dto.DimensionalSpecs)
+                    {
+                        await _context.AuditDimensionalSpecsFcds.AddAsync(new AuditDimensionalSpecFcds
+                        {
+                            AuditId = audit.Id,
+                            SpecName = spec.SpecName,
+                            ExpectedValue = spec.ExpectedValue ?? "",
+                            RealValue = spec.RealValue ?? ""
+                        });
+                    }
+                }
+
+
+                if (dto.VisualChecklists != null)
+                {
+                    foreach (var check in dto.VisualChecklists)
+                    {
+                        await _context.AuditVisualChecklistFCDS.AddAsync(new AuditVisualChecklistFcds
+                        {
+                            AuditId = audit.Id,
+                            CheckpointName = check.CheckpointName,
+                            ResultValue = check.ResultValue
+                        });
+                    }
+                }
 
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
                 return true;
             }
-            catch
+            catch (Exception)
             {
                 await transaction.RollbackAsync();
                 throw;

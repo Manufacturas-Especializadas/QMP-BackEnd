@@ -225,6 +225,7 @@ namespace Core.DTOs
     {
         public int AuditId { get; set; }
         public List<int> MachineCodeIds { get; init; } = new();
+        public List<string> MachineCodes { get; init; } = new();
         public string OperatorsPayroll { get; init; } = string.Empty;
         public int CategoryId { get; init; }
         public int? TypeMeasuringEquipmentId { get; init; }

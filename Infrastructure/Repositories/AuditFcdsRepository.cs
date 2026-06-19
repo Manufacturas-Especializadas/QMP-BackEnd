@@ -392,7 +392,7 @@ namespace Infrastructure.Repositories
 
                 Traceability = new TraceabilityFcdsDto
                 {
-                    MachineCodeIds = traceability?.MachineCodes.Select(m => m.Id).ToList() ?? new List<int>(),
+                    MachineCodes = traceability?.MachineCodes.Select(m => m.MachineCodeName).ToList() ?? new List<string>(),
                     OperatorsPayroll = traceability?.OperatorsPayroll ?? "",
                     CategoryId = traceability?.CategoryId ?? 0,
                     TypeMeasuringEquipmentId = traceability?.TypeMeasuringEquipmentId,

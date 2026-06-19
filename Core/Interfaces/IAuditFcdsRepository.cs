@@ -15,5 +15,7 @@ namespace Core.Interfaces
         Task<DetailedAuditFcdsDto?> GetDetailedAuditByIdAsync(int id);
 
         Task<IEnumerable<DetailedAuditFcdsDto>> GetAuditsByMonthAsync(int year, int month);
+
+        Task<IEnumerable<AvailableMonthDto>> GetAvailableMonthsAsync();
     }
 }

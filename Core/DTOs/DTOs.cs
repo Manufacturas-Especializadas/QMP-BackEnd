@@ -207,6 +207,8 @@ namespace Core.DTOs
         string ImageUrls
     );
 
+    public record AvailableMonthDto(int Year, int Month, string MonthName);
+
     public record CreateAuditFcdsDto(
         int ShiftId,
         int FcdsProcessId,

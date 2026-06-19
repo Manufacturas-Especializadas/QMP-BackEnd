@@ -432,6 +432,25 @@ namespace Infrastructure.Repositories
             };
         }
 
+        public async Task<IEnumerable<AvailableMonthDto>> GetAvailableMonthsAsync()
+        {
+            var rawMonths = await _context.AuditDataFcds
+                .AsNoTracking()
+                .Select(a => new { a.AuditDate!.Value.Year, a.AuditDate.Value.Month })
+                .Distinct()
+                .OrderByDescending(x => x.Year)
+                .ThenByDescending(x => x.Month)
+                .ToListAsync();
+
+            var culture = new System.Globalization.CultureInfo("es-MX");
+
+            return rawMonths.Select(x => new AvailableMonthDto(
+                x.Year,
+                x.Month,
+                culture.TextInfo.ToTitleCase(culture.DateTimeFormat.GetMonthName(x.Month))
+            ));
+        }
+
         public async Task<IEnumerable<DetailedAuditFcdsDto>> GetAuditsByMonthAsync(int year, int month)
         {
             var audits = await _context.AuditDataFcds

@@ -52,6 +52,21 @@ namespace API.Controllers
         }
 
         [HttpGet]
+        [Route("AvailableMonths")]
+        public async Task<IActionResult> GetAvailableMonths()
+        {
+            try
+            {
+                var months = await _auditFcdsRepository.GetAvailableMonthsAsync();
+                return Ok(months);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error al obtener los meses disponibles para reportes.", details = ex.Message });
+            }
+        }
+
+        [HttpGet]
         [Route("DownloadExcelReport")]
         public async Task<IActionResult> DownloadExcelReport([FromQuery] int year, [FromQuery] int month)
         {

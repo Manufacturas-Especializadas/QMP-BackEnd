@@ -284,6 +284,8 @@ namespace Core.DTOs
     public record DetailedAuditFcdsDto
     {
         public int Id { get; init; }
+
+        public DateTime? AuditDate { get; set; }
         public int ShiftId { get; init; }
         public int FcdsProcessId { get; init; }
         public string PartNumber { get; init; } = string.Empty;

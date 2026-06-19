@@ -376,6 +376,7 @@ namespace Infrastructure.Repositories
             return new DetailedAuditFcdsDto
             {
                 Id = audit.Id,
+                AuditDate = audit.AuditDate,
                 ShiftId = audit.ShiftId,
                 FcdsProcessId = audit.FcdsProcessId,
                 PartNumber = audit.PartNumber,

@@ -10,10 +10,12 @@ namespace API.Controllers
     public class AuditsFcdsController : ControllerBase
     {
         private readonly IAuditFcdsRepository _auditFcdsRepository;
+        private readonly IExcelService _excelService;
 
-        public AuditsFcdsController(IAuditFcdsRepository auditFcdsRepository)
+        public AuditsFcdsController(IAuditFcdsRepository auditFcdsRepository, IExcelService excelService)
         {
             _auditFcdsRepository = auditFcdsRepository;
+            _excelService = excelService;
         }
 
         [HttpGet]
@@ -47,6 +49,46 @@ namespace API.Controllers
             });
 
             return Ok(audit);
+        }
+
+        [HttpGet]
+        [Route("AvailableMonths")]
+        public async Task<IActionResult> GetAvailableMonths()
+        {
+            try
+            {
+                var months = await _auditFcdsRepository.GetAvailableMonthsAsync();
+                return Ok(months);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error al obtener los meses disponibles para reportes.", details = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        [Route("DownloadExcelReport")]
+        public async Task<IActionResult> DownloadExcelReport([FromQuery] int year, [FromQuery] int month)
+        {
+            try
+            {
+                var data = await _auditFcdsRepository.GetAuditsByMonthAsync(year, month);
+
+                if (data == null || !data.Any())
+                {
+                    return BadRequest(new { message = "No existen registros de auditorías en el mes seleccionado para generar el reporte." });
+                }
+
+                byte[] excelBytes = _excelService.GenerateAuditsFcdsReport(data);
+
+                string fileName = $"Reporte_Auditorias_FCD_{year}_{month:D2}.xlsx";
+                return File(excelBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+            }
+            catch (Exception ex)
+            {
+                var realMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return StatusCode(500, new { message = "Error interno al procesar el reporte de Excel.", details = realMessage });
+            }
         }
 
         [HttpPost]

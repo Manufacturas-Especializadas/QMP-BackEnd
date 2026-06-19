@@ -12,5 +12,7 @@ namespace Core.Interfaces
         byte[] GenerateScrapReport(IEnumerable<ScrapReadDto> data);
 
         byte[] GenerateRejectionReport(IEnumerable<RejectionResponse> data);
+
+        byte[] GenerateAuditsFcdsReport(IEnumerable<DetailedAuditFcdsDto> data);
     }
 }

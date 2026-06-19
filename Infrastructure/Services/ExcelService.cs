@@ -149,5 +149,98 @@ namespace Infrastructure.Services
                 }
             }
         }
+
+        public byte[] GenerateAuditsFcdsReport(IEnumerable<DetailedAuditFcdsDto> data)
+        {
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("Auditorías FCD");
+
+                var headers = new string[]
+                {
+                    "ID", "Fecha Registro", "Turno", "Proceso", "No. Parte", "Líneas Auditadas", "Estatus", "Folio RDM",
+                    "Nómina Operador", "Cat. Operador", "Shop Order", "Lote Tubería", "Máquinas", "Series Equipos",
+                    "Validación Mtto", "1ra Pieza", "SPC", "Material Identificado", "Equipo Identificado", "Equipo Calibrado", "IT Proceso", "Tipo Aceite", "Hora Liberación",
+                    "Marcas", "Golpes", "Contaminación", "Ovalamiento", "Rebaba", "Pandeado", "Exceso Aceite",
+                    "Mediciones Dimensionales / Checklist Visual"
+                };
+
+                for (int i = 0; i < headers.Length; i++)
+                {
+                    var cell = worksheet.Cell(1, i + 1);
+                    cell.Value = headers[i];
+                    cell.Style.Font.Bold = true;
+                    cell.Style.Fill.BackgroundColor = XLColor.FromHtml("#1E40AF");
+                    cell.Style.Font.FontColor = XLColor.White;
+                    cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                }
+
+                string TraducirControl(int val) => val == 1 ? "CUMPLE" : val == 2 ? "NO CUMPLE" : "N/A";
+                string TraducirFisico(int val) => val == 1 ? "DETECTADO" : val == 2 ? "LIMPIO" : "N/A";
+
+                int row = 2;
+                foreach (var item in data)
+                {
+                    worksheet.Cell(row, 1).Value = item.Id;
+                    worksheet.Cell(row, 2).Value = item.Id;
+                    worksheet.Cell(row, 3).Value = item.ShiftId == 1 ? "Día" : item.ShiftId == 2 ? "Tarde" : "Noche";
+                    worksheet.Cell(row, 4).Value = item.FcdsProcessId.ToString();
+                    worksheet.Cell(row, 5).Value = item.PartNumber;
+                    worksheet.Cell(row, 6).Value = string.Join(", ", item.LineIds);
+                    worksheet.Cell(row, 7).Value = item.IsProductConforming ? "CONFORME" : "NO CONFORME";
+                    worksheet.Cell(row, 8).Value = item.RejectionId.HasValue ? item.RejectionId.Value.ToString() : "—";
+
+                    worksheet.Cell(row, 9).Value = item.Traceability?.OperatorsPayroll ?? "—";
+                    worksheet.Cell(row, 10).Value = item.Traceability?.CategoryId ?? 0;
+                    worksheet.Cell(row, 11).Value = item.Traceability?.ShopOrder ?? "—";
+                    worksheet.Cell(row, 12).Value = item.Traceability?.BatchPipe ?? "—";
+                    worksheet.Cell(row, 13).Value = string.Join(", ", item.Traceability?.MachineCodes ?? new List<string>());
+                    worksheet.Cell(row, 14).Value = string.Join(", ", item.Traceability?.EquipmentSerials ?? new List<string>());
+
+                    worksheet.Cell(row, 15).Value = TraducirControl(item.Controls?.MttoValidation ?? 0);
+                    worksheet.Cell(row, 16).Value = TraducirControl(item.Controls?.Realese1stPiece ?? 0);
+                    worksheet.Cell(row, 17).Value = TraducirControl(item.Controls?.Spc ?? 0);
+                    worksheet.Cell(row, 18).Value = TraducirControl(item.Controls?.MaterialCorrectlyIdentified ?? 0);
+                    worksheet.Cell(row, 19).Value = TraducirControl(item.Controls?.IdentifiedMeasuringEquipment ?? 0);
+                    worksheet.Cell(row, 20).Value = TraducirControl(item.Controls?.CalibratedMeasuringEquipment ?? 0);
+                    worksheet.Cell(row, 21).Value = TraducirControl(item.Controls?.ItProcess ?? 0);
+                    worksheet.Cell(row, 22).Value = item.Controls?.TypeOil ?? "—";
+                    worksheet.Cell(row, 23).Value = item.Controls?.LastHourOfRelease ?? "—";
+
+                    worksheet.Cell(row, 24).Value = TraducirFisico(item.Physicals?.Brands ?? 0);
+                    worksheet.Cell(row, 25).Value = TraducirFisico(item.Physicals?.Blows ?? 0);
+                    worksheet.Cell(row, 26).Value = TraducirFisico(item.Physicals?.Pollution ?? 0);
+                    worksheet.Cell(row, 27).Value = TraducirFisico(item.Physicals?.Ovality ?? 0);
+                    worksheet.Cell(row, 28).Value = TraducirFisico(item.Physicals?.Burr ?? 0);
+                    worksheet.Cell(row, 29).Value = TraducirFisico(item.Physicals?.Warped ?? 0);
+                    worksheet.Cell(row, 30).Value = TraducirFisico(item.Physicals?.ExcessOil ?? 0);
+
+                    if (item.DimensionalSpecs != null && item.DimensionalSpecs.Any())
+                    {
+                        var specsSummary = item.DimensionalSpecs.Select(s => $"{s.SpecName}[Esp:{s.ExpectedValue} Real:{s.RealValue}]");
+                        worksheet.Cell(row, 31).Value = string.Join(" | ", specsSummary);
+                    }
+                    else if (item.VisualChecklists != null && item.VisualChecklists.Any())
+                    {
+                        var visualSummary = item.VisualChecklists.Select(v => $"{v.CheckpointName}: {TraducirControl(v.ResultValue)}");
+                        worksheet.Cell(row, 31).Value = string.Join(" | ", visualSummary);
+                    }
+                    else
+                    {
+                        worksheet.Cell(row, 31).Value = "—";
+                    }
+
+                    row++;
+                }
+
+                worksheet.Columns().AdjustToContents();
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    return stream.ToArray();
+                }
+            }
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -292,6 +293,7 @@ namespace Core.DTOs
         public int ShiftId { get; init; }
         public int FcdsProcessId { get; init; }
         public string PartNumber { get; init; } = string.Empty;
+        public List<string> LineNames { get; set; }  
         public List<int> LineIds { get; init; } = new();
         public bool IsProductConforming { get; init; }
         public int? RejectionId { get; init; }

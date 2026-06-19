@@ -28,9 +28,14 @@ namespace Infrastructure.Repositories
                     throw new Exception("Inspector no válido");
                 }
 
+                TimeZoneInfo mexicoTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Central Standard Time (Mexico)");
+
+                DateTime nowInMexico = TimeZoneInfo.ConvertTime(DateTime.UtcNow, mexicoTimeZone);
+
                 var auditData = new AuditDataFcds
                 {
                     UserId = userId,
+                    AuditDate = nowInMexico,
                     ShiftId = dto.ShiftId,
                     FcdsProcessId = dto.FcdsProcessId,
                     PartNumber = dto.PartNumber,
@@ -49,6 +54,7 @@ namespace Infrastructure.Repositories
                     var newRejection = new Rejection
                     {
                         UserId = userId,
+                        CreatedAt = nowInMexico,
                         Inspector = inspectorUser.Username,
                         PartNumber = dto.PartNumber,
                         OperatorPayroll = (int?)Convert.ToUInt32(dto.Traceability.OperatorsPayroll),
@@ -71,7 +77,7 @@ namespace Infrastructure.Repositories
 
                 var traceabillity = new TraceabilityElementFcds
                 {
-                    AuditId = auditData.Id,
+                    AuditId = auditData.Id,                   
                     OperatorsPayroll = dto.Traceability.OperatorsPayroll,
                     CategoryId = dto.Traceability.CategoryId,
                     TypeMeasuringEquipmentId = dto.Traceability.TypeMeasuringEquipmentId,
@@ -107,7 +113,7 @@ namespace Infrastructure.Repositories
 
                 var processControl = new ProcessControlFcds
                 {
-                    AuditId = auditData.Id,
+                    AuditId = auditData.Id,                    
                     MttoValidation = dto.Controls.MttoValidation,
                     Realese1stPiece = dto.Controls.Realese1stPiece,
                     Spc = dto.Controls.Spc,

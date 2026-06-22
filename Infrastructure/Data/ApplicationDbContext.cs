@@ -44,6 +44,8 @@ namespace Infrastructure.Data
         public DbSet<AuditDimensionalSpecFcds> AuditDimensionalSpecsFcds => Set<AuditDimensionalSpecFcds>();
         public DbSet<AuditVisualChecklistFcds> AuditVisualChecklistFCDS => Set<AuditVisualChecklistFcds>();
 
+        public virtual DbSet<AuditDataScrap> AuditDataScraps => Set<AuditDataScrap>();
+        public virtual DbSet<AuditFindingScrap> AuditFindingsScraps => Set<AuditFindingScrap>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -272,6 +274,31 @@ namespace Infrastructure.Data
                     .WithMany(a => a.VisualChecklists)
                     .HasForeignKey(e => e.AuditId)
                     .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<AuditDataScrap>(entity =>
+            {
+                entity.ToTable("AuditDataScrap");
+
+                entity.Property(e => e.AuditDate).HasDefaultValueSql("GETDATE()");
+
+                entity.HasOne(e => e.User)
+                    .WithMany()
+                    .HasForeignKey(e => e.UserId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.Shift)
+                    .WithMany()
+                    .HasForeignKey(e => e.ShiftId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasMany(a => a.Lines)
+                    .WithMany()
+                    .UsingEntity<Dictionary<string, object>>(
+                        "AudtLinesScrap",
+                        l => l.HasOne<Line>().WithMany().HasForeignKey("LineId").OnDelete(DeleteBehavior.Cascade),
+                        a => a.HasOne<AuditDataScrap>().WithMany().HasForeignKey("AuditId").OnDelete(DeleteBehavior.Cascade)
+                    );
             });
         }
     }

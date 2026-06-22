@@ -327,4 +327,31 @@ namespace Core.DTOs
         string? ImageEvidence,
         string? SupervisorSignature
     );
+
+
+    public class CreateAuditScrapDto
+    {
+        public int ShiftId { get; set; }
+
+        public List<int> LineIds { get; set; } = new();
+
+        public List<CreateAuditFindingScrapDto> Findings { get; set; } = new();
+    }
+
+    public class CreateAuditFindingScrapDto
+    {
+        public int TypeScrapId { get; set; }
+
+        public decimal EstimatedWeight { get; set; }
+
+        public byte MaterialCorrectlyIdentified { get; set; }
+
+        public byte MaterialCorrectlySegregated { get; set; }
+
+        public string? UnreportedReason { get; set; }
+
+        public IFormFile? ImageFile { get; set; }
+
+        public IFormFile? SignatureFile { get; set; }
+    }
 }

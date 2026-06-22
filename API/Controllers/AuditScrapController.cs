@@ -130,7 +130,7 @@ namespace API.Controllers
                         SupervisorSignature = signatureUrl
                     };
 
-                    await _context.AuditFindingsScraps.AddAsync(finding);
+                    await _context.AuditFindingsScrap.AddAsync(finding);
                 }
 
                 await _auditRepository.SaveChangesAsync();

@@ -92,7 +92,7 @@ namespace Infrastructure.Repositories
 
             if (findingsToDelete.Any())
             {
-                _context.AuditFindingsScraps.RemoveRange(findingsToDelete);
+                _context.AuditFindingsScrap.RemoveRange(findingsToDelete);
             }
 
             foreach (var incoming in updatedFindings)
@@ -116,7 +116,7 @@ namespace Infrastructure.Repositories
                 else
                 {
                     incoming.AuditId = audit.Id;
-                    await _context.AuditFindingsScraps.AddAsync(incoming);
+                    await _context.AuditFindingsScrap.AddAsync(incoming);
                 }
             }
 

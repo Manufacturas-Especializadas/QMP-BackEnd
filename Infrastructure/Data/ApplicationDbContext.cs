@@ -45,7 +45,7 @@ namespace Infrastructure.Data
         public DbSet<AuditVisualChecklistFcds> AuditVisualChecklistFCDS => Set<AuditVisualChecklistFcds>();
 
         public virtual DbSet<AuditDataScrap> AuditDataScraps => Set<AuditDataScrap>();
-        public virtual DbSet<AuditFindingScrap> AuditFindingsScraps => Set<AuditFindingScrap>();
+        public virtual DbSet<AuditFindingScrap> AuditFindingsScrap => Set<AuditFindingScrap>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

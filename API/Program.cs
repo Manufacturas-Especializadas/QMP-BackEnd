@@ -84,6 +84,7 @@ builder.Services.AddScoped<IAzureStorageService, AzureStorageService>();
 builder.Services.AddScoped<IRejectionRepository, RejectionRepository>();
 builder.Services.AddScoped<IRejectionService, RejectionService>();
 builder.Services.AddScoped<IAuditFcdsRepository, AuditFcdsRepository>();
+builder.Services.AddScoped<IAuditScrapRepository, AuditScrapRepository>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(options => {

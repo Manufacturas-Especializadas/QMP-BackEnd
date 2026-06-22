@@ -304,4 +304,92 @@ namespace Core.DTOs
         public List<DimensionalSpecDto> DimensionalSpecs { get; init; } = new();
         public List<VisualChecklistDto> VisualChecklists { get; init; } = new();
     }
+
+    public record AuditDataScrapReadDto(
+        int Id,
+        DateTime AuditDate,
+        int UserId,
+        string InspectorName,
+        int ShiftId,
+        int LeaderPayroll,
+        string ShiftName,
+        List<string> LineNames,
+        List<int> LineIds,
+        List<AuditFindingScrapReadDto> Findings
+    );
+
+    public record AuditFindingScrapReadDto(
+        int Id,
+        int TypeScrapId,
+        string TypeScrapName,
+        decimal EstimatedWeight,
+        byte MaterialCorrectlyIdentified,
+        byte MaterialCorrectlySegregated,
+        string? UnreportedReason,
+        string? ImageEvidence,
+        string? SupervisorSignature
+    );
+
+
+    public class CreateAuditScrapDto
+    {
+        public int ShiftId { get; set; }
+
+        public int LeaderPayroll { get; set; }
+
+        public List<int> LineIds { get; set; } = new();
+
+        public List<CreateAuditFindingScrapDto> Findings { get; set; } = new();
+    }
+
+    public class CreateAuditFindingScrapDto
+    {
+        public int TypeScrapId { get; set; }
+
+        public decimal EstimatedWeight { get; set; }
+
+        public byte MaterialCorrectlyIdentified { get; set; }
+
+        public byte MaterialCorrectlySegregated { get; set; }
+
+        public string? UnreportedReason { get; set; }
+
+        public List<IFormFile>? ImageFiles { get; set; }
+
+        public IFormFile? SignatureFile { get; set; }
+    }
+
+    public class UpdateAuditScrapDto
+    {
+        public int ShiftId { get; set; }
+
+        public int LeaderPayroll { get; set; }
+
+        public List<int> LineIds { get; set; } = new();
+
+        public List<UpdateAuditFindingScrapDto> Findings { get; set; } = new();
+    }
+
+    public class UpdateAuditFindingScrapDto
+    {
+        public int Id { get; set; }
+
+        public int TypeScrapId { get; set; }
+
+        public decimal EstimatedWeight { get; set; }
+
+        public byte MaterialCorrectlyIdentified { get; set; }
+
+        public byte MaterialCorrectlySegregated { get; set; }
+
+        public string? UnreportedReason { get; set; }
+
+        public IFormFile? ImageFile { get; set; }
+
+        public IFormFile? SignatureFile { get; set; }
+
+        public string? KeepImageUrl { get; set; }
+
+        public string? KeepSignatureUrl { get; set; }
+    }
 }

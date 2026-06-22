@@ -10,6 +10,8 @@
 
         public int ShiftId { get; set; }
 
+        public int LeaderPayroll { get; set; }
+
         public virtual User User { get; set; }
 
         public virtual Shift Shift { get; set; }

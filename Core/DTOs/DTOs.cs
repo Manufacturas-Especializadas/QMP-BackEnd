@@ -350,7 +350,7 @@ namespace Core.DTOs
 
         public string? UnreportedReason { get; set; }
 
-        public IFormFile? ImageFile { get; set; }
+        public List<IFormFile>? ImageFiles { get; set; }
 
         public IFormFile? SignatureFile { get; set; }
     }

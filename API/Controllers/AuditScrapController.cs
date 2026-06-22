@@ -105,15 +105,24 @@ namespace API.Controllers
 
                 foreach (var findingDto in dto.Findings)
                 {
-                    string? imageUrl = null;
                     string? signatureUrl = null;
+                    var imageUrls = new List<string>();
 
-                    if(findingDto != null && findingDto.ImageFile!.Length > 0)
+                    if (findingDto.ImageFiles != null && findingDto.ImageFiles.Any())
                     {
-                        imageUrl = await _storageService.UploadFileAsync(_container, findingDto.ImageFile);
+                        foreach (var file in findingDto.ImageFiles.Take(3))
+                        {
+                            if (file.Length > 0)
+                            {
+                                var url = await _storageService.UploadFileAsync(_container, file);
+                                imageUrls.Add(url);
+                            }
+                        }
                     }
 
-                    if (findingDto!.SignatureFile != null && findingDto.SignatureFile.Length > 0)
+                    string? finalImageEvidence = imageUrls.Any() ? string.Join(",", imageUrls) : null;
+
+                    if (findingDto.SignatureFile != null && findingDto.SignatureFile.Length > 0)
                     {
                         signatureUrl = await _storageService.UploadFileAsync(_container, findingDto.SignatureFile);
                     }
@@ -126,7 +135,7 @@ namespace API.Controllers
                         MaterialCorrectlyIdentified = findingDto.MaterialCorrectlyIdentified,
                         MaterialCorrectlySegregated = findingDto.MaterialCorrectlySegregated,
                         UnreportedReason = findingDto.UnreportedReason,
-                        ImageEvidence = imageUrl,
+                        ImageEvidence = finalImageEvidence,
                         SupervisorSignature = signatureUrl
                     };
 

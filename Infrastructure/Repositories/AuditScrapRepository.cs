@@ -1,8 +1,9 @@
-﻿using Infrastructure.Data;
-using Core.Interfaces;
+﻿using Core.DTOs;
 using Core.Entities;
+using Core.Interfaces;
+using DocumentFormat.OpenXml.Presentation;
+using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using Core.DTOs;
 
 namespace Infrastructure.Repositories
 {
@@ -38,6 +39,7 @@ namespace Infrastructure.Repositories
                     a.LeaderPayroll,
                     a.Shift.ShiftName,
                     a.Lines.Select(l => l.LineName).ToList(),
+                    a.Lines.Select(l => l.Id).ToList(),
                     a.Findings.Select(f => new AuditFindingScrapReadDto(
                         f.Id,
                         f.TypeScrapId,

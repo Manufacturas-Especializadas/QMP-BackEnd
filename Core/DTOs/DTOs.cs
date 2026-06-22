@@ -314,6 +314,7 @@ namespace Core.DTOs
         int LeaderPayroll,
         string ShiftName,
         List<string> LineNames,
+        List<int> LineIds,
         List<AuditFindingScrapReadDto> Findings
     );
 

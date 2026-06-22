@@ -56,6 +56,7 @@ namespace API.Controllers
                 audit.LeaderPayroll,
                 audit.Shift?.ShiftName ?? "N/A",
                 audit.Lines.Select(l => l.LineName).ToList(),
+                audit.Lines.Select(l => l.Id).ToList(),
                 audit.Findings.Select(f => new AuditFindingScrapReadDto(
                     f.Id,
                     f.TypeScrapId,

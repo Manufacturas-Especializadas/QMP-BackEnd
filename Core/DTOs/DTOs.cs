@@ -354,4 +354,36 @@ namespace Core.DTOs
 
         public IFormFile? SignatureFile { get; set; }
     }
+
+    public class UpdateAuditScrapDto
+    {
+        public int ShiftId { get; set; }
+
+        public List<int> LineIds { get; set; } = new();
+
+        public List<UpdateAuditFindingScrapDto> Findings { get; set; } = new();
+    }
+
+    public class UpdateAuditFindingScrapDto
+    {
+        public int Id { get; set; }
+
+        public int TypeScrapId { get; set; }
+
+        public decimal EstimatedWeight { get; set; }
+
+        public byte MaterialCorrectlyIdentified { get; set; }
+
+        public byte MaterialCorrectlySegregated { get; set; }
+
+        public string? UnreportedReason { get; set; }
+
+        public IFormFile? ImageFile { get; set; }
+
+        public IFormFile? SignatureFile { get; set; }
+
+        public string? KeepImageUrl { get; set; }
+
+        public string? KeepSignatureUrl { get; set; }
+    }
 }

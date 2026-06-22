@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc;
-using Infrastructure.Data;
-using Core.Interfaces;
+﻿using Core.DTOs;
 using Core.Entities;
-using Core.DTOs;
+using Core.Interfaces;
+using Infrastructure.Data;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace API.Controllers
 {
@@ -69,15 +71,27 @@ namespace API.Controllers
             return Ok(dto);
         }
 
+        [Authorize]
         [HttpPost]
         [Route("Create")]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> Create([FromForm] CreateAuditScrapDto dto)
         {
-            int fallbackUserId = 1;
+            var currentUsername = User.Identity?.Name ?? User.FindFirst(ClaimTypes.Name)?.Value;
 
-            var inspectorUser = await _context.Users.AnyAsync(u => u.Id == fallbackUserId);
-            if (!inspectorUser) return BadRequest(new { message = "Inspector no registrado" });
+            if (string.IsNullOrEmpty(currentUsername))
+            {
+                return Unauthorized(new { message = "Sesión inválida. Por favor, vuelve a iniciar sesión en MesaCore." });
+            }
+
+            var inspectorUser = await _context.Users.FirstOrDefaultAsync(u => u.Username == currentUsername);
+
+            if (inspectorUser == null)
+            {
+                return BadRequest(new { message = $"El inspector '{currentUsername}' no está dado de alta en la planta." });
+            }
+
+            int realUserId = inspectorUser.Id;
 
             TimeZoneInfo mexicoTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Central Standard Time (Mexico)");
             DateTime nowInMexico = TimeZoneInfo.ConvertTime(DateTime.UtcNow, mexicoTimeZone);
@@ -88,7 +102,7 @@ namespace API.Controllers
             {
                 var audit = new AuditDataScrap
                 {
-                    UserId = fallbackUserId,
+                    UserId = realUserId,
                     AuditDate = nowInMexico,
                     ShiftId = dto.ShiftId
                 };

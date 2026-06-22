@@ -2,6 +2,7 @@
 using Core.Entities;
 using Core.Interfaces;
 using Infrastructure.Data;
+using Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,7 @@ namespace API.Controllers
     public class AuditScrapController : ControllerBase
     {
         private readonly IAuditScrapRepository _auditRepository;
+        private readonly IExcelService _excelService;
         private readonly IAzureStorageService _storageService;
         private readonly ApplicationDbContext _context;
 
@@ -22,10 +24,12 @@ namespace API.Controllers
         public AuditScrapController(
             IAuditScrapRepository auditRepository,
             IAzureStorageService storageService,
+            IExcelService excelService,
             ApplicationDbContext context
         )
         {
             _auditRepository = auditRepository;
+            _excelService = excelService;
             _storageService = storageService;
             _context = context;
         }
@@ -37,6 +41,50 @@ namespace API.Controllers
             var audits = await _auditRepository.GetAllDetailedAsync();
 
             return Ok(audits);
+        }
+
+        [HttpGet]
+        [Route("AvailableMonths")]
+        public async Task<IActionResult> GetAvailableMonths()
+        {
+            var months = await _context.AuditDataScraps
+                .Select(a => new { a.AuditDate.Year, a.AuditDate.Month })
+                .Distinct()
+                .OrderByDescending(m => m.Year)
+                .ThenByDescending(m => m.Month)
+                .ToListAsync();
+
+            var result = months.Select(m => new
+            {
+                year = m.Year,
+                month = m.Month,
+                monthName = new DateTime(m.Year, m.Month, 1).ToString("MMMM", new System.Globalization.CultureInfo("es-ES"))
+            });
+
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("ExportExcel")]
+        public async Task<IActionResult> ExportExcel([FromQuery] int month, [FromQuery] int year)
+        {
+            try
+            {
+                var records = await _auditRepository.GetByMonthAsync(month, year);
+
+                var fileContents = _excelService.GenerateAuditScrapReport(records);
+                string monthName = new DateTime(year, month, 1).ToString("MMMM", new System.Globalization.CultureInfo("es-ES"));
+
+                return File(
+                    fileContents,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    $"Reporte_Auditorias_Scrap_{monthName}_{year}.xlsx"
+                );
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error al generar Excel de Scrap: {ex.Message}");
+            }
         }
 
         [HttpGet]

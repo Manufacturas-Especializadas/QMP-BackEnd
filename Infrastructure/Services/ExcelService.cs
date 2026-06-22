@@ -1,6 +1,8 @@
 ﻿using ClosedXML.Excel;
 using Core.DTOs;
+using Core.Entities;
 using Core.Interfaces;
+using DocumentFormat.OpenXml.Spreadsheet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -231,6 +233,82 @@ namespace Infrastructure.Services
                     }
 
                     row++;
+                }
+
+                worksheet.Columns().AdjustToContents();
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    return stream.ToArray();
+                }
+            }
+        }
+
+        public byte[] GenerateAuditScrapReport(IEnumerable<AuditDataScrap> data)
+        {
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("Auditorías de Scrap");
+
+                var headers = new string[]
+                {
+                    "ID Audit", "Fecha Registro", "Inspector", "Turno", "Nómina Líder",
+                    "Líneas Auditadas", "Tipo de Scrap", "Peso Estimado (KG)",
+                    "Identificación Material", "Segregación Contenedor", "Motivo de Anomalía"
+                };
+
+                for (int i = 0; i < headers.Length; i++)
+                {
+                    var cell = worksheet.Cell(1, i + 1);
+                    cell.Value = headers[i];
+                    cell.Style.Font.Bold = true;
+                    cell.Style.Fill.BackgroundColor = XLColor.FromHtml("#1E40AF");
+                    cell.Style.Font.FontColor = XLColor.White;
+                    cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                }
+
+                string TraducirControl(int val) => val == 1 ? "CUMPLE" : val == 2 ? "NO CUMPLE" : "N/A";
+
+                int row = 2;
+                foreach (var audit in data)
+                {
+                    string lineasConcat = string.Join(", ", audit.Lines.Select(l => l.LineName));
+
+                    if (audit.Findings == null || !audit.Findings.Any())
+                    {
+                        worksheet.Cell(row, 1).Value = audit.Id;
+                        worksheet.Cell(row, 2).Value = audit.AuditDate.ToString("g");
+                        worksheet.Cell(row, 3).Value = audit.User?.Username ?? "N/A";
+                        worksheet.Cell(row, 4).Value = audit.Shift?.ShiftName ?? "N/A";
+                        worksheet.Cell(row, 5).Value = audit.LeaderPayroll;
+                        worksheet.Cell(row, 6).Value = lineasConcat;
+                        worksheet.Cell(row, 7).Value = "—";
+                        worksheet.Cell(row, 8).Value = 0;
+                        worksheet.Cell(row, 9).Value = "—";
+                        worksheet.Cell(row, 10).Value = "—";
+                        worksheet.Cell(row, 11).Value = "—";
+                        row++;
+                        continue;
+                    }
+
+                    foreach (var finding in audit.Findings)
+                    {
+                        worksheet.Cell(row, 1).Value = audit.Id;
+                        worksheet.Cell(row, 2).Value = audit.AuditDate;
+                        worksheet.Cell(row, 3).Value = audit.User?.Username ?? "N/A";
+                        worksheet.Cell(row, 4).Value = audit.Shift?.ShiftName ?? "N/A";
+                        worksheet.Cell(row, 5).Value = audit.LeaderPayroll;
+                        worksheet.Cell(row, 6).Value = lineasConcat;
+
+                        worksheet.Cell(row, 7).Value = finding.TypeScrap?.TypeScrapName ?? "N/A";
+                        worksheet.Cell(row, 8).Value = finding.EstimatedWeight;
+                        worksheet.Cell(row, 9).Value = TraducirControl(finding.MaterialCorrectlyIdentified);
+                        worksheet.Cell(row, 10).Value = TraducirControl(finding.MaterialCorrectlySegregated);
+                        worksheet.Cell(row, 11).Value = !string.IsNullOrEmpty(finding.UnreportedReason) ? finding.UnreportedReason : "—";
+
+                        row++;
+                    }
                 }
 
                 worksheet.Columns().AdjustToContents();

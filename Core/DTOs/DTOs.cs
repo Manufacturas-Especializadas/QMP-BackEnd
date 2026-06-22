@@ -322,7 +322,7 @@ namespace Core.DTOs
         int Id,
         int TypeScrapId,
         string TypeScrapName,
-        decimal EstimatedWeight,
+        decimal? EstimatedWeight,
         byte MaterialCorrectlyIdentified,
         byte MaterialCorrectlySegregated,
         string? UnreportedReason,
@@ -346,7 +346,7 @@ namespace Core.DTOs
     {
         public int TypeScrapId { get; set; }
 
-        public decimal EstimatedWeight { get; set; }
+        public decimal? EstimatedWeight { get; set; }
 
         public byte MaterialCorrectlyIdentified { get; set; }
 

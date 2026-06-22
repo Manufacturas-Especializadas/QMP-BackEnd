@@ -8,7 +8,7 @@
 
         public int TypeScrapId { get; set; }
 
-        public decimal EstimatedWeight { get; set; }
+        public decimal? EstimatedWeight { get; set; }
 
         public byte MaterialCorrectlyIdentified { get; set; }
 

@@ -35,6 +35,7 @@ namespace Infrastructure.Repositories
                     a.UserId,
                     a.User.Username,
                     a.ShiftId,
+                    a.LeaderPayroll,
                     a.Shift.ShiftName,
                     a.Lines.Select(l => l.LineName).ToList(),
                     a.Findings.Select(f => new AuditFindingScrapReadDto(

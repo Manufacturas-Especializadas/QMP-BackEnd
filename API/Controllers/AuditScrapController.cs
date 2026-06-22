@@ -53,6 +53,7 @@ namespace API.Controllers
                 audit.UserId,
                 audit.User?.Username ?? "N/A",
                 audit.ShiftId,
+                audit.LeaderPayroll,
                 audit.Shift?.ShiftName ?? "N/A",
                 audit.Lines.Select(l => l.LineName).ToList(),
                 audit.Findings.Select(f => new AuditFindingScrapReadDto(
@@ -104,7 +105,8 @@ namespace API.Controllers
                 {
                     UserId = realUserId,
                     AuditDate = nowInMexico,
-                    ShiftId = dto.ShiftId
+                    ShiftId = dto.ShiftId,
+                    LeaderPayroll = dto.LeaderPayroll
                 };
 
                 var selectedLines = await _context.Lines.Where(l => dto.LineIds.Contains(l.Id)).ToListAsync();

@@ -311,6 +311,7 @@ namespace Core.DTOs
         int UserId,
         string InspectorName,
         int ShiftId,
+        int LeaderPayroll,
         string ShiftName,
         List<string> LineNames,
         List<AuditFindingScrapReadDto> Findings
@@ -332,6 +333,8 @@ namespace Core.DTOs
     public class CreateAuditScrapDto
     {
         public int ShiftId { get; set; }
+
+        public int LeaderPayroll { get; set; }
 
         public List<int> LineIds { get; set; } = new();
 
@@ -358,6 +361,8 @@ namespace Core.DTOs
     public class UpdateAuditScrapDto
     {
         public int ShiftId { get; set; }
+
+        public int LeaderPayroll { get; set; }
 
         public List<int> LineIds { get; set; } = new();
 

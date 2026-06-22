@@ -13,6 +13,8 @@ namespace Core.Interfaces
 
         Task<AuditDataScrap> CreateAsync(AuditDataScrap entity);
 
+        Task<bool> UpdateAuditAsync(int id, UpdateAuditScrapDto dto, List<AuditFindingScrap> updatedFindings);
+
         Task<bool> DeleteAsync(int id);
 
         Task<bool> SaveChangesAsync();

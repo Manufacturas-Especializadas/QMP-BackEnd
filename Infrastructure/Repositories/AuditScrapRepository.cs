@@ -72,6 +72,57 @@ namespace Infrastructure.Repositories
             return audit;
         }
 
+        public async Task<bool> UpdateAuditAsync(int id, UpdateAuditScrapDto dto, List<AuditFindingScrap> updatedFindings)
+        {
+            var audit = await _context.AuditDataScraps
+                .Include(a => a.Lines)
+                .Include(a => a.Findings)
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (audit == null) return false;
+
+            audit.ShiftId = dto.ShiftId;
+
+            audit.Lines.Clear();
+            var newLines = await _context.Lines.Where(l => dto.LineIds.Contains(l.Id)).ToListAsync();
+            foreach (var line in newLines) audit.Lines.Add(line);
+
+            var updatedFindingIds = updatedFindings.Where(f => f.Id > 0).Select(f => f.Id).ToList();
+            var findingsToDelete = audit.Findings.Where(f => !updatedFindingIds.Contains(f.Id)).ToList();
+
+            if (findingsToDelete.Any())
+            {
+                _context.AuditFindingsScraps.RemoveRange(findingsToDelete);
+            }
+
+            foreach (var incoming in updatedFindings)
+            {
+                if (incoming.Id > 0)
+                {
+                    var existingFinding = audit.Findings.FirstOrDefault(f => f.Id == incoming.Id);
+                    if (existingFinding != null)
+                    {
+                        existingFinding.TypeScrapId = incoming.TypeScrapId;
+                        existingFinding.EstimatedWeight = incoming.EstimatedWeight;
+                        existingFinding.MaterialCorrectlyIdentified = incoming.MaterialCorrectlyIdentified;
+                        existingFinding.MaterialCorrectlySegregated = incoming.MaterialCorrectlySegregated;
+                        existingFinding.UnreportedReason = incoming.UnreportedReason;
+                        existingFinding.ImageEvidence = incoming.ImageEvidence;
+                        existingFinding.SupervisorSignature = incoming.SupervisorSignature;
+
+                        _context.Entry(existingFinding).State = EntityState.Modified;
+                    }
+                }
+                else
+                {
+                    incoming.AuditId = audit.Id;
+                    await _context.AuditFindingsScraps.AddAsync(incoming);
+                }
+            }
+
+            return await _context.SaveChangesAsync() > 0;
+        }
+
         public async Task<bool> DeleteAsync(int id)
         {
             var audit = await _context.AuditDataScraps

@@ -304,4 +304,27 @@ namespace Core.DTOs
         public List<DimensionalSpecDto> DimensionalSpecs { get; init; } = new();
         public List<VisualChecklistDto> VisualChecklists { get; init; } = new();
     }
+
+    public record AuditDataScrapReadDto(
+        int Id,
+        DateTime AuditDate,
+        int UserId,
+        string InspectorName,
+        int ShiftId,
+        string ShiftName,
+        List<string> LineNames,
+        List<AuditFindingScrapReadDto> Findings
+    );
+
+    public record AuditFindingScrapReadDto(
+        int Id,
+        int TypeScrapId,
+        string TypeScrapName,
+        decimal EstimatedWeight,
+        byte MaterialCorrectlyIdentified,
+        byte MaterialCorrectlySegregated,
+        string? UnreportedReason,
+        string? ImageEvidence,
+        string? SupervisorSignature
+    );
 }

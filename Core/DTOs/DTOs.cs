@@ -392,4 +392,118 @@ namespace Core.DTOs
 
         public string? KeepSignatureUrl { get; set; }
     }
+
+    public record AuditDataACDReadDto(
+        int Id,
+        DateTime AuditDate,
+        int UserId,
+        string InspectorName,
+        int ShiftId,
+        string ShiftName,
+        int? RejectionId,
+        List<string> LineNames,
+        List<int> LineIds,
+        List<AuditFindingACDReadDto> Findings
+    );
+
+    public record AuditFindingACDReadDto(
+        int Id,
+        int StartPointId,
+        string StartPointName,
+        int EndPointId,
+        string EndPointName,
+        string PartNumber,
+        int NumberOfPieces,
+        string SampleSize,
+        int PackerPayroll,
+        bool? ContainerIdMatch,
+        byte FrontView,
+        byte SideView,
+        byte TopView,
+        byte IsometricView,
+        bool? CompleteProcess,
+        bool IsProductConforming
+    );
+
+    public class CreateAuditACDDto
+    {
+        public int ShiftId { get; set; }
+
+        public int? RejectionId { get; set; }
+
+        public List<int> LineIds { get; set; } = new();
+
+        public List<CreateAuditFindingACDDto> Findings { get; set; } = new();
+    }
+
+    public class CreateAuditFindingACDDto
+    {
+        public int StartPointId { get; set; }
+
+        public int EndPointId { get; set; }
+
+        public string PartNumber { get; set; } = null!;
+
+        public int NumberOfPieces { get; set; }
+
+        public string SampleSize { get; set; } = null!;
+
+        public int PackerPayroll { get; set; }
+
+        public bool? ContainerIdMatch { get; set; }
+
+        public byte FrontView { get; set; }
+
+        public byte SideView { get; set; }
+
+        public byte TopView { get; set; }
+
+        public byte IsometricView { get; set; }
+
+        public bool? CompleteProcess { get; set; }
+
+        public bool IsProductConforming { get; set; }
+    }
+
+    public class UpdateAuditACDDto
+    {
+        public int ShiftId { get; set; }
+
+        public int? RejectionId { get; set; }
+
+        public List<int> LineIds { get; set; } = new();
+
+        public List<UpdateAuditFindingACDDto> Findings { get; set; } = new();
+    }
+
+    public class UpdateAuditFindingACDDto
+    {
+        public int Id { get; set; }
+
+        public int StartPointId { get; set; }
+
+        public int EndPointId { get; set; }
+
+        public string PartNumber { get; set; } = null!;
+
+        public int NumberOfPieces { get; set; }
+
+        public string SampleSize { get; set; } = null!;
+
+        public int PackerPayroll { get; set; }
+
+        public bool? ContainerIdMatch { get; set; }
+
+        public byte FrontView { get; set; }
+
+        public byte SideView { get; set; }
+
+        public byte TopView { get; set; }
+
+        public byte IsometricView { get; set; }
+
+        public bool? CompleteProcess { get; set; }
+
+        public bool IsProductConforming { get; set; }
+    }
 }

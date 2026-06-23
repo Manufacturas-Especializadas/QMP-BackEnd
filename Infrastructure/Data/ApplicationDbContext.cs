@@ -47,6 +47,11 @@ namespace Infrastructure.Data
         public virtual DbSet<AuditDataScrap> AuditDataScraps => Set<AuditDataScrap>();
         public virtual DbSet<AuditFindingScrap> AuditFindingsScrap => Set<AuditFindingScrap>();
 
+        public DbSet<AuditStartPoint> AuditStartPoints { get; set; } = null!;
+        public DbSet<AuditEndPoint> AuditEndPoints { get; set; } = null!;
+        public DbSet<AuditDataACD> AuditDataACDs { get; set; } = null!;
+        public DbSet<AuditFindingACD> AuditFindingsACDs { get; set; } = null!;
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -299,6 +304,84 @@ namespace Infrastructure.Data
                         l => l.HasOne<Line>().WithMany().HasForeignKey("LineId").OnDelete(DeleteBehavior.Cascade),
                         a => a.HasOne<AuditDataScrap>().WithMany().HasForeignKey("AuditId").OnDelete(DeleteBehavior.Cascade)
                     );
+            });
+
+            modelBuilder.Entity<AuditStartPoint>(entity =>
+            {
+                entity.ToTable("AuditStartPoint");
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.ProcessName).HasColumnName("processName").HasMaxLength(50).IsRequired();
+            });
+
+            modelBuilder.Entity<AuditEndPoint>(entity =>
+            {
+                entity.ToTable("AuditEndPoint");
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.ProcessName).HasColumnName("processName").HasMaxLength(50).IsRequired();
+            });
+
+            modelBuilder.Entity<AuditDataACD>(entity =>
+            {
+                entity.ToTable("AuditDataACD");
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.AuditDate).HasColumnName("auditDate").HasDefaultValueSql("GETDATE()");
+                entity.Property(e => e.UserId).HasColumnName("userId");
+                entity.Property(e => e.ShiftId).HasColumnName("shiftId");
+                entity.Property(e => e.RejectionId).HasColumnName("rejectionId").IsRequired(false);
+
+                entity.HasOne(d => d.Rejection)
+                    .WithMany()
+                    .HasForeignKey(d => d.RejectionId)
+                    .OnDelete(DeleteBehavior.SetNull);
+
+                entity.HasMany(d => d.Lines)
+                    .WithMany()
+                    .UsingEntity<Dictionary<string, object>>(
+                        "AuditLinesACD",
+                        l => l.HasOne<Line>().WithMany().HasForeignKey("LineId").OnDelete(DeleteBehavior.Cascade),
+                        a => a.HasOne<AuditDataACD>().WithMany().HasForeignKey("AuditId").OnDelete(DeleteBehavior.Cascade),
+                        je =>
+                        {
+                            je.HasKey("AuditId", "LineId");
+                            je.ToTable("AuditLinesACD");
+                        });
+            });
+
+            modelBuilder.Entity<AuditFindingACD>(entity =>
+            {
+                entity.ToTable("AuditFindingsACD");
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.AuditId).HasColumnName("auditId");
+                entity.Property(e => e.StartPointId).HasColumnName("startPointId");
+                entity.Property(e => e.EndPointId).HasColumnName("endPointId");
+
+                entity.Property(e => e.PartNumber).HasColumnName("partNumber").HasMaxLength(100).IsRequired();
+                entity.Property(e => e.NumberOfPieces).HasColumnName("numberOfPieces");
+                entity.Property(e => e.SampleSize).HasColumnName("sampleSize").HasMaxLength(50).IsRequired();
+                entity.Property(e => e.PackerPayroll).HasColumnName("packerPayroll");
+
+                entity.Property(e => e.ContainerIdMatch).HasColumnName("containerIdMatch");
+                entity.Property(e => e.FrontView).HasColumnName("frontView");
+                entity.Property(e => e.SideView).HasColumnName("sideView");
+                entity.Property(e => e.TopView).HasColumnName("topView");
+                entity.Property(e => e.IsometricView).HasColumnName("isometricView");
+                entity.Property(e => e.CompleteProcess).HasColumnName("completeProcess");
+                entity.Property(e => e.IsProductConforming).HasColumnName("isProductConforming").HasDefaultValue(true);
+
+                entity.HasOne(d => d.Audit)
+                    .WithMany(p => p.Findings)
+                    .HasForeignKey(d => d.AuditId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(d => d.StartPoint)
+                    .WithMany(p => p.Findings)
+                    .HasForeignKey(d => d.StartPointId)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
+
+                entity.HasOne(d => d.EndPoint)
+                    .WithMany(p => p.Findings)
+                    .HasForeignKey(d => d.EndPointId)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
             });
         }
     }

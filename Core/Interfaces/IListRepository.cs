@@ -47,5 +47,10 @@ namespace Core.Interfaces
         Task<IEnumerable<MachineByLinesLookupDto>> GetMachinesByLines(List<int> lineIds);
 
         Task<IEnumerable<DefectsLookupDto>> GetDefects(int typeScrapId);
+
+        Task<IEnumerable<AuditsPointsLookDto>> GetAuditsStartPoints();
+
+        Task<IEnumerable<AuditsPointsLookDto>> GetAuditsEndPoints();
+
     }
 }

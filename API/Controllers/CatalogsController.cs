@@ -62,6 +62,24 @@ namespace API.Controllers
         }
 
         [HttpGet]
+        [Route("startPoints")]
+        public async Task<IActionResult> GetAuditsStartPoints()
+        {
+            var result = await _listRepository.GetAuditsStartPoints();
+
+            return result.Any() ? Ok(result) : BadRequest("Sin datos");
+        }
+
+        [HttpGet]
+        [Route("endPoints")]
+        public async Task<IActionResult> GetAuditsEndPoints()
+        {
+            var result = await _listRepository.GetAuditsEndPoints();
+
+            return result.Any() ? Ok(result) : BadRequest("Sin datos");
+        }
+
+        [HttpGet]
         [Route("defects")]
         public async Task<IActionResult> GetDefects()
         {

@@ -48,6 +48,8 @@ namespace Core.DTOs
 
     public record ClientCreateDto(string ClientName);
 
+    public record AuditsPointsLookDto(int id, string name);
+
     public record ClineReadDto(int Id, string ClientName);
 
     public record UserEditDto(

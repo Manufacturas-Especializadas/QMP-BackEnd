@@ -85,6 +85,7 @@ builder.Services.AddScoped<IRejectionRepository, RejectionRepository>();
 builder.Services.AddScoped<IRejectionService, RejectionService>();
 builder.Services.AddScoped<IAuditFcdsRepository, AuditFcdsRepository>();
 builder.Services.AddScoped<IAuditScrapRepository, AuditScrapRepository>();
+builder.Services.AddScoped<IAuditACDRepository, AuditACDRepository>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(options => {

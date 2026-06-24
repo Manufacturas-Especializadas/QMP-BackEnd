@@ -92,6 +92,23 @@ namespace Infrastructure.Repositories
                                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<AuditsPointsLookDto>> GetAuditsStartPoints()
+        {
+            return await _context.AuditStartPoints
+                            .AsNoTracking()
+                            .Select(s => new AuditsPointsLookDto(s.Id, s.ProcessName))
+                            .ToListAsync();
+        }
+
+        public async Task<IEnumerable<AuditsPointsLookDto>> GetAuditsEndPoints()
+        {
+            return await _context.AuditEndPoints
+                            .AsNoTracking()
+                            .Select(e => new AuditsPointsLookDto(e.Id, e.ProcessName))
+                            .ToListAsync();
+
+        }
+
         public async Task<IEnumerable<TypeMeasuringEquipmentLookupDto>> GetTypeMeasuringEquipment()
         {
             return await _context.TypeMeasuringEquipment

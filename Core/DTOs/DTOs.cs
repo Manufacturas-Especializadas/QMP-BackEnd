@@ -403,6 +403,7 @@ namespace Core.DTOs
         int ShiftId,
         string ShiftName,
         int? RejectionId,
+        int? RejectionFolio,
         List<string> LineNames,
         List<int> LineIds,
         List<AuditFindingACDReadDto> Findings

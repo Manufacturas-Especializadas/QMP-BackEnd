@@ -45,6 +45,7 @@ namespace API.Controllers
                 audit.ShiftId,
                 audit.Shift?.ShiftName ?? "N/A",
                 audit.RejectionId,
+                audit.Rejection?.Folio,
                 audit.Lines.Select(l => l.LineName).ToList(),
                 audit.Lines.Select(l => l.Id).ToList(),
                 audit.Findings.Select(f => new AuditFindingACDReadDto(

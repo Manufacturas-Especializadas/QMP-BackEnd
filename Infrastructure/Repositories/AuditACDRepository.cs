@@ -21,6 +21,7 @@ namespace Infrastructure.Repositories
                         .Include(a => a.User)
                         .Include(a => a.Shift)
                         .Include(a => a.Lines)
+                        .Include(a => a.Rejection)
                         .Include(a => a.Findings).ThenInclude(f => f.StartPoint)
                         .Include(a => a.Findings).ThenInclude(f => f.EndPoint)
                         .FirstOrDefaultAsync(a => a.Id == id);
@@ -38,6 +39,7 @@ namespace Infrastructure.Repositories
                             a.ShiftId,
                             a.Shift.ShiftName,
                             a.RejectionId,
+                            a.Rejection != null ? a.Rejection.Folio : null,
                             a.Lines.Select(l => l.LineName).ToList(),
                             a.Lines.Select(l => l.Id).ToList(),
                             a.Findings.Select(f => new AuditFindingACDReadDto(

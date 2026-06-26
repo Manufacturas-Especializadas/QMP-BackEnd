@@ -87,6 +87,7 @@ builder.Services.AddScoped<IAuditFcdsRepository, AuditFcdsRepository>();
 builder.Services.AddScoped<IAuditScrapRepository, AuditScrapRepository>();
 builder.Services.AddScoped<IAuditACDRepository, AuditACDRepository>();
 builder.Services.AddScoped<IMachineCodeRepository, MachineCodeRepository>();
+builder.Services.AddScoped<IProcessRepository, ProcessRepository>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(options => {

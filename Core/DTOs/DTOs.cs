@@ -77,6 +77,23 @@ namespace Core.DTOs
         int NewRoleId
     );
 
+    public record ProcessReadDto(
+        int Id,
+        string ProcessName,
+        int LineId,
+        string LineName
+    );
+
+    public record ProcessCreateDto(
+        int LineId,
+        string ProcessName
+    );
+
+    public record ProcessUpdateDto(
+        int LineId,
+        string ProcessName
+    );
+
     public record UserRegisterDto(string EmployeeNumber, int RoleId);
 
     public record UserLoginDto(string EmployeeNumber, string Password);

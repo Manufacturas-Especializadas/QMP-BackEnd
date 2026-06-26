@@ -52,6 +52,25 @@ namespace Core.DTOs
 
     public record ClineReadDto(int Id, string ClientName);
 
+    public record MachineCodeReadDto(
+        int Id,
+        string MachineCodeName,
+        int ProcessId,
+        string ProcessName,
+        int LineId,
+        string LineName
+    );
+
+    public record MachineCodeCreateDto(
+        int ProcessId,
+        string MachineCodeName
+    );
+
+    public record MachineCodeUpdateDto(
+        int ProcessId,
+        string MachineCodeName
+    );
+
     public record UserEditDto(
         int Id,
         string NewEmployeeNumber,

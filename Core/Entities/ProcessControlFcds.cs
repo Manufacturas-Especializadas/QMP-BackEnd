@@ -20,7 +20,7 @@
 
         public byte ItProcess { get; set; }
 
-        public string TypeOil { get; set; } = string.Empty;
+        public string? TypeOil { get; set; }
 
         public byte MeasuringEquipmentAdequate { get; set; }
 

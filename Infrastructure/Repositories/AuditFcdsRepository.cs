@@ -127,6 +127,8 @@ namespace Infrastructure.Repositories
                     MaterialCorrectlyIdentified = dto.Controls.MaterialCorrectlyIdentified,
                     IdentifiedMeasuringEquipment = dto.Controls.IdentifiedMeasuringEquipment,
                     CalibratedMeasuringEquipment = dto.Controls.CalibratedMeasuringEquipment,
+                    MeasuringEquipmentAdequate = dto.Controls.MeasuringEquipmentAdequate,
+                    MeasuringEquipmentOperatorMatch = dto.Controls.MeasuringEquipmentOperatorMatch,
                     ItProcess = dto.Controls.ItProcess,
                     TypeOil = dto.Controls.TypeOil,
                     LastHourOfRelease = TimeSpan.Parse(dto.Controls.LastHourOfRelease)
@@ -266,6 +268,8 @@ namespace Infrastructure.Repositories
                     MaterialCorrectlyIdentified = dto.Controls.MaterialCorrectlyIdentified,
                     IdentifiedMeasuringEquipment = dto.Controls.IdentifiedMeasuringEquipment,
                     CalibratedMeasuringEquipment = dto.Controls.CalibratedMeasuringEquipment,
+                    MeasuringEquipmentAdequate = dto.Controls.MeasuringEquipmentAdequate,
+                    MeasuringEquipmentOperatorMatch = dto.Controls.MeasuringEquipmentOperatorMatch,
                     ItProcess = dto.Controls.ItProcess,
                     TypeOil = dto.Controls.TypeOil ?? "",
                     LastHourOfRelease = TimeSpan.Parse(dto.Controls.LastHourOfRelease ?? "00:00")

@@ -243,12 +243,28 @@ namespace Infrastructure.Data
             {
                 entity.ToTable("ProcessControlsFCDS");
 
+                entity.Property(e => e.MttoValidation).HasColumnName("mttoValidation");
+                entity.Property(e => e.Realese1stPiece).HasColumnName("realese1stPiece");
+                entity.Property(e => e.Spc).HasColumnName("spc");
+                entity.Property(e => e.MaterialCorrectlyIdentified).HasColumnName("materialCorrectlyIdentified");
+
+                entity.Property(e => e.IdentifiedMeasuringEquipment).HasColumnName("identifiedMeasuringEquipment");
+                entity.Property(e => e.CalibratedMeasuringEquipment).HasColumnName("calibratedMeasuringEquipment");
+
+                entity.Property(e => e.MeasuringEquipmentAdequate).HasColumnName("measuringEquipmentAdequate");
+                entity.Property(e => e.MeasuringEquipmentOperatorMatch).HasColumnName("measuringEquipmentOperatorMatch");
+
+                entity.Property(e => e.ItProcess).HasColumnName("itProcess");
+                entity.Property(e => e.TypeOil).HasColumnName("typeOil");
+
+                entity.Property(e => e.LastHourOfRelease)
+                      .HasColumnName("lastHourOfRelease")
+                      .HasColumnType("time");
+
                 entity.HasOne(e => e.Audit)
                     .WithMany(a => a.ProcessControls)
                     .HasForeignKey(e => e.AuditId)
                     .OnDelete(DeleteBehavior.Cascade);
-
-                entity.Property(e => e.LastHourOfRelease).HasColumnType("time");
             });
 
             modelBuilder.Entity<ProductReleasePhysicalCondition>(entity =>

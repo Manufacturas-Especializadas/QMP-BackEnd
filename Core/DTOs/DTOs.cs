@@ -285,6 +285,8 @@ namespace Core.DTOs
         public byte MaterialCorrectlyIdentified { get; init; }
         public byte IdentifiedMeasuringEquipment { get; init; }
         public byte CalibratedMeasuringEquipment { get; init; }
+        public byte MeasuringEquipmentAdequate { get; init; }
+        public byte MeasuringEquipmentOperatorMatch { get; init; }
         public byte ItProcess { get; init; }
         public string TypeOil { get; init; } = string.Empty;
         public string LastHourOfRelease { get; init; } = string.Empty;

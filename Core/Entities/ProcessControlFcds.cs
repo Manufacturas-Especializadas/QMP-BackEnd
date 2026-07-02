@@ -22,15 +22,11 @@
 
         public string TypeOil { get; set; } = string.Empty;
 
-        public byte MeasuringEquipmentIdentified { get; set; }
-
-        public byte MeasuringEquipmentCalibrated { get; set; }
-
         public byte MeasuringEquipmentAdequate { get; set; }
 
         public byte MeasuringEquipmentOperatorMatch { get; set; }
 
-        public TimeSpan LastHourOfRelease { get; set; } 
+        public TimeSpan LastHourOfRelease { get; set; }
 
         public virtual AuditDataFcds Audit { get; set; } = null!;
     }

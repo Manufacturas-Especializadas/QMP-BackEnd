@@ -422,6 +422,8 @@ namespace Infrastructure.Repositories
                     MaterialCorrectlyIdentified = controls?.MaterialCorrectlyIdentified ?? 0,
                     IdentifiedMeasuringEquipment = controls?.IdentifiedMeasuringEquipment ?? 0,
                     CalibratedMeasuringEquipment = controls?.CalibratedMeasuringEquipment ?? 0,
+                    MeasuringEquipmentAdequate = controls?.MeasuringEquipmentAdequate ?? 0,
+                    MeasuringEquipmentOperatorMatch = controls?.MeasuringEquipmentOperatorMatch ?? 0,
                     ItProcess = controls?.ItProcess ?? 0,
                     TypeOil = controls?.TypeOil ?? "",
                     LastHourOfRelease = controls?.LastHourOfRelease.ToString(@"hh\:mm") ?? ""

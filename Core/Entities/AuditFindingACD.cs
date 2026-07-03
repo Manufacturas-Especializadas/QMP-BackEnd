@@ -28,6 +28,14 @@
 
         public byte IsometricView { get; set; }
 
+        public string? ShopOrder { get; set; }
+
+        public byte WeldingDefects { get; set; }
+
+        public byte PpBom { get; set; }
+
+        public string? ImagesEvidence { get; set; }
+
         public bool? CompleteProcess { get; set; }
 
         public bool IsProductConforming { get; set; }

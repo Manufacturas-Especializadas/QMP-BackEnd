@@ -285,6 +285,8 @@ namespace Core.DTOs
         public byte MaterialCorrectlyIdentified { get; init; }
         public byte IdentifiedMeasuringEquipment { get; init; }
         public byte CalibratedMeasuringEquipment { get; init; }
+        public byte MeasuringEquipmentAdequate { get; init; }
+        public byte MeasuringEquipmentOperatorMatch { get; init; }
         public byte ItProcess { get; init; }
         public string TypeOil { get; init; } = string.Empty;
         public string LastHourOfRelease { get; init; } = string.Empty;
@@ -461,7 +463,11 @@ namespace Core.DTOs
         byte TopView,
         byte IsometricView,
         bool? CompleteProcess,
-        bool IsProductConforming
+        bool IsProductConforming,
+        string? ShopOrder,
+        byte WeldingDefects,
+        byte PpBom,
+        string? ImagesEvidence
     );
 
     public class CreateAuditACDDto
@@ -502,6 +508,14 @@ namespace Core.DTOs
         public bool? CompleteProcess { get; set; }
 
         public bool IsProductConforming { get; set; }
+
+        public string? ShopOrder { get; set; }
+
+        public byte WeldingDefects { get; set; }
+
+        public byte PpBom { get; set; }
+
+        public List<IFormFile>? ImageFiles { get; set; }
     }
 
     public class UpdateAuditACDDto
@@ -544,5 +558,15 @@ namespace Core.DTOs
         public bool? CompleteProcess { get; set; }
 
         public bool IsProductConforming { get; set; }
+
+        public string? ShopOrder { get; set; }
+
+        public byte WeldingDefects { get; set; }
+
+        public byte PpBom { get; set; }
+
+        public List<IFormFile>? ImageFiles { get; set; }
+
+        public string? ExistingImageUrls { get; set; }
     }
 }

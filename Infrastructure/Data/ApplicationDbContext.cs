@@ -243,12 +243,28 @@ namespace Infrastructure.Data
             {
                 entity.ToTable("ProcessControlsFCDS");
 
+                entity.Property(e => e.MttoValidation).HasColumnName("mttoValidation");
+                entity.Property(e => e.Realese1stPiece).HasColumnName("realese1stPiece");
+                entity.Property(e => e.Spc).HasColumnName("spc");
+                entity.Property(e => e.MaterialCorrectlyIdentified).HasColumnName("materialCorrectlyIdentified");
+
+                entity.Property(e => e.IdentifiedMeasuringEquipment).HasColumnName("identifiedMeasuringEquipment");
+                entity.Property(e => e.CalibratedMeasuringEquipment).HasColumnName("calibratedMeasuringEquipment");
+
+                entity.Property(e => e.MeasuringEquipmentAdequate).HasColumnName("measuringEquipmentAdequate");
+                entity.Property(e => e.MeasuringEquipmentOperatorMatch).HasColumnName("measuringEquipmentOperatorMatch");
+
+                entity.Property(e => e.ItProcess).HasColumnName("itProcess");
+                entity.Property(e => e.TypeOil).HasColumnName("typeOil");
+
+                entity.Property(e => e.LastHourOfRelease)
+                      .HasColumnName("lastHourOfRelease")
+                      .HasColumnType("time");
+
                 entity.HasOne(e => e.Audit)
                     .WithMany(a => a.ProcessControls)
                     .HasForeignKey(e => e.AuditId)
                     .OnDelete(DeleteBehavior.Cascade);
-
-                entity.Property(e => e.LastHourOfRelease).HasColumnType("time");
             });
 
             modelBuilder.Entity<ProductReleasePhysicalCondition>(entity =>
@@ -359,6 +375,19 @@ namespace Infrastructure.Data
                 entity.Property(e => e.NumberOfPieces).HasColumnName("numberOfPieces");
                 entity.Property(e => e.SampleSize).HasColumnName("sampleSize").HasMaxLength(50).IsRequired();
                 entity.Property(e => e.PackerPayroll).HasColumnName("packerPayroll");
+
+                entity.Property(e => e.ShopOrder)
+                  .HasColumnName("shopOrder")
+                  .HasMaxLength(100);
+
+                entity.Property(e => e.WeldingDefects)
+                      .HasColumnName("weldingDefects");
+
+                entity.Property(e => e.PpBom)
+                      .HasColumnName("ppBom");
+
+                entity.Property(e => e.ImagesEvidence)
+                      .HasColumnName("imagesEvidence");
 
                 entity.Property(e => e.ContainerIdMatch).HasColumnName("containerIdMatch");
                 entity.Property(e => e.FrontView).HasColumnName("frontView");

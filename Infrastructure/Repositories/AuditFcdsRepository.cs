@@ -127,6 +127,8 @@ namespace Infrastructure.Repositories
                     MaterialCorrectlyIdentified = dto.Controls.MaterialCorrectlyIdentified,
                     IdentifiedMeasuringEquipment = dto.Controls.IdentifiedMeasuringEquipment,
                     CalibratedMeasuringEquipment = dto.Controls.CalibratedMeasuringEquipment,
+                    MeasuringEquipmentAdequate = dto.Controls.MeasuringEquipmentAdequate,
+                    MeasuringEquipmentOperatorMatch = dto.Controls.MeasuringEquipmentOperatorMatch,
                     ItProcess = dto.Controls.ItProcess,
                     TypeOil = dto.Controls.TypeOil,
                     LastHourOfRelease = TimeSpan.Parse(dto.Controls.LastHourOfRelease)
@@ -266,6 +268,8 @@ namespace Infrastructure.Repositories
                     MaterialCorrectlyIdentified = dto.Controls.MaterialCorrectlyIdentified,
                     IdentifiedMeasuringEquipment = dto.Controls.IdentifiedMeasuringEquipment,
                     CalibratedMeasuringEquipment = dto.Controls.CalibratedMeasuringEquipment,
+                    MeasuringEquipmentAdequate = dto.Controls.MeasuringEquipmentAdequate,
+                    MeasuringEquipmentOperatorMatch = dto.Controls.MeasuringEquipmentOperatorMatch,
                     ItProcess = dto.Controls.ItProcess,
                     TypeOil = dto.Controls.TypeOil ?? "",
                     LastHourOfRelease = TimeSpan.Parse(dto.Controls.LastHourOfRelease ?? "00:00")
@@ -418,6 +422,8 @@ namespace Infrastructure.Repositories
                     MaterialCorrectlyIdentified = controls?.MaterialCorrectlyIdentified ?? 0,
                     IdentifiedMeasuringEquipment = controls?.IdentifiedMeasuringEquipment ?? 0,
                     CalibratedMeasuringEquipment = controls?.CalibratedMeasuringEquipment ?? 0,
+                    MeasuringEquipmentAdequate = controls?.MeasuringEquipmentAdequate ?? 0,
+                    MeasuringEquipmentOperatorMatch = controls?.MeasuringEquipmentOperatorMatch ?? 0,
                     ItProcess = controls?.ItProcess ?? 0,
                     TypeOil = controls?.TypeOil ?? "",
                     LastHourOfRelease = controls?.LastHourOfRelease.ToString(@"hh\:mm") ?? ""

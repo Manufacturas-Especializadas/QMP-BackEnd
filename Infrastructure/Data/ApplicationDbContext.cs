@@ -376,6 +376,19 @@ namespace Infrastructure.Data
                 entity.Property(e => e.SampleSize).HasColumnName("sampleSize").HasMaxLength(50).IsRequired();
                 entity.Property(e => e.PackerPayroll).HasColumnName("packerPayroll");
 
+                entity.Property(e => e.ShopOrder)
+                  .HasColumnName("shopOrder")
+                  .HasMaxLength(100);
+
+                entity.Property(e => e.WeldingDefects)
+                      .HasColumnName("weldingDefects");
+
+                entity.Property(e => e.PpBom)
+                      .HasColumnName("ppBom");
+
+                entity.Property(e => e.ImagesEvidence)
+                      .HasColumnName("imagesEvidence");
+
                 entity.Property(e => e.ContainerIdMatch).HasColumnName("containerIdMatch");
                 entity.Property(e => e.FrontView).HasColumnName("frontView");
                 entity.Property(e => e.SideView).HasColumnName("sideView");

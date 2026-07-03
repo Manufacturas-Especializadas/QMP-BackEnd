@@ -67,7 +67,11 @@ namespace API.Controllers
                     f.TopView,
                     f.IsometricView,
                     f.CompleteProcess,
-                    f.IsProductConforming
+                    f.IsProductConforming,
+                    f.ShopOrder,
+                    f.WeldingDefects,
+                    f.PpBom,
+                    f.ImagesEvidence
                 )).ToList()
             );
 

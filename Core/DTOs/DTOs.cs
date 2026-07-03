@@ -463,7 +463,11 @@ namespace Core.DTOs
         byte TopView,
         byte IsometricView,
         bool? CompleteProcess,
-        bool IsProductConforming
+        bool IsProductConforming,
+        string? ShopOrder,
+        byte WeldingDefects,
+        byte PpBom,
+        string? ImagesEvidence
     );
 
     public class CreateAuditACDDto

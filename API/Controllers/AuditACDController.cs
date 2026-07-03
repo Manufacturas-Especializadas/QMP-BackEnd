@@ -13,11 +13,14 @@ namespace API.Controllers
     {
         private readonly IAuditACDRepository _repository;
         private readonly ApplicationDbContext _context;
+        private readonly IAzureStorageService _storageService;
 
-        public AuditACDController(IAuditACDRepository repository, ApplicationDbContext context)
+        public AuditACDController(IAuditACDRepository repository, ApplicationDbContext context, 
+            IAzureStorageService storageService)
         {
             _context = context;
             _repository = repository;
+            _storageService = storageService;
         }
 
         [HttpGet]
@@ -73,7 +76,7 @@ namespace API.Controllers
 
         [HttpPost]
         [Route("Create")]
-        public async Task<IActionResult> Create([FromBody] CreateAuditACDDto dto)
+        public async Task<IActionResult> Create([FromForm] CreateAuditACDDto dto)
         {
             if (dto == null) return BadRequest("Datos inválidos");
 
@@ -107,6 +110,18 @@ namespace API.Controllers
 
                 foreach (var fDto in dto.Findings)
                 {
+
+                    var uploadedUrls = new List<string>();
+
+                    if (fDto.ImageFiles != null && fDto.ImageFiles.Any())
+                    {
+                        foreach (var file in fDto.ImageFiles.Take(3))
+                        {
+                            var url = await _storageService.UploadFileAsync("acd-evidences", file);
+                            uploadedUrls.Add(url);
+                        }
+                    }
+
                     var finding = new AuditFindingACD
                     {
                         AuditId = audit.Id,
@@ -122,7 +137,11 @@ namespace API.Controllers
                         TopView = fDto.TopView,
                         IsometricView = fDto.IsometricView,
                         CompleteProcess = fDto.CompleteProcess,
-                        IsProductConforming = fDto.IsProductConforming
+                        IsProductConforming = fDto.IsProductConforming,
+                        ShopOrder = fDto.ShopOrder,
+                        WeldingDefects = fDto.WeldingDefects,
+                        PpBom = fDto.PpBom,
+                        ImagesEvidence = uploadedUrls.Any() ? string.Join(",", uploadedUrls) : null
                     };
 
                     await _context.AuditFindingsACDs.AddAsync(finding);
@@ -150,30 +169,59 @@ namespace API.Controllers
 
         [HttpPut]
         [Route("Update/{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] UpdateAuditACDDto dto)
+        public async Task<IActionResult> Update(int id, [FromForm] UpdateAuditACDDto dto)
         {
             if (dto == null) return BadRequest("Datos de edición inválidos.");
 
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
-                var findingsToSync = dto.Findings.Select(fDto => new AuditFindingACD
+                var findingsToSync = new List<AuditFindingACD>();
+
+                foreach (var fDto in dto.Findings)
                 {
-                    Id = fDto.Id,
-                    StartPointId = fDto.StartPointId,
-                    EndPointId = fDto.EndPointId,
-                    PartNumber = fDto.PartNumber,
-                    NumberOfPieces = fDto.NumberOfPieces,
-                    SampleSize = fDto.SampleSize,
-                    PackerPayroll = fDto.PackerPayroll,
-                    ContainerIdMatch = fDto.ContainerIdMatch,
-                    FrontView = fDto.FrontView,
-                    SideView = fDto.SideView,
-                    TopView = fDto.TopView,
-                    IsometricView = fDto.IsometricView,
-                    CompleteProcess = fDto.CompleteProcess,
-                    IsProductConforming = fDto.IsProductConforming
-                }).ToList();
+                    var finalUrls = new List<string>();
+
+                    if (!string.IsNullOrWhiteSpace(fDto.ExistingImageUrls))
+                    {
+                        finalUrls.AddRange(fDto.ExistingImageUrls.Split(',', StringSplitOptions.RemoveEmptyEntries));
+                    }
+
+                    if (fDto.ImageFiles != null && fDto.ImageFiles.Any())
+                    {
+                        int spaceLeft = 3 - finalUrls.Count;
+                        if (spaceLeft > 0)
+                        {
+                            foreach (var file in fDto.ImageFiles.Take(spaceLeft))
+                            {
+                                var url = await _storageService.UploadFileAsync("acd-evidences", file);
+                                finalUrls.Add(url);
+                            }
+                        }
+                    }
+
+                    findingsToSync.Add(new AuditFindingACD
+                    {
+                        Id = fDto.Id,
+                        StartPointId = fDto.StartPointId,
+                        EndPointId = fDto.EndPointId,
+                        PartNumber = fDto.PartNumber,
+                        NumberOfPieces = fDto.NumberOfPieces,
+                        SampleSize = fDto.SampleSize,
+                        PackerPayroll = fDto.PackerPayroll,
+                        ContainerIdMatch = fDto.ContainerIdMatch,
+                        FrontView = fDto.FrontView,
+                        SideView = fDto.SideView,
+                        TopView = fDto.TopView,
+                        IsometricView = fDto.IsometricView,
+                        CompleteProcess = fDto.CompleteProcess,
+                        IsProductConforming = fDto.IsProductConforming,
+                        ShopOrder = fDto.ShopOrder,
+                        WeldingDefects = fDto.WeldingDefects,
+                        PpBom = fDto.PpBom,
+                        ImagesEvidence = finalUrls.Any() ? string.Join(",", finalUrls) : null
+                    });
+                }
 
                 var success = await _repository.UpdateAuditAsync(id, dto, findingsToSync);
                 if (!success) return NotFound(new { message = "No se pudo actualizar el registro solicitado." });

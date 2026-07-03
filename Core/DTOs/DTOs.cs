@@ -504,6 +504,14 @@ namespace Core.DTOs
         public bool? CompleteProcess { get; set; }
 
         public bool IsProductConforming { get; set; }
+
+        public string? ShopOrder { get; set; }
+
+        public byte WeldingDefects { get; set; }
+
+        public byte PpBom { get; set; }
+
+        public List<IFormFile>? ImageFiles { get; set; }
     }
 
     public class UpdateAuditACDDto
@@ -546,5 +554,15 @@ namespace Core.DTOs
         public bool? CompleteProcess { get; set; }
 
         public bool IsProductConforming { get; set; }
+
+        public string? ShopOrder { get; set; }
+
+        public byte WeldingDefects { get; set; }
+
+        public byte PpBom { get; set; }
+
+        public List<IFormFile>? ImageFiles { get; set; }
+
+        public string? ExistingImageUrls { get; set; }
     }
 }

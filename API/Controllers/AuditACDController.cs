@@ -164,9 +164,14 @@ namespace API.Controllers
             {
                 await transaction.RollbackAsync();
 
+                var errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+
                 return StatusCode(500, new
                 {
-                    message = "Error al procesar la auditoria ACD"
+                    message = "Error al procesar la auditoría ACD.",
+                    error = ex.Message,
+                    innerError = errorMessage,
+                    stackTrace = ex.StackTrace
                 });
             }
         }

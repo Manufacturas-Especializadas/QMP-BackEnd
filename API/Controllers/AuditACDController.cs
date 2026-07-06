@@ -143,8 +143,8 @@ namespace API.Controllers
                         CompleteProcess = fDto.CompleteProcess,
                         IsProductConforming = fDto.IsProductConforming,
                         ShopOrder = fDto.ShopOrder,
-                        WeldingDefects = fDto.WeldingDefects,
-                        PpBom = fDto.PpBom,
+                        WeldingDefects = fDto.WeldingDefects == 0 ? (byte)3 : fDto.WeldingDefects,
+                        PpBom = fDto.PpBom == 0 ? (byte)3 : fDto.PpBom,
                         ImagesEvidence = uploadedUrls.Any() ? string.Join(",", uploadedUrls) : null
                     };
 
@@ -164,9 +164,14 @@ namespace API.Controllers
             {
                 await transaction.RollbackAsync();
 
+                var errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+
                 return StatusCode(500, new
                 {
-                    message = "Error al procesar la auditoria ACD"
+                    message = "Error al procesar la auditoría ACD.",
+                    error = ex.Message,
+                    innerError = errorMessage,
+                    stackTrace = ex.StackTrace
                 });
             }
         }
@@ -221,8 +226,8 @@ namespace API.Controllers
                         CompleteProcess = fDto.CompleteProcess,
                         IsProductConforming = fDto.IsProductConforming,
                         ShopOrder = fDto.ShopOrder,
-                        WeldingDefects = fDto.WeldingDefects,
-                        PpBom = fDto.PpBom,
+                        WeldingDefects = fDto.WeldingDefects == 0 ? (byte)3 : fDto.WeldingDefects,
+                        PpBom = fDto.PpBom == 0 ? (byte)3 : fDto.PpBom,
                         ImagesEvidence = finalUrls.Any() ? string.Join(",", finalUrls) : null
                     });
                 }

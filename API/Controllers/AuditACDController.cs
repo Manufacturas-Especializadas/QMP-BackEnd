@@ -53,9 +53,9 @@ namespace API.Controllers
                 audit.Lines.Select(l => l.Id).ToList(),
                 audit.Findings.Select(f => new AuditFindingACDReadDto(
                     f.Id,
-                    f.StartPointId,
+                    f.StartPointId ?? 0,
                     f.StartPoint?.ProcessName ?? "N/A",
-                    f.EndPointId,
+                    f.EndPointId ?? 0,
                     f.EndPoint?.ProcessName ?? "N/A",
                     f.PartNumber,
                     f.NumberOfPieces,
@@ -129,8 +129,8 @@ namespace API.Controllers
                     var finding = new AuditFindingACD
                     {
                         AuditId = audit.Id,
-                        StartPointId = fDto.StartPointId,
-                        EndPointId = fDto.EndPointId,
+                        //StartPointId = fDto.StartPointId,
+                        //EndPointId = fDto.EndPointId,
                         PartNumber = fDto.PartNumber,
                         NumberOfPieces = fDto.NumberOfPieces,
                         SampleSize = fDto.SampleSize,
@@ -212,8 +212,8 @@ namespace API.Controllers
                     findingsToSync.Add(new AuditFindingACD
                     {
                         Id = fDto.Id,
-                        StartPointId = fDto.StartPointId,
-                        EndPointId = fDto.EndPointId,
+                        //StartPointId = fDto.StartPointId,
+                        ////EndPointId = fDto.EndPointId,
                         PartNumber = fDto.PartNumber,
                         NumberOfPieces = fDto.NumberOfPieces,
                         SampleSize = fDto.SampleSize,

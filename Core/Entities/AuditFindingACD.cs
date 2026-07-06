@@ -6,9 +6,9 @@
 
         public int AuditId { get; set; }
 
-        public int StartPointId { get; set; }
+        public int? StartPointId { get; set; }
 
-        public int EndPointId { get; set; }
+        public int? EndPointId { get; set; }
 
         public string PartNumber { get; set; } = null!;
 

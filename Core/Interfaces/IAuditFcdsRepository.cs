@@ -10,7 +10,7 @@ namespace Core.Interfaces
 
         Task<bool> DeleteAuditAsync(int id);
 
-        Task<IEnumerable<AuditFcdsListDto>> GetListAuditsAsync();
+        Task<PagedResponse<AuditFcdsListDto>> GetListAuditsAsync(PaginationParams paginationParams);
 
         Task<DetailedAuditFcdsDto?> GetDetailedAuditByIdAsync(int id);
 

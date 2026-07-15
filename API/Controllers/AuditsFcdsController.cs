@@ -20,13 +20,13 @@ namespace API.Controllers
 
         [HttpGet]
         [Route("List")]
-        public async Task<IActionResult> GetListAudits()
+        public async Task<ActionResult<PagedResponse<AuditFcdsListDto>>> GetListAudits([FromQuery] PaginationParams paginationParams)
         {
             try
             {
-                var audits = await _auditFcdsRepository.GetListAuditsAsync();
+                var pagedAudits = await _auditFcdsRepository.GetListAuditsAsync(paginationParams);
 
-                return Ok(audits);
+                return Ok(pagedAudits);
             }
             catch(Exception ex)
             {

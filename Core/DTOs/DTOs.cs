@@ -569,4 +569,31 @@ namespace Core.DTOs
 
         public string? ExistingImageUrls { get; set; }
     }
+
+    public class PaginationParams
+    {
+        private const int MaxPageSize = 50; // Límite de seguridad para evitar que pidan un millón de golpe
+        public int PageNumber { get; set; } = 1;
+
+        private int _pageSize = 10;
+        public int PageSize
+        {
+            get => _pageSize;
+            set => _pageSize = (value > MaxPageSize) ? MaxPageSize : value;
+        }
+    }
+
+    // Estructura de respuesta para el frontend
+    public class PagedResponse<T>
+    {
+        public int CurrentPage { get; set; }
+        public int TotalPages { get; set; }
+        public int PageSize { get; set; }
+        public int TotalCount { get; set; }
+
+        public int TotalConforming { get; set; }
+        public int TotalNonConforming { get; set; }
+        public IEnumerable<T> Items { get; set; } = new List<T>();
+    }
+
 }

@@ -341,11 +341,21 @@ namespace Infrastructure.Repositories
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<IEnumerable<AuditFcdsListDto>> GetListAuditsAsync()
+        public async Task<PagedResponse<AuditFcdsListDto>> GetListAuditsAsync(PaginationParams paginationParams)
         {
-            var rawAudits = await _context.AuditDataFcds
+            // 1. Creamos la consulta base (sin ejecutarla aún)
+            var query = _context.AuditDataFcds
                 .AsNoTracking()
-                .OrderByDescending(a => a.AuditDate)
+                .OrderByDescending(a => a.AuditDate);
+
+            // 2. Contamos el total de registros para la metadata (necesario para que el front sepa cuántas páginas hay)
+            var totalItems = await query.CountAsync();
+            var totalConforming = await query.CountAsync(a => a.IsProductConforming);
+            var totalNonConforming = totalItems - totalConforming;
+
+            var rawAudits = await query
+                .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
+                .Take(paginationParams.PageSize)
                 .Select(a => new
                 {
                     a.Id,
@@ -359,7 +369,8 @@ namespace Infrastructure.Repositories
                 })
                 .ToListAsync();
 
-            return rawAudits.Select(a => new AuditFcdsListDto(
+            // 4. Mapeamos al DTO final
+            var items = rawAudits.Select(a => new AuditFcdsListDto(
                 a.Id,
                 a.AuditDate,
                 a.InspectorName,
@@ -369,6 +380,17 @@ namespace Infrastructure.Repositories
                 a.IsProductConforming,
                 a.FolioRDM
             ));
+
+            return new PagedResponse<AuditFcdsListDto>
+            {
+                TotalCount = totalItems,
+                PageSize = paginationParams.PageSize,
+                CurrentPage = paginationParams.PageNumber,
+                TotalPages = (int)Math.Ceiling(totalItems / (double)paginationParams.PageSize),
+                TotalConforming = totalConforming,
+                TotalNonConforming = totalNonConforming,
+                Items = items
+            };
         }
 
         public async Task<DetailedAuditFcdsDto?> GetDetailedAuditByIdAsync(int id)

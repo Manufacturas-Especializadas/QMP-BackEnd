@@ -343,12 +343,10 @@ namespace Infrastructure.Repositories
 
         public async Task<PagedResponse<AuditFcdsListDto>> GetListAuditsAsync(PaginationParams paginationParams)
         {
-            // 1. Creamos la consulta base (sin ejecutarla aún)
             var query = _context.AuditDataFcds
                 .AsNoTracking()
                 .OrderByDescending(a => a.AuditDate);
 
-            // 2. Contamos el total de registros para la metadata (necesario para que el front sepa cuántas páginas hay)
             var totalItems = await query.CountAsync();
             var totalConforming = await query.CountAsync(a => a.IsProductConforming);
             var totalNonConforming = totalItems - totalConforming;
@@ -369,7 +367,6 @@ namespace Infrastructure.Repositories
                 })
                 .ToListAsync();
 
-            // 4. Mapeamos al DTO final
             var items = rawAudits.Select(a => new AuditFcdsListDto(
                 a.Id,
                 a.AuditDate,

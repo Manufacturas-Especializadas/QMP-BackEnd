@@ -62,14 +62,19 @@ builder.Services.AddDbContext<ApplicationDbContext>(option =>
     option.UseSqlServer(connection);
 });
 
-var allowedConnection = builder.Configuration.GetValue<string>("OrigenesPermitidos")!.Split(',');
+var allowedConnection = builder.Configuration.GetValue<string>("OrigenesPermitidos")!
+    .Split(',')
+    .Select(url => url.Trim())
+    .ToArray();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigins", policy =>
     {
         policy.WithOrigins(allowedConnection)
-                .AllowAnyHeader()
-                .AllowAnyMethod();
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
     });
 });
 

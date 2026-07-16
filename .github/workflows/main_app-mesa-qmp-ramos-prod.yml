@@ -13,7 +13,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: read #This is required for actions/checkout
+      contents: read
       
     steps:
       - uses: actions/checkout@v4
@@ -24,12 +24,10 @@ jobs:
           dotnet-version: '8.x'
           
       - name: Build with dotnet
-        # REEMPLAZA 'Ruta/A/Tu/ProyectoApi.csproj' con la ruta real de tu proyecto API
-        run: dotnet build Ruta/A/Tu/ProyectoApi.csproj --configuration Release
+        run: dotnet build API/API.csproj --configuration Release
         
       - name: dotnet publish
-        # REEMPLAZA 'Ruta/A/Tu/ProyectoApi.csproj' con la ruta real de tu proyecto API
-        run: dotnet publish Ruta/A/Tu/ProyectoApi.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet publish API/API.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp
         
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4

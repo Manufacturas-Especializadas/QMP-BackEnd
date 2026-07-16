@@ -337,12 +337,21 @@ namespace Core.DTOs
         public List<int> LineIds { get; init; } = new();
         public bool IsProductConforming { get; init; }
         public int? RejectionId { get; init; }
+        public string? InspectorPayroll { get; init; }
+        public string ProcessName { get; init; } = string.Empty;
 
         public TraceabilityFcdsDto Traceability { get; init; } = null!;
         public ProcessControlFcdsDto Controls { get; init; } = null!;
         public PhysicalConditionsDto Physicals { get; init; } = null!;
         public List<DimensionalSpecDto> DimensionalSpecs { get; init; } = new();
         public List<VisualChecklistDto> VisualChecklists { get; init; } = new();
+        public List<MeasuringElementCheckDto> MeasuringElements { get; init; } = new();
+    }
+
+    public record MeasuringElementCheckDto
+    {
+        public int? SuitableForMeasurement { get; set; }
+        public int? CorrespondsToOperator { get; set; }
     }
 
     public record AuditDataScrapReadDto(

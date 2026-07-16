@@ -14,21 +14,23 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read #This is required for actions/checkout
-
+      
     steps:
       - uses: actions/checkout@v4
-
+      
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.x'
-
+          
       - name: Build with dotnet
-        run: dotnet build --configuration Release
-
+        # REEMPLAZA 'Ruta/A/Tu/ProyectoApi.csproj' con la ruta real de tu proyecto API
+        run: dotnet build Ruta/A/Tu/ProyectoApi.csproj --configuration Release
+        
       - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
-
+        # REEMPLAZA 'Ruta/A/Tu/ProyectoApi.csproj' con la ruta real de tu proyecto API
+        run: dotnet publish Ruta/A/Tu/ProyectoApi.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
@@ -44,7 +46,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: .net-app
-      
+          
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3

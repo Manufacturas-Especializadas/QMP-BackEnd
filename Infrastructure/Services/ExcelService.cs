@@ -164,7 +164,7 @@ namespace Infrastructure.Services
                     "Nómina Operador", "Cat. Operador", "Shop Order", "Lote Tubería", "Máquinas", "Series Equipos",
                     "Validación Mtto", "1ra Pieza", "SPC", "Material Identificado", "Equipo Identificado", "Equipo Calibrado", "IT Proceso", "Tipo Aceite", "Hora Liberación",
                     "Marcas", "Golpes", "Contaminación", "Ovalamiento", "Rebaba", "Pandeado", "Exceso Aceite",
-                    "Mediciones Dimensionales / Checklist Visual"
+                    "Mediciones Dimensionales / Checklist Visual", "Nomina Inspector", "Adecuado Para La Medición", "Corresponde Al Operador Auditado" 
                 };
 
                 for (int i = 0; i < headers.Length; i++)
@@ -186,7 +186,7 @@ namespace Infrastructure.Services
                     worksheet.Cell(row, 1).Value = item.Id;
                     worksheet.Cell(row, 2).Value = item.AuditDate;
                     worksheet.Cell(row, 3).Value = item.ShiftId == 1 ? "Día" : item.ShiftId == 2 ? "Tarde" : "Noche";
-                    worksheet.Cell(row, 4).Value = item.FcdsProcessId.ToString();
+                    worksheet.Cell(row, 4).Value = item.ProcessName ?? "-";
                     worksheet.Cell(row, 5).Value = item.PartNumber;
                     worksheet.Cell(row, 6).Value = string.Join(", ", item.LineNames ?? new List<string>());
                     worksheet.Cell(row, 7).Value = item.IsProductConforming ? "CONFORME" : "NO CONFORME";
@@ -216,6 +216,8 @@ namespace Infrastructure.Services
                     worksheet.Cell(row, 28).Value = TraducirFisico(item.Physicals?.Burr ?? 0);
                     worksheet.Cell(row, 29).Value = TraducirFisico(item.Physicals?.Warped ?? 0);
                     worksheet.Cell(row, 30).Value = TraducirFisico(item.Physicals?.ExcessOil ?? 0);
+                    
+
 
                     if (item.DimensionalSpecs != null && item.DimensionalSpecs.Any())
                     {
@@ -231,6 +233,9 @@ namespace Infrastructure.Services
                     {
                         worksheet.Cell(row, 31).Value = "—";
                     }
+                    worksheet.Cell(row, 32).Value = item.InspectorPayroll ?? "-";
+                    worksheet.Cell(row, 33).Value = TraducirControl(item.Controls?.MeasuringEquipmentAdequate ?? 0);
+                    worksheet.Cell(row, 34).Value = TraducirControl(item.Controls?.MeasuringEquipmentOperatorMatch ?? 0);
 
                     row++;
                 }

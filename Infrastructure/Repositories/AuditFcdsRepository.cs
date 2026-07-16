@@ -343,10 +343,12 @@ namespace Infrastructure.Repositories
 
         public async Task<PagedResponse<AuditFcdsListDto>> GetListAuditsAsync(PaginationParams paginationParams)
         {
+            
             var query = _context.AuditDataFcds
                 .AsNoTracking()
                 .OrderByDescending(a => a.AuditDate);
 
+            
             var totalItems = await query.CountAsync();
             var totalConforming = await query.CountAsync(a => a.IsProductConforming);
             var totalNonConforming = totalItems - totalConforming;
@@ -367,6 +369,7 @@ namespace Infrastructure.Repositories
                 })
                 .ToListAsync();
 
+            
             var items = rawAudits.Select(a => new AuditFcdsListDto(
                 a.Id,
                 a.AuditDate,
@@ -487,6 +490,8 @@ namespace Infrastructure.Repositories
         {
             var audits = await _context.AuditDataFcds
                 .Where(a => a.AuditDate!.Value.Year == year && a.AuditDate.Value.Month == month)
+                .Include(a => a.FcdsProcess)
+                .Include(a => a.User)
                 .Include(a => a.Lines)
                 .Include(a => a.TraceabilityElements).ThenInclude(t => t.MachineCodes)
                 .Include(a => a.TraceabilityElements).ThenInclude(t => t.EquipmentSerials)
@@ -508,6 +513,8 @@ namespace Infrastructure.Repositories
                     AuditDate = audit.AuditDate,
                     ShiftId = audit.ShiftId,
                     FcdsProcessId = audit.FcdsProcessId,
+                    ProcessName = audit.FcdsProcess?.ProcessName ?? "—",
+                    InspectorPayroll = audit.User?.Username ?? "—",
                     PartNumber = audit.PartNumber,
                     LineNames = audit.Lines.Select(l => l.LineName).ToList(),
                     IsProductConforming = audit.IsProductConforming,
@@ -532,6 +539,8 @@ namespace Infrastructure.Repositories
                         MaterialCorrectlyIdentified = controls?.MaterialCorrectlyIdentified ?? 0,
                         IdentifiedMeasuringEquipment = controls?.IdentifiedMeasuringEquipment ?? 0,
                         CalibratedMeasuringEquipment = controls?.CalibratedMeasuringEquipment ?? 0,
+                        MeasuringEquipmentAdequate = controls?.MeasuringEquipmentAdequate ?? 0,
+                        MeasuringEquipmentOperatorMatch = controls?.MeasuringEquipmentOperatorMatch ?? 0,
                         ItProcess = controls?.ItProcess ?? 0,
                         TypeOil = controls?.TypeOil ?? "",
                         LastHourOfRelease = controls?.LastHourOfRelease.ToString(@"hh\:mm") ?? ""

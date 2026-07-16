@@ -68,8 +68,9 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowSpecificOrigins", policy =>
     {
         policy.WithOrigins(allowedConnection)
-                .AllowAnyHeader()
-                .AllowAnyMethod();
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
     });
 });
 

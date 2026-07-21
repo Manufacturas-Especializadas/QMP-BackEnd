@@ -31,23 +31,27 @@ namespace API.Controllers
                 if (scrap == null) return NotFound();
 
                 var dto = new ScrapReadDto(
-                    scrap.Id,
-                    scrap.PayRollNumber,
-                    scrap.Alloy,
-                    scrap.Diameter,
-                    scrap.Wall,
-                    scrap.RDM,
-                    scrap.Weight,
-                    scrap.CreatedAt,
-                    scrap.Shift?.ShiftName ?? "N/A",
-                    scrap.Line?.LineName ?? "N/A",
-                    scrap.Process?.ProcessName ?? "N/A",
-                    scrap.MachineCode?.MachineCodeName,
-                    scrap.TypeScrap?.TypeScrapName ?? "N/A",
-                    scrap.Defect?.DefectName ?? "N/A",
-                    scrap.IsVerified,
-                    scrap.VerifiedWeight
-                );
+                     scrap.Id,
+                     scrap.PayRollNumber,
+                     scrap.CreatedAt,
+                     scrap.Shift?.ShiftName ?? "N/A",
+                     scrap.Line?.LineName ?? "N/A",
+                     scrap.Process?.ProcessName ?? "N/A",
+                     scrap.MachineCode?.MachineCodeName,
+                     scrap.ScrapDetails.Select(d => new ScrapDetailReadDto(
+                         d.Id,
+                         d.Alloy,
+                         d.Diameter,
+                         d.Wall,
+                         d.RDM,
+                         d.Weight,
+                         d.Material?.MaterialName ?? "N/A",
+                         d.TypeScrap?.TypeScrapName ?? "N/A",
+                         d.Defect?.DefectName ?? "N/A",
+                         d.IsVerified,
+                         d.VerifiedWeight
+                     )).ToList()
+                 );
 
                 return Ok(dto);
             }
@@ -79,24 +83,26 @@ namespace API.Controllers
                 int filterMonth = month ?? DateTime.Now.Month;
                 int filterYear = year ?? DateTime.Now.Year;
 
-                var dtos = scrapRecords.Select(s => new ScrapReadDto(
+                var dtos = scrapRecords.SelectMany(s => s.ScrapDetails.Select(d => new ScrapFlatExportDto(
                     s.Id,
                     s.PayRollNumber,
-                    s.Alloy,
-                    s.Diameter,
-                    s.Wall,
-                    s.RDM,
-                    s.Weight,
+                    d.Alloy,
+                    d.Diameter,
+                    d.Wall,
+                    d.RDM,
+                    d.Weight,
                     s.CreatedAt,
                     s.Shift?.ShiftName ?? "N/A",
                     s.Line?.LineName ?? "N/A",
                     s.Process?.ProcessName ?? "N/A",
                     s.MachineCode?.MachineCodeName ?? "N/A",
-                    s.TypeScrap?.TypeScrapName ?? "N/A",
-                    s.Defect?.DefectName ?? "N/A",
-                    s.IsVerified,
-                    s.VerifiedWeight
-                )).ToList();
+                    d.TypeScrap?.TypeScrapName ?? "N/A",
+                    d.Defect?.DefectName ?? "N/A",
+                    d.IsVerified,
+                    d.VerifiedWeight,
+                    d.Material != null ? d.Material.MaterialName : "N/A"
+
+                ))).ToList();
 
                 var fileContents = _excelService.GenerateScrapReport(dtos);
 
@@ -109,41 +115,87 @@ namespace API.Controllers
             }
         }
 
+        [HttpPut]
+        [Route("UpdateScrap/{id}")]
+        public async Task<IActionResult> UpdateScrap(int id, [FromBody] UpdateScrapDto dto)
+        {
+            try
+            {
+                if (dto == null || dto.ScrapDetails == null || !dto.ScrapDetails.Any())
+                    return BadRequest("Datos inválidos o sin detalles");
+
+                var updatedScrap = new Scrap
+                {
+                    PayRollNumber = dto.PayRollNumber,
+                    ShiftId = dto.ShiftId,
+                    ProcessId = dto.ProcessId,
+                    LineId = dto.LineId,
+                    MachineCodeId = dto.MachineCodeId
+                };
+
+                var updatedDetails = dto.ScrapDetails.Select(d => new ScrapDetail
+                {
+                    Id = d.Id ?? 0,
+                    Alloy = d.Alloy,
+                    Diameter = d.Diameter,
+                    Wall = d.Wall,
+                    RDM = d.RDM,
+                    Weight = d.Weight,
+                    MaterialId = d.MaterialId,
+                    TypeScrapId = d.TypeScrapId,
+                    DefectId = d.DefectId
+                }).ToList();
+
+                var success = await _scrapRepository.UpdateAsync(id, updatedScrap, updatedDetails);
+
+                if (!success) return NotFound(new { message = "No se encontró el Scrap para actualizar." });
+
+                return Ok(new { message = "Scrap actualizado correctamente." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error interno: {ex.Message}");
+            }
+        }
+
         [HttpPost]
         [Route("CreateScrap")]
         public async Task<IActionResult> Create([FromBody] CreateScrapDto dto)
         {
             try
             {
-                if (dto == null) return BadRequest("Datos de scrap inválidos");
+                if (dto == null || dto.ScrapDetails == null || !dto.ScrapDetails.Any())
+                    return BadRequest("Datos de scrap inválidos o sin detalles");
 
                 TimeZoneInfo mexicoTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Central Standard Time (Mexico)");
-
                 DateTime nowInMexico = TimeZoneInfo.ConvertTime(DateTime.UtcNow, mexicoTimeZone);
 
                 var scrap = new Scrap
                 {
                     PayRollNumber = dto.PayRollNumber,
-                    Alloy = dto.Alloy,
-                    Diameter = dto.Diameter,
-                    Wall = dto.Wall,
-                    Weight = dto.Weight,
-                    RDM = dto.RDM,
                     ShiftId = dto.ShiftId,
                     ProcessId = dto.ProcessId,
                     LineId = dto.LineId,
                     MachineCodeId = dto.MachineCodeId,
-                    MaterialId = dto.MaterialId,
-                    TypeScrapId = dto.TypeScrapId,
-                    DefectId = dto.DefectId,
                     CreatedAt = nowInMexico,
+                    // Mapeo automático de la lista de detalles
+                    ScrapDetails = dto.ScrapDetails.Select(d => new ScrapDetail
+                    {
+                        Alloy = d.Alloy,
+                        Diameter = d.Diameter,
+                        Wall = d.Wall,
+                        Weight = d.Weight,
+                        RDM = d.RDM,
+                        MaterialId = d.MaterialId,
+                        TypeScrapId = d.TypeScrapId,
+                        DefectId = d.DefectId
+                    }).ToList()
                 };
 
                 await _scrapRepository.CreateAsync(scrap);
+                await _scrapRepository.SaveChangesAsync();
 
-                var result = await _scrapRepository.SaveChangesAsync();
-
-                return Ok();
+                return Ok(new { message = "Registro de Scrap y detalles guardados correctamente." });
             }
             catch(Exception ex)
             {
@@ -185,7 +237,7 @@ namespace API.Controllers
                         dto.VerifiedWeight
                     );
 
-                if (!result) return NotFound("No se encontró el registro de scrap");
+                if (!result) return NotFound("No se encontró el detalle de scrap");
 
                 return Ok(new { message = "Verificación actualizada correctamente" });
             }

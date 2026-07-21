@@ -118,17 +118,21 @@ namespace Core.DTOs
         DateTime createdAt);
 
     public record CreateScrapDto(
-        int PayRollNumber,
+            int PayRollNumber,
+            int ShiftId,
+            int? ProcessId,
+            int LineId,
+            int? MachineCodeId,
+            List<CreateScrapDetailDto> ScrapDetails
+    );
+
+    public record CreateScrapDetailDto(
         string? Alloy,
         string? Diameter,
         string? Wall,
         string RDM,
-        int ShiftId,
-        int? ProcessId,
-        int LineId,
         int MaterialId,
         int TypeScrapId,
-        int? MachineCodeId,
         int? DefectId,
         decimal Weight
     );
@@ -160,6 +164,31 @@ namespace Core.DTOs
     );
 
     public record ScrapReadDto(
+            int Id,
+            int PayRollNumber,
+            DateTime CreatedAt,
+            string ShiftName,
+            string LineName,
+            string ProcessName,
+            string? MachineCodeName,
+            List<ScrapDetailReadDto> Details
+    );
+
+    public record ScrapDetailReadDto(
+        int Id,
+        string? Alloy,
+        string? Diameter,
+        string? Wall,
+        string RDM,
+        decimal? Weight,
+        string MaterialName,
+        string TypeScrapName,
+        string DefectName,
+        bool IsVerified,
+        decimal? VerifiedWeight
+    );
+
+    public record ScrapFlatExportDto(
         int Id,
         int PayRollNumber,
         string? Alloy,
@@ -175,7 +204,34 @@ namespace Core.DTOs
         string TypeScrapName,
         string DefectName,
         bool IsVerified,
-        decimal? VerifiedWeight
+        decimal? VerifiedWeight,
+        string Material
+     
+    );
+
+    public record MaterialDto(
+    string MaterialName
+    );
+
+    public record UpdateScrapDto(
+        int PayRollNumber,
+        int ShiftId,
+        int? ProcessId,
+        int LineId,
+        int? MachineCodeId,
+        List<UpdateScrapDetailDto> ScrapDetails
+    );
+
+    public record UpdateScrapDetailDto(
+        int? Id,
+        string? Alloy,
+        string? Diameter,
+        string? Wall,
+        string RDM,
+        int MaterialId,
+        int TypeScrapId,
+        int? DefectId,
+        decimal Weight
     );
 
     public record UsersList(int id,string payRollNumber, DateTime createdAt, bool isActive, string roleName);

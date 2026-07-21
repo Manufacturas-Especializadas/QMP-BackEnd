@@ -13,13 +13,14 @@ namespace Infrastructure.Services
 {
     public class ExcelService : IExcelService
     {
-        public byte[] GenerateScrapReport(IEnumerable<ScrapReadDto> data)
+        public byte[] GenerateScrapReport(IEnumerable<ScrapFlatExportDto> data)
         {
             using(var workbook = new XLWorkbook())
             {
                 var worksheet = workbook.Worksheets.Add("Reporte de Scrap");
 
-                var headers = new string[] { "ID", "Nómina", "Fecha", "Línea", "Proceso", "Tipo", "Peso Original", "Verificado", "Peso Verificado" };
+                var headers = new string[] { "ID", "PE", "Fecha", "Línea", "Turno", "Proceso", "Tipo", "Peso Original", "Verificado", "Peso Verificado", "Codigo de Maquina", 
+                    "Material", "Aleacion", "Diametro", "Pared", "Defecto" };
 
                 for(int i = 0; i < headers.Length; i++)
                 {
@@ -37,11 +38,18 @@ namespace Infrastructure.Services
                     worksheet.Cell(row, 2).Value = item.PayRollNumber;
                     worksheet.Cell(row, 3).Value = item.CreatedAt.ToString("g");
                     worksheet.Cell(row, 4).Value = item.LineName;
-                    worksheet.Cell(row, 5).Value = item.ProcessName;
-                    worksheet.Cell(row, 6).Value = item.TypeScrapName;
-                    worksheet.Cell(row, 7).Value = item.Weight;
-                    worksheet.Cell(row, 8).Value = item.IsVerified ? "SÍ" : "NO";
-                    worksheet.Cell(row, 9).Value = item.VerifiedWeight ?? 0;
+                    worksheet.Cell(row, 5).Value = item.ShiftName;
+                    worksheet.Cell(row, 6).Value = item.ProcessName;
+                    worksheet.Cell(row, 7).Value = item.TypeScrapName;
+                    worksheet.Cell(row, 8).Value = item.Weight;
+                    worksheet.Cell(row, 9).Value = item.IsVerified ? "SÍ" : "NO";
+                    worksheet.Cell(row, 10).Value = item.VerifiedWeight ?? 0;
+                    worksheet.Cell(row, 11).Value = item.MachineCodeName;
+                    worksheet.Cell(row, 12).Value = item.Material;
+                    worksheet.Cell(row, 13).Value = item.Alloy;
+                    worksheet.Cell(row, 14).Value = item.Diameter;
+                    worksheet.Cell(row, 15).Value = item.Wall;
+                    worksheet.Cell(row, 16).Value = item.DefectName;
                     row++;
                 }
 

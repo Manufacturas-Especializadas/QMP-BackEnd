@@ -9,7 +9,7 @@ namespace Core.Interfaces
 {
     public interface IExcelService
     {
-        byte[] GenerateScrapReport(IEnumerable<ScrapReadDto> data);
+        byte[] GenerateScrapReport(IEnumerable<ScrapFlatExportDto> data);
 
         byte[] GenerateRejectionReport(IEnumerable<RejectionResponse> data);
 

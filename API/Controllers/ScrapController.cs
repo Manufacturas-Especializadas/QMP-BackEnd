@@ -100,7 +100,7 @@ namespace API.Controllers
                     d.Defect?.DefectName ?? "N/A",
                     d.IsVerified,
                     d.VerifiedWeight,
-                    d.Material != null ? d.Material.MaterialName : "N/A"
+                    d.Material.MaterialName ?? "N/A"
 
                 ))).ToList();
 

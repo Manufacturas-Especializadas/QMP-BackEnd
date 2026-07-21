@@ -10,6 +10,6 @@ namespace Core.Entities
     {
         public int Id { get; set; }
 
-        public string MaterialName { get; set; }
+        public string? MaterialName { get; set; }
     }
 }

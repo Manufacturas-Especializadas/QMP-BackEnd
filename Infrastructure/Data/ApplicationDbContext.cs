@@ -28,6 +28,7 @@ namespace Infrastructure.Data
         public DbSet<Process> Processes => Set<Process>();
         public DbSet<MachineCode> MachineCodes => Set<MachineCode>();
         public DbSet<Scrap> Scraps => Set<Scrap>();
+        public DbSet<ScrapDetail> ScrapDetails => Set<ScrapDetail>();
         public DbSet<Defect> Defects => Set<Defect>();
 
         public DbSet<CategoryOperator> CategoryOperator => Set<CategoryOperator>();
@@ -55,6 +56,7 @@ namespace Infrastructure.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
 
             modelBuilder.Entity<UserRole>(entity =>
             {
@@ -166,6 +168,16 @@ namespace Infrastructure.Data
                     .WithMany(p => p.Scraps)
                     .HasForeignKey(d => d.LineId)
                     .OnDelete(DeleteBehavior.NoAction);
+            });
+
+            modelBuilder.Entity<ScrapDetail>(entity =>
+            {
+                entity.ToTable("ScrapDetail");
+
+                entity.HasOne(d => d.Scrap)
+                    .WithMany(p => p.ScrapDetails)
+                    .HasForeignKey(d => d.ScrapId)
+                    .OnDelete(DeleteBehavior.Cascade); // Si borras la cabecera, se borran los detalles
 
                 entity.HasOne(d => d.Defect)
                     .WithMany()

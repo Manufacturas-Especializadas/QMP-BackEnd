@@ -14,13 +14,38 @@ namespace API.Controllers
         private readonly IAuditACDRepository _repository;
         private readonly ApplicationDbContext _context;
         private readonly IAzureStorageService _storageService;
+        private readonly IExcelService _excelService;
 
         public AuditACDController(IAuditACDRepository repository, ApplicationDbContext context, 
-            IAzureStorageService storageService)
+            IAzureStorageService storageService, IExcelService excelService)
         {
             _context = context;
             _repository = repository;
             _storageService = storageService;
+            _excelService = excelService;
+        }
+
+        [HttpGet]
+        [Route("ExportExcel")]
+        public async Task<IActionResult> ExportExcel([FromQuery] int month, [FromQuery] int year)
+        {
+            try
+            {
+                var records = await _repository.GetByMonthAsync(month, year);
+
+                var fileContents = _excelService.GenerateACDReport(records);
+                string monthName = new DateTime(year, month, 1).ToString("MMMM", new System.Globalization.CultureInfo("es-ES"));
+
+                return File(
+                    fileContents,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    $"ACDReport_excel_{monthName}_{year}.xlsx"
+                );
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error al generar Excel de Scrap: {ex.Message}");
+            }
         }
 
         [HttpGet]

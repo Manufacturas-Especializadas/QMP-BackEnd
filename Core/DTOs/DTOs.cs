@@ -100,6 +100,7 @@ namespace Core.DTOs
 
     public record ScrapLookupDto(
         int id,
+        int InspectorPayRollNumber,
         int PayRollNumber,
         string? Alloy,
         string? Diameter,
@@ -118,15 +119,16 @@ namespace Core.DTOs
         DateTime createdAt);
 
     public record CreateScrapDto(
-            int PayRollNumber,
+            int InspectorPayRollNumber,
             int ShiftId,
-            int? ProcessId,
             int LineId,
-            int? MachineCodeId,
             List<CreateScrapDetailDto> ScrapDetails
     );
 
     public record CreateScrapDetailDto(
+        int PayRollNumber,
+        int? ProcessId,
+        int? MachineCodeId,
         string? Alloy,
         string? Diameter,
         string? Wall,
@@ -134,7 +136,8 @@ namespace Core.DTOs
         int MaterialId,
         int TypeScrapId,
         int? DefectId,
-        decimal Weight
+        decimal Weight,
+        string PartNumber
     );
 
     public record VerifyScrapDto(int Id, bool IsVerified, decimal? VerifiedWeight);
@@ -165,31 +168,42 @@ namespace Core.DTOs
 
     public record ScrapReadDto(
             int Id,
-            int PayRollNumber,
+            int InspectorPayRollNumber,
             DateTime CreatedAt,
-            string ShiftName,
-            string LineName,
-            string ProcessName,
-            string? MachineCodeName,
-            List<ScrapDetailReadDto> Details
+            int ShiftId,
+       string ShiftName,
+    int LineId,
+    string LineName,
+            bool IsVerified,
+            decimal? VerifiedWeight,
+            List<ScrapDetailReadDto> ScrapDetails
     );
 
     public record ScrapDetailReadDto(
-        int Id,
-        string? Alloy,
-        string? Diameter,
-        string? Wall,
-        string RDM,
-        decimal? Weight,
-        string MaterialName,
-        string TypeScrapName,
-        string DefectName,
-        bool IsVerified,
-        decimal? VerifiedWeight
+            int Id,
+    int PayRollNumber,
+    int? ProcessId,
+    string ProcessName,
+    int? MachineCodeId,
+    string? MachineCodeName,
+    string? Alloy,
+    string? Diameter,
+    string? Wall,
+    string RDM,
+    decimal? Weight,
+    int? MaterialId,
+    string? MaterialName,
+    int TypeScrapId,
+    string TypeScrapName,
+    int? DefectId,
+    string DefectName,
+    string? PartNumber
     );
 
     public record ScrapFlatExportDto(
-        int Id,
+        int ScrapId,
+        int DetailId,
+        int InspectorPayRollNumber,
         int PayRollNumber,
         string? Alloy,
         string? Diameter,
@@ -205,8 +219,9 @@ namespace Core.DTOs
         string DefectName,
         bool IsVerified,
         decimal? VerifiedWeight,
-        string Material
-     
+        string Material,
+        decimal TotalWeight,
+        string? PartNumber
     );
 
     public record MaterialDto(
@@ -214,7 +229,7 @@ namespace Core.DTOs
     );
 
     public record UpdateScrapDto(
-        int PayRollNumber,
+        int InspectorPayRollNumber,
         int ShiftId,
         int? ProcessId,
         int LineId,
@@ -224,6 +239,8 @@ namespace Core.DTOs
 
     public record UpdateScrapDetailDto(
         int? Id,
+        int PayRollNumber,
+
         string? Alloy,
         string? Diameter,
         string? Wall,
@@ -234,7 +251,7 @@ namespace Core.DTOs
         decimal Weight
     );
 
-    public record UsersList(int id,string payRollNumber, DateTime createdAt, bool isActive, string roleName);
+    public record UsersList(int id, string payRollNumber, DateTime createdAt, bool isActive, string roleName);
 
     public record CreateRejectionDto(
         string Inspector,
@@ -264,8 +281,8 @@ namespace Core.DTOs
         int OperatorPayroll,
         int IdContainmentAction,
         int Folio,
-        string? ExistingImageUrls, 
-        List<IFormFile>? NewPhotos 
+        string? ExistingImageUrls,
+        List<IFormFile>? NewPhotos
     );
 
     public record RejectionResponse(
@@ -360,14 +377,14 @@ namespace Core.DTOs
     }
 
     public record DimensionalSpecDto(
-        string SpecName,                  
-        string ExpectedValue,             
-        string RealValue                  
+        string SpecName,
+        string ExpectedValue,
+        string RealValue
     );
 
     public record VisualChecklistDto(
         string CheckpointName,
-        byte ResultValue                  
+        byte ResultValue
     );
 
     public record AuditFcdsListDto(
@@ -389,7 +406,7 @@ namespace Core.DTOs
         public int ShiftId { get; init; }
         public int FcdsProcessId { get; init; }
         public string PartNumber { get; init; } = string.Empty;
-        public List<string> LineNames { get; set; }  
+        public List<string> LineNames { get; set; }
         public List<int> LineIds { get; init; } = new();
         public bool IsProductConforming { get; init; }
         public int? RejectionId { get; init; }
@@ -659,6 +676,23 @@ namespace Core.DTOs
         public int TotalConforming { get; set; }
         public int TotalNonConforming { get; set; }
         public IEnumerable<T> Items { get; set; } = new List<T>();
+    }
+
+    public class ScrapDetailUpdateDto
+    {
+        public int Id { get; set; }
+        public int PayRollNumber { get; set; }
+        public int? ProcessId { get; set; }
+        public int? MachineCodeId { get; set; }
+        public string? Alloy { get; set; }
+        public string? Diameter { get; set; }
+        public string? Wall { get; set; }
+        public decimal? Weight { get; set; }
+        public string RDM { get; set; } = string.Empty;
+        public int MaterialId { get; set; }
+        public int TypeScrapId { get; set; }
+        public int? DefectId { get; set; }
+        public string? PartNumber { get; set; }
     }
 
 }

@@ -30,6 +30,7 @@ namespace API.Controllers
             }
             catch(Exception ex)
             {
+                var realMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
                 return BadRequest(new
                 {
                     message = "Error al obtener el listado de auditorías FCD"

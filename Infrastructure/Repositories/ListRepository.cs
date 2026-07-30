@@ -151,13 +151,31 @@ namespace Infrastructure.Repositories
         public async Task<IEnumerable<ScrapLookupDto>> GetScrap()
         {
             return await _context.Scraps
-                        .AsNoTracking()
-                        .OrderByDescending(s => s.Id)
-                        .Select(s => new ScrapLookupDto(
-                            s.Id, s.PayRollNumber, s.Alloy, s.Diameter, s.Wall, s.RDM,
-                            s.Shift.ShiftName, s.Process!.ProcessName, s.Line.LineName, s.Material.MaterialName, s.TypeScrap.TypeScrapName,
-                            s.MachineCode.MachineCodeName, s.Defect.DefectName, s.Weight, s.IsVerified, s.VerifiedWeight, s.CreatedAt))
-                        .ToListAsync();
+        .AsNoTracking()
+        .OrderByDescending(s => s.Id)
+        .SelectMany(
+            s => s.ScrapDetails,
+            (s, d) => new ScrapLookupDto(
+                s.Id,
+                s.InspectorPayRollNumber,
+                d.PayRollNumber,
+                d.Alloy,
+                d.Diameter,
+                d.Wall,
+                d.RDM,
+                s.Shift.ShiftName,
+                d.Process!.ProcessName,
+                s.Line.LineName,
+                d.Material.MaterialName ?? "N/A",
+                d.TypeScrap.TypeScrapName,
+                d.MachineCode!.MachineCodeName, 
+                d.Defect!.DefectName,
+                d.Weight,
+                s.IsVerified,
+                s.VerifiedWeight,
+                s.CreatedAt
+        ))
+    .ToListAsync();
         }
 
         public async Task<IEnumerable<ConditionLookupDto>> GetCondition(int defectId)

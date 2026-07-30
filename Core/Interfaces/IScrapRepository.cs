@@ -23,5 +23,6 @@ namespace Core.Interfaces
         Task<bool> UpdateVerificationAsync(int id, bool isVerified, decimal? verifiedWeight);
 
         Task<bool> SaveChangesAsync();
+        Task<bool> UpdateDetailsOnlyAsync(int scrapId, List<ScrapDetailUpdateDto> newDetailsDto);
     }
 }

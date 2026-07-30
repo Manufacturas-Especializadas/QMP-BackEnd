@@ -32,24 +32,33 @@ namespace API.Controllers
 
                 var dto = new ScrapReadDto(
                      scrap.Id,
-                     scrap.PayRollNumber,
+                     scrap.InspectorPayRollNumber,
                      scrap.CreatedAt,
-                     scrap.Shift?.ShiftName ?? "N/A",
-                     scrap.Line?.LineName ?? "N/A",
-                     scrap.Process?.ProcessName ?? "N/A",
-                     scrap.MachineCode?.MachineCodeName,
+                     scrap.ShiftId,
+     scrap.Shift?.ShiftName ?? "N/A",
+     scrap.LineId,
+     scrap.Line?.LineName ?? "N/A",
+                     scrap.IsVerified,
+                     scrap.VerifiedWeight,
                      scrap.ScrapDetails.Select(d => new ScrapDetailReadDto(
                          d.Id,
-                         d.Alloy,
-                         d.Diameter,
-                         d.Wall,
-                         d.RDM,
-                         d.Weight,
-                         d.Material?.MaterialName ?? "N/A",
-                         d.TypeScrap?.TypeScrapName ?? "N/A",
-                         d.Defect?.DefectName ?? "N/A",
-                         d.IsVerified,
-                         d.VerifiedWeight
+    d.PayRollNumber,
+    d.ProcessId,
+    d.Process?.ProcessName ?? "N/A",
+    d.MachineCodeId,
+    d.MachineCode?.MachineCodeName ?? "N/A",
+    d.Alloy,
+    d.Diameter,
+    d.Wall,
+    d.RDM,
+    d.Weight,
+    d.MaterialId,
+    d.Material?.MaterialName ?? "N/A",
+    d.TypeScrapId,
+    d.TypeScrap?.TypeScrapName ?? "N/A",
+    d.DefectId,
+    d.Defect?.DefectName ?? "N/A",
+    d.PartNumber
                      )).ToList()
                  );
 
@@ -67,7 +76,7 @@ namespace API.Controllers
         {
             var scrap = await _scrapRepository.GetAllAsync();
 
-            if(scrap == null) return NotFound();
+            if (scrap == null) return NotFound();
 
             return Ok(scrap);
         }
@@ -78,38 +87,42 @@ namespace API.Controllers
         {
             try
             {
-                var now = DateTime.Now;
-                var scrapRecords = await _scrapRepository.GetByMonthAsync(now.Month, now.Year);
                 int filterMonth = month ?? DateTime.Now.Month;
                 int filterYear = year ?? DateTime.Now.Year;
 
-                var dtos = scrapRecords.SelectMany(s => s.ScrapDetails.Select(d => new ScrapFlatExportDto(
-                    s.Id,
-                    s.PayRollNumber,
-                    d.Alloy,
-                    d.Diameter,
-                    d.Wall,
-                    d.RDM,
-                    d.Weight,
-                    s.CreatedAt,
-                    s.Shift?.ShiftName ?? "N/A",
-                    s.Line?.LineName ?? "N/A",
-                    s.Process?.ProcessName ?? "N/A",
-                    s.MachineCode?.MachineCodeName ?? "N/A",
-                    d.TypeScrap?.TypeScrapName ?? "N/A",
-                    d.Defect?.DefectName ?? "N/A",
-                    d.IsVerified,
-                    d.VerifiedWeight,
-                    d.Material.MaterialName ?? "N/A"
+                var scrapRecords = await _scrapRepository.GetByMonthAsync(filterMonth, filterYear);
 
+
+                var dtos = scrapRecords.SelectMany(s => s.ScrapDetails.Select(d => new ScrapFlatExportDto(
+                    ScrapId: s.Id,
+                    DetailId: d.Id,
+                    InspectorPayRollNumber: s.InspectorPayRollNumber,
+                    PayRollNumber: d.PayRollNumber,
+                    Alloy: d.Alloy,
+                    Diameter: d.Diameter,
+                    Wall: d.Wall,
+                    RDM: d.RDM,
+                    Weight: d.Weight,
+                    CreatedAt: s.CreatedAt,
+                    ShiftName: s.Shift?.ShiftName ?? "N/A",
+                    LineName: s.Line?.LineName ?? "N/A",
+                    ProcessName: d.Process?.ProcessName ?? "N/A",
+                    MachineCodeName: d.MachineCode?.MachineCodeName ?? "N/A",
+                    TypeScrapName: d.TypeScrap?.TypeScrapName ?? "N/A",
+                    DefectName: d.Defect?.DefectName ?? "N/A",
+                    IsVerified: s.IsVerified,
+                    VerifiedWeight: s.VerifiedWeight,
+                    Material: d.Material?.MaterialName ?? "N/A",
+                    TotalWeight: s.TotalWeight,
+                    PartNumber: d.PartNumber
                 ))).ToList();
 
                 var fileContents = _excelService.GenerateScrapReport(dtos);
 
                 string monthName = new DateTime(filterYear, filterMonth, 1).ToString("MMMM", new System.Globalization.CultureInfo("es-ES"));
-                return File(fileContents, "application/vnd...", $"Reporte_Scrap_{monthName}_{filterYear}.xlsx");
+                return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"Reporte_Scrap_{monthName}_{filterYear}.xlsx");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return StatusCode(500, $"Error al generar Excel: {ex.Message}");
             }
@@ -117,44 +130,22 @@ namespace API.Controllers
 
         [HttpPut]
         [Route("UpdateScrap/{id}")]
-        public async Task<IActionResult> UpdateScrap(int id, [FromBody] UpdateScrapDto dto)
+        public async Task<IActionResult> UpdateScrap(int id, [FromBody] List<ScrapDetailUpdateDto> updatedDetails)
         {
+            if (updatedDetails == null || !updatedDetails.Any())
+                return BadRequest("Debes enviar al menos un detalle de scrap.");
+
             try
             {
-                if (dto == null || dto.ScrapDetails == null || !dto.ScrapDetails.Any())
-                    return BadRequest("Datos inválidos o sin detalles");
+                var result = await _scrapRepository.UpdateDetailsOnlyAsync(id, updatedDetails);
 
-                var updatedScrap = new Scrap
-                {
-                    PayRollNumber = dto.PayRollNumber,
-                    ShiftId = dto.ShiftId,
-                    ProcessId = dto.ProcessId,
-                    LineId = dto.LineId,
-                    MachineCodeId = dto.MachineCodeId
-                };
+                if (!result) return NotFound($"No se encontró el reporte de Scrap con ID {id}");
 
-                var updatedDetails = dto.ScrapDetails.Select(d => new ScrapDetail
-                {
-                    Id = d.Id ?? 0,
-                    Alloy = d.Alloy,
-                    Diameter = d.Diameter,
-                    Wall = d.Wall,
-                    RDM = d.RDM,
-                    Weight = d.Weight,
-                    MaterialId = d.MaterialId,
-                    TypeScrapId = d.TypeScrapId,
-                    DefectId = d.DefectId
-                }).ToList();
-
-                var success = await _scrapRepository.UpdateAsync(id, updatedScrap, updatedDetails);
-
-                if (!success) return NotFound(new { message = "No se encontró el Scrap para actualizar." });
-
-                return Ok(new { message = "Scrap actualizado correctamente." });
+                return Ok(new { message = "Detalles actualizados correctamente." });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Error interno: {ex.Message}");
+                return StatusCode(500, $"Error al actualizar: {ex.Message}");
             }
         }
 
@@ -172,15 +163,15 @@ namespace API.Controllers
 
                 var scrap = new Scrap
                 {
-                    PayRollNumber = dto.PayRollNumber,
+                    InspectorPayRollNumber = dto.InspectorPayRollNumber,
                     ShiftId = dto.ShiftId,
-                    ProcessId = dto.ProcessId,
                     LineId = dto.LineId,
-                    MachineCodeId = dto.MachineCodeId,
                     CreatedAt = nowInMexico,
-                    // Mapeo automático de la lista de detalles
                     ScrapDetails = dto.ScrapDetails.Select(d => new ScrapDetail
                     {
+                        PayRollNumber = d.PayRollNumber,
+                        ProcessId = d.ProcessId,
+                        MachineCodeId = d.MachineCodeId,
                         Alloy = d.Alloy,
                         Diameter = d.Diameter,
                         Wall = d.Wall,
@@ -188,7 +179,8 @@ namespace API.Controllers
                         RDM = d.RDM,
                         MaterialId = d.MaterialId,
                         TypeScrapId = d.TypeScrapId,
-                        DefectId = d.DefectId
+                        DefectId = d.DefectId,
+                        PartNumber = d.PartNumber
                     }).ToList()
                 };
 
@@ -197,7 +189,7 @@ namespace API.Controllers
 
                 return Ok(new { message = "Registro de Scrap y detalles guardados correctamente." });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return StatusCode(500, $"Error interno: {ex.Message} - {ex.InnerException?.Message}");
             }
@@ -241,7 +233,7 @@ namespace API.Controllers
 
                 return Ok(new { message = "Verificación actualizada correctamente" });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return StatusCode(500, $"Error interno: {ex.Message}");
             }

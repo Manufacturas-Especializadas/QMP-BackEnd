@@ -2,10 +2,12 @@
 using Core.DTOs;
 using Core.Entities;
 using Core.Interfaces;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -57,7 +59,7 @@ namespace Infrastructure.Services
                 var detailHeaders = new string[] {
              "ID Detalle", "PE Operador", "Proceso", "Código Máquina",
             "Material", "Aleación", "Diámetro", "Pared", "Defecto", "Peso", "RDM", "Num Parte"
-        };
+                };
 
                 for (int i = 0; i < detailHeaders.Length; i++)
                 {
@@ -367,5 +369,116 @@ namespace Infrastructure.Services
                 }
             }
         }
+
+        private string ObtenerTextoDeEvaluacion(byte valor)
+        {
+            return valor switch
+            {
+                1 => "Cumple",
+                2 => "No Cumple",   
+                3 => "No Aplica",    
+                _ => "Sin evaluar"   
+            };
+        }
+
+        public byte[] GenerateACDReport(IEnumerable<AuditDataACD> data)
+        {
+            using (var workbook = new XLWorkbook())
+            {
+                var wsHeaders = workbook.Worksheets.Add("ACD Report");
+
+                var cabeceraHeaders = new string[] {
+                    "ID", "Fecha", "Turno", "Línea", "Inspector"," No. De Parte",
+                    "Nomina Del Empacador", "Cant. De Piezas", "Tamaño De Muestra",
+                    "Shop Order", "Idetificacion Correcta (ID contenedor Vs ID pieza)", "Procesos Completos",
+                    "PP Segun BOM", "Defectos De Soldadura", "Vista frontal", "Vista Lateral",
+                    "Vista Superior", "Vista Isometrica", "Estatus"
+                };
+
+                for (int i = 0; i < cabeceraHeaders.Length; i++)
+                {
+                    var cell = wsHeaders.Cell(1, i + 1);
+                    cell.Value = cabeceraHeaders[i];
+                    cell.Style.Font.Bold = true;
+                    cell.Style.Fill.BackgroundColor = XLColor.FromHtml("#1E40AF");
+                    cell.Style.Font.FontColor = XLColor.White;
+                }
+
+                var uniqueScraps = data.GroupBy(x => x.Id).Select(g => g.First());
+
+                int rowCabecera = 2;
+                foreach (var item in uniqueScraps)
+                {
+                    string lineasStr = item.Lines != null && item.Lines.Any()
+                        ? string.Join(", ", item.Lines.Select(l => l.LineName))
+                        : "Sin Línea";
+
+                    
+                    string inspector = item.User != null ? item.User.Id.ToString() : "N/D";
+
+                    
+                    if (item.Findings != null && item.Findings.Any())
+                    {
+                        
+                        foreach (var finding in item.Findings)
+                        {
+                            
+                            wsHeaders.Cell(rowCabecera, 1).Value = item.Id;
+                            wsHeaders.Cell(rowCabecera, 2).Value = item.AuditDate.ToString("yyyy-MM-dd HH:mm");
+                            wsHeaders.Cell(rowCabecera, 3).Value = item.Shift?.ShiftName ?? "N/D";
+                            wsHeaders.Cell(rowCabecera, 4).Value = lineasStr;
+                            wsHeaders.Cell(rowCabecera, 5).Value = inspector;
+
+                            
+                            wsHeaders.Cell(rowCabecera, 6).Value = finding.PartNumber;
+                            wsHeaders.Cell(rowCabecera, 7).Value = finding.PackerPayroll;
+                            wsHeaders.Cell(rowCabecera, 8).Value = finding.NumberOfPieces;
+                            wsHeaders.Cell(rowCabecera, 9).Value = finding.SampleSize;
+                            wsHeaders.Cell(rowCabecera, 10).Value = finding.ShopOrder ?? "N/D";
+
+                            
+                            wsHeaders.Cell(rowCabecera, 11).Value = finding.ContainerIdMatch == true ? "Sí" : "No";
+                            wsHeaders.Cell(rowCabecera, 12).Value = finding.CompleteProcess == true ? "Sí" : "No";
+
+                            wsHeaders.Cell(rowCabecera, 13).Value = finding.PpBom == 1 ? "Sí" : "No";
+                            wsHeaders.Cell(rowCabecera, 14).Value = finding.WeldingDefects == 1 ? "Sí" : "No";
+                            wsHeaders.Cell(rowCabecera, 15).Value = ObtenerTextoDeEvaluacion(finding.FrontView);
+                            wsHeaders.Cell(rowCabecera, 16).Value = ObtenerTextoDeEvaluacion(finding.SideView);
+                            wsHeaders.Cell(rowCabecera, 17).Value = ObtenerTextoDeEvaluacion(finding.TopView);
+                            wsHeaders.Cell(rowCabecera, 18).Value = ObtenerTextoDeEvaluacion(finding.IsometricView);
+
+
+                            wsHeaders.Cell(rowCabecera, 19).Value = finding.IsProductConforming ? "Conforme" : "No Conforme";
+
+                            rowCabecera++;
+                        }
+                    }
+                    else
+                    {
+                        
+                        wsHeaders.Cell(rowCabecera, 1).Value = item.Id;
+                        wsHeaders.Cell(rowCabecera, 2).Value = item.AuditDate.ToString("yyyy-MM-dd HH:mm");
+                        wsHeaders.Cell(rowCabecera, 3).Value = item.Shift?.ShiftName ?? "N/D";
+                        wsHeaders.Cell(rowCabecera, 4).Value = lineasStr;
+                        wsHeaders.Cell(rowCabecera, 5).Value = inspector;
+
+                        rowCabecera++;
+                    }
+                }
+
+                
+                wsHeaders.Columns().AdjustToContents();
+
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    return stream.ToArray();
+                }
+            }
+        }
+
+
+
     }
 }

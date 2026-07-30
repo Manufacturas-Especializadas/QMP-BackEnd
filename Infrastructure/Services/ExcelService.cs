@@ -15,50 +15,84 @@ namespace Infrastructure.Services
     {
         public byte[] GenerateScrapReport(IEnumerable<ScrapFlatExportDto> data)
         {
-            using(var workbook = new XLWorkbook())
+            using (var workbook = new XLWorkbook())
             {
-                var worksheet = workbook.Worksheets.Add("Reporte de Scrap");
 
-                var headers = new string[] { "ID", "PE", "Fecha", "Línea", "Turno", "Proceso", "Tipo", "Peso Original", "Verificado", "Peso Verificado", "Codigo de Maquina", 
-                    "Material", "Aleacion", "Diametro", "Pared", "Defecto" };
+                var wsHeaders = workbook.Worksheets.Add("Reportes Generales");
 
-                for(int i = 0; i < headers.Length; i++)
+                var cabeceraHeaders = new string[] {
+            "ID Reporte", "PE Inspector", "Fecha", "Línea", "Turno",
+            "Verificado", "Peso Total", "Peso Verificado"
+        };
+
+                for (int i = 0; i < cabeceraHeaders.Length; i++)
                 {
-                    var cell = worksheet.Cell(1, i + 1);
-                    cell.Value = headers[i];
+                    var cell = wsHeaders.Cell(1, i + 1);
+                    cell.Value = cabeceraHeaders[i];
                     cell.Style.Font.Bold = true;
                     cell.Style.Fill.BackgroundColor = XLColor.FromHtml("#1E40AF");
                     cell.Style.Font.FontColor = XLColor.White;
                 }
 
-                int row = 2;
-                foreach(var item in data)
+
+                var uniqueScraps = data.GroupBy(x => x.ScrapId).Select(g => g.First());
+
+                int rowCabecera = 2;
+                foreach (var item in uniqueScraps)
                 {
-                    worksheet.Cell(row, 1).Value = item.Id;
-                    worksheet.Cell(row, 2).Value = item.PayRollNumber;
-                    worksheet.Cell(row, 3).Value = item.CreatedAt.ToString("g");
-                    worksheet.Cell(row, 4).Value = item.LineName;
-                    worksheet.Cell(row, 5).Value = item.ShiftName;
-                    worksheet.Cell(row, 6).Value = item.ProcessName;
-                    worksheet.Cell(row, 7).Value = item.TypeScrapName;
-                    worksheet.Cell(row, 8).Value = item.Weight;
-                    worksheet.Cell(row, 9).Value = item.IsVerified ? "SÍ" : "NO";
-                    worksheet.Cell(row, 10).Value = item.VerifiedWeight ?? 0;
-                    worksheet.Cell(row, 11).Value = item.MachineCodeName;
-                    worksheet.Cell(row, 12).Value = item.Material;
-                    worksheet.Cell(row, 13).Value = item.Alloy;
-                    worksheet.Cell(row, 14).Value = item.Diameter;
-                    worksheet.Cell(row, 15).Value = item.Wall;
-                    worksheet.Cell(row, 16).Value = item.DefectName;
-                    row++;
+                    wsHeaders.Cell(rowCabecera, 1).Value = item.ScrapId;
+                    wsHeaders.Cell(rowCabecera, 2).Value = item.InspectorPayRollNumber;
+                    wsHeaders.Cell(rowCabecera, 3).Value = item.CreatedAt.ToString("g");
+                    wsHeaders.Cell(rowCabecera, 4).Value = item.LineName;
+                    wsHeaders.Cell(rowCabecera, 5).Value = item.ShiftName;
+                    wsHeaders.Cell(rowCabecera, 6).Value = item.IsVerified ? "Sí" : "No";
+                    wsHeaders.Cell(rowCabecera, 7).Value = item.TotalWeight;
+                    wsHeaders.Cell(rowCabecera, 8).Value = item.VerifiedWeight;
+                    rowCabecera++;
                 }
 
-                worksheet.Columns().AdjustToContents();
 
-                using(var stream = new MemoryStream())
+                var wsDetails = workbook.Worksheets.Add("Detalles de Scrap");
+
+                var detailHeaders = new string[] {
+             "ID Detalle", "PE Operador", "Proceso", "Código Máquina",
+            "Material", "Aleación", "Diámetro", "Pared", "Defecto", "Peso", "RDM", "Num Parte"
+        };
+
+                for (int i = 0; i < detailHeaders.Length; i++)
+                {
+                    var cell = wsDetails.Cell(1, i + 1);
+                    cell.Value = detailHeaders[i];
+                    cell.Style.Font.Bold = true;
+                    cell.Style.Fill.BackgroundColor = XLColor.FromHtml("#047857"); 
+                    cell.Style.Font.FontColor = XLColor.White;
+                }
+
+                int rowDetail = 2;
+                foreach (var item in data)
+                {
+                    
+                    wsDetails.Cell(rowDetail, 1).Value = item.ScrapId; 
+                    wsDetails.Cell(rowDetail, 2).Value = item.PayRollNumber;
+                    wsDetails.Cell(rowDetail, 3).Value = item.ProcessName;
+                    wsDetails.Cell(rowDetail, 4).Value = item.MachineCodeName;
+                    wsDetails.Cell(rowDetail, 5).Value = item.Material;
+                    wsDetails.Cell(rowDetail, 6).Value = item.Alloy;
+                    wsDetails.Cell(rowDetail, 7).Value = item.Diameter;
+                    wsDetails.Cell(rowDetail, 8).Value = item.Wall;
+                    wsDetails.Cell(rowDetail, 9).Value = item.DefectName;
+                    wsDetails.Cell(rowDetail, 10).Value = item.Weight;
+                    wsDetails.Cell(rowDetail, 11).Value = item.RDM;
+                    wsDetails.Cell(rowDetail, 12).Value = item.PartNumber;
+                    rowDetail++;
+                }
+
+                wsHeaders.Columns().AdjustToContents();
+                wsDetails.Columns().AdjustToContents();
+
+                using (var stream = new MemoryStream())
                 {
                     workbook.SaveAs(stream);
-
                     return stream.ToArray();
                 }
             }

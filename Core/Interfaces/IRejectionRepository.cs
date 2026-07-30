@@ -10,7 +10,7 @@ namespace Core.Interfaces
 {
     public interface IRejectionRepository
     {
-        Task<Rejection> GetByIdAsync(int id);
+        Task<Rejection?> GetByIdAsync(int id);
 
         Task<int> CreateAsync(Rejection rejection);
 

@@ -25,8 +25,10 @@ namespace Infrastructure.Repositories
             return await _context.Scraps
                 .Include(s => s.Shift)
                 .Include(s => s.Line)
-                .Include(s => s.Process)
-                .Include(s => s.MachineCode)
+                .Include(s => s.ScrapDetails)
+                    .ThenInclude(d => d.Process)
+                .Include(s => s.ScrapDetails)
+        .           ThenInclude(d => d.MachineCode)
                 .Include(s => s.ScrapDetails)
                     .ThenInclude(d => d.Material)
                 .Include(s => s.ScrapDetails)
@@ -41,8 +43,10 @@ namespace Infrastructure.Repositories
             return await _context.Scraps
                 .Include(s => s.Line)
                 .Include(s => s.Shift)
-                .Include(s => s.Process)
-                .Include(s => s.MachineCode)
+                .Include(s => s.ScrapDetails)
+                    .ThenInclude(d => d.Process)
+                .Include(s => s.ScrapDetails)
+                    .ThenInclude(d => d.MachineCode)
                 .Include(s => s.ScrapDetails)
                     .ThenInclude(d => d.TypeScrap)
                 .Include(s => s.ScrapDetails)
@@ -60,24 +64,33 @@ namespace Infrastructure.Repositories
                 .OrderByDescending(s => s.Id)
                 .Select(s => new ScrapReadDto(
                     s.Id,
-                    s.PayRollNumber,
+                    s.InspectorPayRollNumber,
                     s.CreatedAt,
+                    s.ShiftId,
                     s.Shift.ShiftName,
+                    s.LineId,
                     s.Line.LineName,
-                    s.Process != null ? s.Process.ProcessName : "N/A",
-                    s.MachineCode != null ? s.MachineCode.MachineCodeName : "N/A",
+                    s.IsVerified,
+                    s.VerifiedWeight,
                     s.ScrapDetails.Select(d => new ScrapDetailReadDto(
-                        d.Id,
-                        d.Alloy,
-                        d.Diameter,
-                        d.Wall,
-                        d.RDM,
-                        d.Weight,
-                        d.Material.MaterialName,
-                        d.TypeScrap.TypeScrapName,
-                        d.Defect != null ? d.Defect.DefectName : "N/A",
-                        d.IsVerified,
-                        d.VerifiedWeight
+                            d.Id,
+    d.PayRollNumber,
+    d.ProcessId,
+    d.Process != null ? d.Process.ProcessName : "N/A",
+    d.MachineCodeId,
+    d.MachineCode != null ? d.MachineCode.MachineCodeName : "N/A",
+    d.Alloy,
+    d.Diameter,
+    d.Wall,
+    d.RDM,
+    d.Weight,
+    d.MaterialId,
+    d.Material != null ? d.Material.MaterialName : "N/A",
+    d.TypeScrapId,
+    d.TypeScrap != null ? d.TypeScrap.TypeScrapName : "N/A",
+    d.DefectId,
+    d.Defect != null ? d.Defect.DefectName : "N/A",
+    d.PartNumber
                     )).ToList()
                 ))
                 .AsNoTracking()
@@ -86,6 +99,7 @@ namespace Infrastructure.Repositories
 
         public async Task<Scrap> CreateAsync(Scrap scrap)
         {
+            scrap.TotalWeight = scrap.ScrapDetails.Sum(d => d.Weight ?? 0);
             await _context.Scraps.AddAsync(scrap);
 
             return scrap;
@@ -104,63 +118,77 @@ namespace Infrastructure.Repositories
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<bool> UpdateAsync(int id, Scrap updatedScrap, List<ScrapDetail> newDetails)
+        public async Task<bool> UpdateDetailsOnlyAsync(int scrapId, List<ScrapDetailUpdateDto> newDetailsDto)
         {
             var existingScrap = await _context.Scraps
                 .Include(s => s.ScrapDetails)
-                .FirstOrDefaultAsync(s => s.Id == id);
+                .FirstOrDefaultAsync(s => s.Id == scrapId);
 
             if (existingScrap == null) return false;
 
-            existingScrap.PayRollNumber = updatedScrap.PayRollNumber;
-            existingScrap.ShiftId = updatedScrap.ShiftId;
-            existingScrap.ProcessId = updatedScrap.ProcessId;
-            existingScrap.LineId = updatedScrap.LineId;
-            existingScrap.MachineCodeId = updatedScrap.MachineCodeId;
+            var incomingDetailIds = newDetailsDto.Where(d => d.Id > 0).Select(d => d.Id).ToList();
 
-            var incomingDetailIds = newDetails.Where(d => d.Id > 0).Select(d => d.Id).ToList();
             var detailsToRemove = existingScrap.ScrapDetails
                 .Where(d => !incomingDetailIds.Contains(d.Id))
                 .ToList();
-
             _context.ScrapDetails.RemoveRange(detailsToRemove);
 
-            foreach (var detail in newDetails)
+            foreach (var dto in newDetailsDto)
             {
-                if (detail.Id == 0)
+                if (dto.Id == 0)
                 {
-                    existingScrap.ScrapDetails.Add(detail);
+                    existingScrap.ScrapDetails.Add(new ScrapDetail
+                    {
+                        PayRollNumber = dto.PayRollNumber,
+                        ProcessId = dto.ProcessId,
+                        MachineCodeId = dto.MachineCodeId,
+                        Alloy = dto.Alloy,
+                        Diameter = dto.Diameter,
+                        Wall = dto.Wall,
+                        RDM = dto.RDM,
+                        Weight = dto.Weight,
+                        MaterialId = dto.MaterialId,
+                        TypeScrapId = dto.TypeScrapId,
+                        DefectId = dto.DefectId,
+                        PartNumber = dto.PartNumber
+                    });
                 }
                 else
                 {
-                    var existingDetail = existingScrap.ScrapDetails.FirstOrDefault(d => d.Id == detail.Id);
+                    var existingDetail = existingScrap.ScrapDetails.FirstOrDefault(d => d.Id == dto.Id);
                     if (existingDetail != null)
                     {
-                        existingDetail.Alloy = detail.Alloy;
-                        existingDetail.Diameter = detail.Diameter;
-                        existingDetail.Wall = detail.Wall;
-                        existingDetail.RDM = detail.RDM;
-                        existingDetail.Weight = detail.Weight;
-                        existingDetail.MaterialId = detail.MaterialId;
-                        existingDetail.TypeScrapId = detail.TypeScrapId;
-                        existingDetail.DefectId = detail.DefectId;
+                        
+                        existingDetail.PayRollNumber = dto.PayRollNumber;
+                        existingDetail.ProcessId = dto.ProcessId;
+                        existingDetail.MachineCodeId = dto.MachineCodeId;
+                        existingDetail.Alloy = dto.Alloy;
+                        existingDetail.Diameter = dto.Diameter;
+                        existingDetail.Wall = dto.Wall;
+                        existingDetail.RDM = dto.RDM;
+                        existingDetail.Weight = dto.Weight;
+                        existingDetail.MaterialId = dto.MaterialId;
+                        existingDetail.TypeScrapId = dto.TypeScrapId;
+                        existingDetail.DefectId = dto.DefectId;
+                        existingDetail.PartNumber = dto.PartNumber;
                     }
                 }
             }
 
+            existingScrap.TotalWeight = existingScrap.ScrapDetails.Sum(d => d.Weight ?? 0);
+
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<bool> UpdateVerificationAsync(int detailId, bool isVerified, decimal? verifiedWeight)
+        public async Task<bool> UpdateVerificationAsync(int scrapId, bool isVerified, decimal? verifiedWeight)
         {
-            
-            var detail = await _context.ScrapDetails.FindAsync(detailId);
-            if (detail == null) return false;
+            var scrap = await _context.Scraps.FindAsync(scrapId);
+            if (scrap == null) return false;
 
-            detail.IsVerified = isVerified;
-            detail.VerifiedWeight = isVerified ? detail.Weight : verifiedWeight;
+            scrap.IsVerified = isVerified;
+            scrap.VerifiedWeight = isVerified ? scrap.TotalWeight : verifiedWeight;
 
-            _context.Entry(detail).State = EntityState.Modified;
+            _context.Entry(scrap).State = EntityState.Modified;
 
             return await _context.SaveChangesAsync() > 0;
         }

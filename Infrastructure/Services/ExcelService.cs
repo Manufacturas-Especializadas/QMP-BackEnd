@@ -414,7 +414,7 @@ namespace Infrastructure.Services
                         : "Sin Línea";
 
                     
-                    string inspector = item.User != null ? item.User.Id.ToString() : "N/D";
+                    string inspector = item.User != null ? item.User.Username.ToString() : "N/D";
 
                     
                     if (item.Findings != null && item.Findings.Any())

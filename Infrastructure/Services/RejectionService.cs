@@ -62,6 +62,7 @@ namespace Infrastructure.Services
                 Inspector = dto.Inspector,
                 PartNumber = dto.PartNumber,
                 NumberOfPieces = dto.NumberOfPieces,
+                NumberOfInspectedPieces = dto.NumberOfInspectedPieces,
                 DefectId = dto.IdDefect,
                 ConditionId = dto.IdCondition,
                 Description = dto.Description,
@@ -109,6 +110,7 @@ namespace Infrastructure.Services
             existing.Inspector = dto.Inspector;
             existing.PartNumber = dto.PartNumber;
             existing.NumberOfPieces = dto.NumberOfPieces;
+            existing.NumberOfInspectedPieces = dto.NumberOfInspectedPieces;
             existing.DefectId = dto.IdDefect;
             existing.ConditionId = dto.IdCondition;
             existing.Description = dto.Description;

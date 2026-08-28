@@ -83,6 +83,7 @@ namespace Infrastructure.Repositories
                     r.Inspector,
                     r.PartNumber!,
                     r.NumberOfPieces,
+                    r.NumberOfInspectedPieces,
                     r.OperatorPayroll,
                     r.Description!,
                     r.Image,

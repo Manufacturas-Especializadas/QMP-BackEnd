@@ -108,7 +108,7 @@ namespace Infrastructure.Services
                 var headers = new string[] 
                 {
                     "ID", "Folio", "Fecha", "Inspector", "Nro Parte",
-                    "Piezas", "Línea", "Cliente", "Defecto", "Condición", "Acción",
+                    "Cantidad de piezas inspeccionadas", "Cantidad de piezas rechazadas", "Línea", "Cliente", "Defecto", "Condición", "Acción",
                     "Nómina del operador", "Descripción detallada del rechazo",
                     "Evidencia", "Firma"
                 };
@@ -133,14 +133,15 @@ namespace Infrastructure.Services
                     worksheet.Cell(row, 3).Value = item.CreatedAt.ToString("g");
                     worksheet.Cell(row, 4).Value = item.Inspector;
                     worksheet.Cell(row, 5).Value = item.PartNumber;
-                    worksheet.Cell(row, 6).Value = item.NumberOfPieces;
-                    worksheet.Cell(row, 7).Value = item.LineName;
-                    worksheet.Cell(row, 8).Value = item.ClientName;
-                    worksheet.Cell(row, 9).Value = item.DefectName;
-                    worksheet.Cell(row, 10).Value = item.ConditionName;
-                    worksheet.Cell(row, 11).Value = item.ContainmentActionName;
-                    worksheet.Cell(row, 12).Value = item.OperatorPayroll;
-                    worksheet.Cell(row, 13).Value = item.Description;
+                    worksheet.Cell(row, 6).Value = item.NumberOfInspectedPieces;
+                    worksheet.Cell(row, 7).Value = item.NumberOfPieces;
+                    worksheet.Cell(row, 8).Value = item.LineName;
+                    worksheet.Cell(row, 9).Value = item.ClientName;
+                    worksheet.Cell(row, 10).Value = item.DefectName;
+                    worksheet.Cell(row, 11).Value = item.ConditionName;
+                    worksheet.Cell(row, 12).Value = item.ContainmentActionName;
+                    worksheet.Cell(row, 13).Value = item.OperatorPayroll;
+                    worksheet.Cell(row, 14).Value = item.Description;
                     worksheet.Row(row).Height = 70;
 
                     if (!string.IsNullOrEmpty(item.Image))
@@ -440,8 +441,21 @@ namespace Infrastructure.Services
                             wsHeaders.Cell(rowCabecera, 11).Value = finding.ContainerIdMatch == true ? "Sí" : "No";
                             wsHeaders.Cell(rowCabecera, 12).Value = finding.CompleteProcess == true ? "Sí" : "No";
 
-                            wsHeaders.Cell(rowCabecera, 13).Value = finding.PpBom == 1 ? "Sí" : "No";
-                            wsHeaders.Cell(rowCabecera, 14).Value = finding.WeldingDefects == 1 ? "Sí" : "No";
+                            wsHeaders.Cell(rowCabecera, 13).Value = finding.PpBom switch
+                            {
+                                1 => "Sí",
+                                2 => "No",
+                                3 => "No aplica",
+                                _ => "Sin respuesta"
+                            };
+
+                            wsHeaders.Cell(rowCabecera, 14).Value = finding.WeldingDefects switch
+                            {
+                                1 => "Sí",
+                                2 => "No",
+                                3 => "No aplica",
+                                _ => "Sin respuesta"
+                            };
                             wsHeaders.Cell(rowCabecera, 15).Value = ObtenerTextoDeEvaluacion(finding.FrontView);
                             wsHeaders.Cell(rowCabecera, 16).Value = ObtenerTextoDeEvaluacion(finding.SideView);
                             wsHeaders.Cell(rowCabecera, 17).Value = ObtenerTextoDeEvaluacion(finding.TopView);

@@ -12,6 +12,7 @@ namespace Core.Entities
         public string? PartNumber { get; set; }
 
         public int NumberOfPieces { get; set; }
+        public int? NumberOfInspectedPieces { get; set; }
 
         public int? OperatorPayroll { get; set; }
 

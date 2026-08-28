@@ -139,7 +139,7 @@ namespace Infrastructure.Repositories
                         .AsNoTracking()
                         .OrderByDescending(r => r.Id)
                         .Select(r => new RejectionLookupDto(
-                            r.Id, r.Folio, r.Inspector, r.PartNumber, r.NumberOfPieces,
+                            r.Id, r.Folio, r.Inspector, r.PartNumber, r.NumberOfPieces, r.NumberOfInspectedPieces,
                             r.OperatorPayroll, r.Description, r.Image, r.InformedSignature,
                             r.CreatedAt, r.Defect!.DefectName, r.Condition!.ConditionName, r.Line!.LineName,
                             r.Client!.ClientName, r.User.Username, r.ContainmentAction!.ContainmentActionName,

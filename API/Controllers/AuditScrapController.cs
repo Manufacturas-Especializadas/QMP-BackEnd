@@ -108,6 +108,7 @@ namespace API.Controllers
                 audit.Findings.Select(f => new AuditFindingScrapReadDto(
                     f.Id,
                     f.TypeScrapId,
+                    f.DefectId,
                     f.TypeScrap?.TypeScrapName ?? "N/A",
                     f.EstimatedWeight,
                     f.MaterialCorrectlyIdentified,
@@ -196,6 +197,7 @@ namespace API.Controllers
                     {
                         AuditId = audit.Id,
                         TypeScrapId = findingDto.TypeScrapId,
+                        DefectId = findingDto.DefectId,
                         EstimatedWeight = findingDto.EstimatedWeight,
                         MaterialCorrectlyIdentified = findingDto.MaterialCorrectlyIdentified,
                         MaterialCorrectlySegregated = findingDto.MaterialCorrectlySegregated,
@@ -276,6 +278,7 @@ namespace API.Controllers
                     {
                         Id = findingDto.Id,
                         TypeScrapId = findingDto.TypeScrapId,
+                        DefectId = findingDto.DefectId,
                         EstimatedWeight = findingDto.EstimatedWeight,
                         MaterialCorrectlyIdentified = findingDto.MaterialCorrectlyIdentified,
                         MaterialCorrectlySegregated = findingDto.MaterialCorrectlySegregated,

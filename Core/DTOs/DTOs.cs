@@ -447,6 +447,7 @@ namespace Core.DTOs
     public record AuditFindingScrapReadDto(
         int Id,
         int TypeScrapId,
+        int? DefectId,
         string TypeScrapName,
         decimal? EstimatedWeight,
         byte MaterialCorrectlyIdentified,
@@ -471,6 +472,8 @@ namespace Core.DTOs
     public class CreateAuditFindingScrapDto
     {
         public int TypeScrapId { get; set; }
+
+        public int DefectId { get; set; }
 
         public decimal? EstimatedWeight { get; set; }
 
@@ -501,6 +504,8 @@ namespace Core.DTOs
         public int Id { get; set; }
 
         public int TypeScrapId { get; set; }
+
+        public int? DefectId { get; set; }
 
         public decimal EstimatedWeight { get; set; }
 

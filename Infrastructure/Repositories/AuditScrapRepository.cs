@@ -43,6 +43,7 @@ namespace Infrastructure.Repositories
                     a.Findings.Select(f => new AuditFindingScrapReadDto(
                         f.Id,
                         f.TypeScrapId,
+                        f.DefectId,
                         f.TypeScrap.TypeScrapName,
                         f.EstimatedWeight,
                         f.MaterialCorrectlyIdentified,

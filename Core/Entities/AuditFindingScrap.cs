@@ -8,6 +8,8 @@
 
         public int TypeScrapId { get; set; }
 
+        public int? DefectId { get; set; }
+
         public decimal? EstimatedWeight { get; set; }
 
         public byte MaterialCorrectlyIdentified { get; set; }

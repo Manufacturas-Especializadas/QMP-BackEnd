@@ -29,5 +29,6 @@ namespace Core.Entities
         public TypeScrap TypeScrap { get; set; } = null!;
         public Defect? Defect { get; set; }
         public string? PartNumber { get; set; }
+        public string? Comments { get; set; }
     }
 }

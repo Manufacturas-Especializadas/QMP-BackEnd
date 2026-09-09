@@ -72,6 +72,7 @@ namespace Infrastructure.Repositories
                     s.Line.LineName,
                     s.IsVerified,
                     s.VerifiedWeight,
+                    s.Comments,
                     s.ScrapDetails.Select(d => new ScrapDetailReadDto(
                             d.Id,
     d.PayRollNumber,
@@ -90,7 +91,8 @@ namespace Infrastructure.Repositories
     d.TypeScrap != null ? d.TypeScrap.TypeScrapName : "N/A",
     d.DefectId,
     d.Defect != null ? d.Defect.DefectName : "N/A",
-    d.PartNumber
+    d.PartNumber,
+    d.Comments
                     )).ToList()
                 ))
                 .AsNoTracking()
@@ -150,7 +152,8 @@ namespace Infrastructure.Repositories
                         MaterialId = dto.MaterialId,
                         TypeScrapId = dto.TypeScrapId,
                         DefectId = dto.DefectId,
-                        PartNumber = dto.PartNumber
+                        PartNumber = dto.PartNumber,
+                        Comments = dto.Comments,
                     });
                 }
                 else
@@ -171,6 +174,7 @@ namespace Infrastructure.Repositories
                         existingDetail.TypeScrapId = dto.TypeScrapId;
                         existingDetail.DefectId = dto.DefectId;
                         existingDetail.PartNumber = dto.PartNumber;
+                        existingDetail.Comments = dto.Comments;
                     }
                 }
             }
@@ -180,15 +184,15 @@ namespace Infrastructure.Repositories
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<bool> UpdateVerificationAsync(int scrapId, bool isVerified, decimal? verifiedWeight)
+        public async Task<bool> UpdateVerificationAsync(int scrapId, bool isVerified, decimal? verifiedWeight, string? comments)
         {
             var scrap = await _context.Scraps.FindAsync(scrapId);
             if (scrap == null) return false;
 
             scrap.IsVerified = isVerified;
-            scrap.VerifiedWeight = isVerified ? scrap.TotalWeight : verifiedWeight;
-
-            _context.Entry(scrap).State = EntityState.Modified;
+            scrap.VerifiedWeight = isVerified ? 
+            scrap.TotalWeight : verifiedWeight;
+            scrap.Comments = string.IsNullOrWhiteSpace(comments) ? null : comments.Trim();
 
             return await _context.SaveChangesAsync() > 0;
         }

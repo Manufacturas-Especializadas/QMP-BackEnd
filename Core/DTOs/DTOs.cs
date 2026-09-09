@@ -137,10 +137,11 @@ namespace Core.DTOs
         int TypeScrapId,
         int? DefectId,
         decimal Weight,
-        string PartNumber
+        string PartNumber,
+        string? Comments
     );
 
-    public record VerifyScrapDto(int Id, bool IsVerified, decimal? VerifiedWeight);
+    public record VerifyScrapDto(int Id, bool IsVerified, decimal? VerifiedWeight, string? Comments);
 
     public record RejectionLookupDto(
         int Id,
@@ -177,6 +178,7 @@ namespace Core.DTOs
     string LineName,
             bool IsVerified,
             decimal? VerifiedWeight,
+             string? Comments,
             List<ScrapDetailReadDto> ScrapDetails
     );
 
@@ -198,7 +200,8 @@ namespace Core.DTOs
     string TypeScrapName,
     int? DefectId,
     string DefectName,
-    string? PartNumber
+    string? PartNumber,
+    string? Comments
     );
 
     public record ScrapFlatExportDto(
@@ -222,7 +225,9 @@ namespace Core.DTOs
         decimal? VerifiedWeight,
         string Material,
         decimal TotalWeight,
-        string? PartNumber
+        string? PartNumber,
+        string? ScrapComments,
+        string? DetailComments
     );
 
     public record MaterialDto(
@@ -702,6 +707,7 @@ namespace Core.DTOs
         public int TypeScrapId { get; set; }
         public int? DefectId { get; set; }
         public string? PartNumber { get; set; }
+        public string? Comments { get; set; }
     }
 
 }

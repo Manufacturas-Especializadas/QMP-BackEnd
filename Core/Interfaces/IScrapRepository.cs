@@ -20,7 +20,7 @@ namespace Core.Interfaces
 
         Task<bool> DeleteAsync(int id);
 
-        Task<bool> UpdateVerificationAsync(int id, bool isVerified, decimal? verifiedWeight);
+        Task<bool> UpdateVerificationAsync(int id, bool isVerified, decimal? verifiedWeight, string? Comments);
 
         Task<bool> SaveChangesAsync();
         Task<bool> UpdateDetailsOnlyAsync(int scrapId, List<ScrapDetailUpdateDto> newDetailsDto);

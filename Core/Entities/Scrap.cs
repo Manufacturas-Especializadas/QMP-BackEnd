@@ -18,6 +18,7 @@ namespace Core.Entities
         public bool IsVerified { get; set; } = false;
         public decimal? VerifiedWeight { get; set; }
         public decimal TotalWeight { get; set; }
+        public string? Comments { get; set; }
 
         public ICollection<ScrapDetail> ScrapDetails { get; set; } = new List<ScrapDetail>();
     }

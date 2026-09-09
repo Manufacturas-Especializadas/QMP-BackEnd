@@ -40,6 +40,7 @@ namespace API.Controllers
      scrap.Line?.LineName ?? "N/A",
                      scrap.IsVerified,
                      scrap.VerifiedWeight,
+                     scrap.Comments,
                      scrap.ScrapDetails.Select(d => new ScrapDetailReadDto(
                          d.Id,
     d.PayRollNumber,
@@ -58,7 +59,8 @@ namespace API.Controllers
     d.TypeScrap?.TypeScrapName ?? "N/A",
     d.DefectId,
     d.Defect?.DefectName ?? "N/A",
-    d.PartNumber
+    d.PartNumber,
+    d.Comments
                      )).ToList()
                  );
 
@@ -114,7 +116,9 @@ namespace API.Controllers
                     VerifiedWeight: s.VerifiedWeight,
                     Material: d.Material?.MaterialName ?? "N/A",
                     TotalWeight: s.TotalWeight,
-                    PartNumber: d.PartNumber
+                    PartNumber: d.PartNumber,
+                    ScrapComments: s.Comments,
+                    DetailComments: d.Comments
                 ))).ToList();
 
                 var fileContents = _excelService.GenerateScrapReport(dtos);
@@ -180,7 +184,8 @@ namespace API.Controllers
                         MaterialId = d.MaterialId,
                         TypeScrapId = d.TypeScrapId,
                         DefectId = d.DefectId,
-                        PartNumber = d.PartNumber
+                        PartNumber = d.PartNumber,
+                        Comments = d.Comments
                     }).ToList()
                 };
 
@@ -226,7 +231,8 @@ namespace API.Controllers
                 var result = await _scrapRepository.UpdateVerificationAsync(
                         dto.Id,
                         dto.IsVerified,
-                        dto.VerifiedWeight
+                        dto.VerifiedWeight,
+                        dto.Comments
                     );
 
                 if (!result) return NotFound("No se encontró el detalle de scrap");

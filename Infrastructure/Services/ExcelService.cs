@@ -24,7 +24,7 @@ namespace Infrastructure.Services
 
                 var cabeceraHeaders = new string[] {
             "ID Reporte", "PE Inspector", "Fecha", "Línea", "Turno",
-            "Verificado", "Peso Total", "Peso Verificado"
+            "Verificado", "Peso Total", "Peso Verificado", "Comentarios"
         };
 
                 for (int i = 0; i < cabeceraHeaders.Length; i++)
@@ -50,6 +50,7 @@ namespace Infrastructure.Services
                     wsHeaders.Cell(rowCabecera, 6).Value = item.IsVerified ? "Sí" : "No";
                     wsHeaders.Cell(rowCabecera, 7).Value = item.TotalWeight;
                     wsHeaders.Cell(rowCabecera, 8).Value = item.VerifiedWeight;
+                    wsHeaders.Cell(rowCabecera, 9).Value = item.ScrapComments ?? "";
                     rowCabecera++;
                 }
 
@@ -58,7 +59,7 @@ namespace Infrastructure.Services
 
                 var detailHeaders = new string[] {
              "ID Detalle", "PE Operador", "Proceso", "Código Máquina",
-            "Material", "Aleación", "Diámetro", "Pared", "Defecto", "Peso", "RDM", "Num Parte"
+            "Material", "Aleación", "Diámetro", "Pared", "Defecto", "Peso", "RDM", "Num Parte", "Comentarios"
                 };
 
                 for (int i = 0; i < detailHeaders.Length; i++)
@@ -86,6 +87,7 @@ namespace Infrastructure.Services
                     wsDetails.Cell(rowDetail, 10).Value = item.Weight;
                     wsDetails.Cell(rowDetail, 11).Value = item.RDM;
                     wsDetails.Cell(rowDetail, 12).Value = item.PartNumber;
+                    wsDetails.Cell(rowDetail, 13).Value = item.DetailComments ?? "";
                     rowDetail++;
                 }
 

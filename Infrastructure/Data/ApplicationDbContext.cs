@@ -258,6 +258,9 @@ namespace Infrastructure.Data
                 entity.Property(e => e.MttoValidation).HasColumnName("mttoValidation");
                 entity.Property(e => e.Realese1stPiece).HasColumnName("realese1stPiece");
                 entity.Property(e => e.Spc).HasColumnName("spc");
+                entity.Property(e => e.Format30x30).HasColumnName("format30x30");
+
+                entity.Property(e => e.CrossAudits).HasColumnName("crossAudits");
                 entity.Property(e => e.MaterialCorrectlyIdentified).HasColumnName("materialCorrectlyIdentified");
 
                 entity.Property(e => e.IdentifiedMeasuringEquipment).HasColumnName("identifiedMeasuringEquipment");

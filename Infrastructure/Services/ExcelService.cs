@@ -209,7 +209,7 @@ namespace Infrastructure.Services
                 {
                     "ID", "Fecha Registro", "Turno", "Proceso", "No. Parte", "Líneas Auditadas", "Estatus", "Folio RDM",
                     "Nómina Operador", "Cat. Operador", "Shop Order", "Lote Tubería", "Máquinas", "Series Equipos",
-                    "Validación Mtto", "1ra Pieza", "SPC", "Material Identificado", "Equipo Identificado", "Equipo Calibrado", "IT Proceso", "Tipo Aceite", "Hora Liberación",
+                    "Validación Mtto", "1ra Pieza", "SPC", "Formato 30x30", "Auditorías Cruzadas","Material Identificado", "Equipo Identificado", "Equipo Calibrado", "IT Proceso", "Tipo Aceite", "Hora Liberación",
                     "Marcas", "Golpes", "Contaminación", "Ovalamiento", "Rebaba", "Pandeado", "Exceso Aceite",
                     "Mediciones Dimensionales / Checklist Visual", "Nomina Inspector", "Adecuado Para La Medición", "Corresponde Al Operador Auditado" 
                 };
@@ -249,40 +249,42 @@ namespace Infrastructure.Services
                     worksheet.Cell(row, 15).Value = TraducirControl(item.Controls?.MttoValidation ?? 0);
                     worksheet.Cell(row, 16).Value = TraducirControl(item.Controls?.Realese1stPiece ?? 0);
                     worksheet.Cell(row, 17).Value = TraducirControl(item.Controls?.Spc ?? 0);
-                    worksheet.Cell(row, 18).Value = TraducirControl(item.Controls?.MaterialCorrectlyIdentified ?? 0);
-                    worksheet.Cell(row, 19).Value = TraducirControl(item.Controls?.IdentifiedMeasuringEquipment ?? 0);
-                    worksheet.Cell(row, 20).Value = TraducirControl(item.Controls?.CalibratedMeasuringEquipment ?? 0);
-                    worksheet.Cell(row, 21).Value = TraducirControl(item.Controls?.ItProcess ?? 0);
-                    worksheet.Cell(row, 22).Value = item.Controls?.TypeOil ?? "—";
-                    worksheet.Cell(row, 23).Value = item.Controls?.LastHourOfRelease ?? "—";
+                    worksheet.Cell(row, 18).Value = TraducirControl(item.Controls?.Format30x30 ?? 0);
+                    worksheet.Cell(row, 19).Value = TraducirControl(item.Controls?.CrossAudits ?? 0);
+                    worksheet.Cell(row, 20).Value = TraducirControl(item.Controls?.MaterialCorrectlyIdentified ?? 0);
+                    worksheet.Cell(row, 21).Value = TraducirControl(item.Controls?.IdentifiedMeasuringEquipment ?? 0);
+                    worksheet.Cell(row, 22).Value = TraducirControl(item.Controls?.CalibratedMeasuringEquipment ?? 0);
+                    worksheet.Cell(row, 23).Value = TraducirControl(item.Controls?.ItProcess ?? 0);
+                    worksheet.Cell(row, 24).Value = item.Controls?.TypeOil ?? "—";
+                    worksheet.Cell(row, 25).Value = item.Controls?.LastHourOfRelease ?? "—";
 
-                    worksheet.Cell(row, 24).Value = TraducirFisico(item.Physicals?.Brands ?? 0);
-                    worksheet.Cell(row, 25).Value = TraducirFisico(item.Physicals?.Blows ?? 0);
-                    worksheet.Cell(row, 26).Value = TraducirFisico(item.Physicals?.Pollution ?? 0);
-                    worksheet.Cell(row, 27).Value = TraducirFisico(item.Physicals?.Ovality ?? 0);
-                    worksheet.Cell(row, 28).Value = TraducirFisico(item.Physicals?.Burr ?? 0);
-                    worksheet.Cell(row, 29).Value = TraducirFisico(item.Physicals?.Warped ?? 0);
-                    worksheet.Cell(row, 30).Value = TraducirFisico(item.Physicals?.ExcessOil ?? 0);
+                    worksheet.Cell(row, 26).Value = TraducirFisico(item.Physicals?.Brands ?? 0);
+                    worksheet.Cell(row, 27).Value = TraducirFisico(item.Physicals?.Blows ?? 0);
+                    worksheet.Cell(row, 28).Value = TraducirFisico(item.Physicals?.Pollution ?? 0);
+                    worksheet.Cell(row, 29).Value = TraducirFisico(item.Physicals?.Ovality ?? 0);
+                    worksheet.Cell(row, 30).Value = TraducirFisico(item.Physicals?.Burr ?? 0);
+                    worksheet.Cell(row, 31).Value = TraducirFisico(item.Physicals?.Warped ?? 0);
+                    worksheet.Cell(row, 32).Value = TraducirFisico(item.Physicals?.ExcessOil ?? 0);
                     
 
 
                     if (item.DimensionalSpecs != null && item.DimensionalSpecs.Any())
                     {
                         var specsSummary = item.DimensionalSpecs.Select(s => $"{s.SpecName}[Esp:{s.ExpectedValue} Real:{s.RealValue}]");
-                        worksheet.Cell(row, 31).Value = string.Join(" | ", specsSummary);
+                        worksheet.Cell(row, 33).Value = string.Join(" | ", specsSummary);
                     }
                     else if (item.VisualChecklists != null && item.VisualChecklists.Any())
                     {
                         var visualSummary = item.VisualChecklists.Select(v => $"{v.CheckpointName}: {TraducirControl(v.ResultValue)}");
-                        worksheet.Cell(row, 31).Value = string.Join(" | ", visualSummary);
+                        worksheet.Cell(row, 33).Value = string.Join(" | ", visualSummary);
                     }
                     else
                     {
-                        worksheet.Cell(row, 31).Value = "—";
+                        worksheet.Cell(row, 33).Value = "—";
                     }
-                    worksheet.Cell(row, 32).Value = item.InspectorPayroll ?? "-";
-                    worksheet.Cell(row, 33).Value = TraducirControl(item.Controls?.MeasuringEquipmentAdequate ?? 0);
-                    worksheet.Cell(row, 34).Value = TraducirControl(item.Controls?.MeasuringEquipmentOperatorMatch ?? 0);
+                    worksheet.Cell(row, 34).Value = item.InspectorPayroll ?? "-";
+                    worksheet.Cell(row, 35).Value = TraducirControl(item.Controls?.MeasuringEquipmentAdequate ?? 0);
+                    worksheet.Cell(row, 36).Value = TraducirControl(item.Controls?.MeasuringEquipmentOperatorMatch ?? 0);
 
                     row++;
                 }

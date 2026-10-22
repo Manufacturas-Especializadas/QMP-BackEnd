@@ -364,6 +364,8 @@ namespace Core.DTOs
         public byte MttoValidation { get; init; }
         public byte Realese1stPiece { get; init; }
         public byte Spc { get; init; }
+        public byte Format30x30 { get; init; }
+        public byte CrossAudits { get; init; }
         public byte MaterialCorrectlyIdentified { get; init; }
         public byte IdentifiedMeasuringEquipment { get; init; }
         public byte CalibratedMeasuringEquipment { get; init; }

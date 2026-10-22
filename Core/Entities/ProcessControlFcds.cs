@@ -11,6 +11,8 @@
         public byte Realese1stPiece { get; set; }
 
         public byte Spc { get; set; }
+        public byte Format30x30 { get; set; }
+        public byte CrossAudits { get; set; }
 
         public byte MaterialCorrectlyIdentified { get; set; }
 

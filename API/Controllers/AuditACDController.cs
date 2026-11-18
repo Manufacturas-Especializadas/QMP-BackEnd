@@ -26,6 +26,27 @@ namespace API.Controllers
         }
 
         [HttpGet]
+        [Route("AvailableMonths")]
+        public async Task<IActionResult> GetAvailableMonths()
+        {
+            var months = await _context.AuditDataACDs
+                .Select(a => new { a.AuditDate.Year, a.AuditDate.Month })
+                .Distinct()
+                .OrderByDescending(m => m.Year)
+                .ThenByDescending(m => m.Month)
+                .ToListAsync();
+
+            var result = months.Select(m => new
+            {
+                year = m.Year,
+                month = m.Month,
+                monthName = new DateTime(m.Year, m.Month, 1).ToString("MMMM", new System.Globalization.CultureInfo("es-ES"))
+            });
+
+            return Ok(result);
+        }
+
+        [HttpGet]
         [Route("ExportExcel")]
         public async Task<IActionResult> ExportExcel([FromQuery] int month, [FromQuery] int year)
         {
